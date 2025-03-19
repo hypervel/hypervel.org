@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Artisan is the command line interface included with Laravel Hyperf. Artisan exists at the root of your application as the `artisan` script and provides a number of helpful commands that can assist you while you build your application. To view a list of all available Artisan commands, you may use the `list` command:
+Artisan is the command line interface included with Hypervel. Artisan exists at the root of your application as the `artisan` script and provides a number of helpful commands that can assist you while you build your application. To view a list of all available Artisan commands, you may use the `list` command:
 
 ```shell:no-line-numbers
 php artisan list
@@ -17,11 +17,11 @@ php artisan help migrate
 
 ### Tinker (REPL)
 
-Laravel Hyperf Tinker is a powerful REPL for the Laravel Hyperf framework. Powered by the [PsySH](https://github.com/bobthecow/psysh) package.
+Hypervel Tinker is a powerful REPL for the Hypervel framework. Powered by the [PsySH](https://github.com/bobthecow/psysh) package.
 
 #### Installation
 
-All Laravel Hyperf applications include Tinker by default. However, you may install Tinker using Composer if you have previously removed it from your application:
+All Hypervel applications include Tinker by default. However, you may install Tinker using Composer if you have previously removed it from your application:
 
 ```shell:no-line-numbers
 composer require friendsofhyperf/tinker
@@ -29,7 +29,7 @@ composer require friendsofhyperf/tinker
 
 #### Usage
 
-Tinker allows you to interact with your entire Laravel Hyperf application on the command line, including your Eloquent models, jobs, events, and more. To enter the Tinker environment, run the `tinker` Artisan command:
+Tinker allows you to interact with your entire Hypervel application on the command line, including your Eloquent models, jobs, events, and more. To enter the Tinker environment, run the `tinker` Artisan command:
 
 ```shell:no-line-numbers
 php artisan tinker
@@ -77,7 +77,7 @@ php artisan make:command SendEmails
 
 After generating your command, you should define appropriate values for the `signature` and `description` properties of the class. These properties will be used when displaying your command on the `list` screen. The `signature` property also allows you to define [your command's input expectations](#defining-input-expectations). The `handle` method will be called when your command is executed. You may place your command logic in this method.
 
-Let's take a look at an example command. Note that we are able to request any dependencies we need via the command's `handle` method. The Laravel Hyperf [service container](/docs/container) will automatically inject all dependencies that are type-hinted in this method's signature:
+Let's take a look at an example command. Note that we are able to request any dependencies we need via the command's `handle` method. The Hypervel [service container](/docs/container) will automatically inject all dependencies that are type-hinted in this method's signature:
 
 ```php
 <?php
@@ -86,7 +86,7 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use App\Support\DripEmailer;
-use LaravelHyperf\Foundation\Console\Command;
+use Hypervel\Foundation\Console\Command;
 
 class SendEmails extends Command
 {
@@ -116,7 +116,7 @@ For greater code reuse, it is good practice to keep your console commands light 
 
 ### Closure Commands
 
-Closure based commands provide an alternative to defining console commands as classes. In the same way that route closures are an alternative to controllers, think of command closures as an alternative to command classes. Within the `commands` method of your `app/Console/Kernel.php` file, Laravel Hyperf loads the `routes/console.php` file:
+Closure based commands provide an alternative to defining console commands as classes. In the same way that route closures are an alternative to controllers, think of command closures as an alternative to command classes. Within the `commands` method of your `app/Console/Kernel.php` file, Hypervel loads the `routes/console.php` file:
 
 ```php
 /**
@@ -163,7 +163,7 @@ Artisan::command('mail:send {user}', function (string $user) {
 
 ## Defining Input Expectations
 
-When writing console commands, it is common to gather input from the user through arguments or options. Laravel Hyperf makes it very convenient to define the input you expect from the user using the `signature` property on your commands. The `signature` property allows you to define the name, arguments, and options for the command in a single, expressive, route-like syntax.
+When writing console commands, it is common to gather input from the user through arguments or options. Hypervel makes it very convenient to define the input you expect from the user using the `signature` property on your commands. The `signature` property allows you to define the name, arguments, and options for the command in a single, expressive, route-like syntax.
 
 ### Arguments
 
@@ -451,7 +451,7 @@ $this->newLine(3);
 
 #### Tables
 
-The `table` method makes it easy to correctly format multiple rows / columns of data. All you need to do is provide the column names and the data for the table and Laravel Hyperf will
+The `table` method makes it easy to correctly format multiple rows / columns of data. All you need to do is provide the column names and the data for the table and Hypervel will
 automatically calculate the appropriate width and height of the table for you:
 
 ```php
@@ -465,7 +465,7 @@ $this->table(
 
 #### Progress Bars
 
-For long running tasks, it can be helpful to show a progress bar that informs users how complete the task is. Using the `withProgressBar` method, Laravel Hyperf will display a progress bar and advance its progress for each iteration over a given iterable value:
+For long running tasks, it can be helpful to show a progress bar that informs users how complete the task is. Using the `withProgressBar` method, Hypervel will display a progress bar and advance its progress for each iteration over a given iterable value:
 
 ```php
 use App\Models\User;
@@ -527,7 +527,7 @@ protected array $commands = [
 Sometimes you may wish to execute an Artisan command outside of the CLI. For example, you may wish to execute an Artisan command from a route or controller. You may use the `call` method on the `Artisan` facade to accomplish this. The `call` method accepts either the command's signature name or class name as its first argument, and an array of command parameters as the second argument. The exit code will be returned:
 
 ```php
-use LaravelHyperf\Support\Facades\Artisan;
+use Hypervel\Support\Facades\Artisan;
 
 Route::post('/user/{user}/mail', function (string $user) {
     $exitCode = Artisan::call('mail:send', [
@@ -549,7 +549,7 @@ Artisan::call('mail:send 1 --queue=default');
 If your command defines an option that accepts an array, you may pass an array of values to that option:
 
 ```php
-use LaravelHyperf\Support\Facades\Artisan;
+use Hypervel\Support\Facades\Artisan;
 
 Route::post('/mail', function () {
     $exitCode = Artisan::call('mail:send', [

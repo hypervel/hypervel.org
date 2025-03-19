@@ -3,17 +3,17 @@
 
 ## Introduction
 
-Packages are the primary way of adding functionality to Laravel Hyperf. There are different types of packages. Some packages are stand-alone, meaning they work with any PHP framework. Carbon and PHPUnit are examples of stand-alone packages. Any of these packages may be used with Laravel Hyperf by requiring them in your `composer.json` file.
+Packages are the primary way of adding functionality to Hypervel. There are different types of packages. Some packages are stand-alone, meaning they work with any PHP framework. Carbon and PHPUnit are examples of stand-alone packages. Any of these packages may be used with Hypervel by requiring them in your `composer.json` file.
 
-On the other hand, other packages are specifically intended for use with Laravel Hyperf. These packages may have routes, controllers, views, and configuration specifically intended to enhance a Laravel Hyperf application. This guide primarily covers the development of those packages that are Laravel Hyperf specific.
+On the other hand, other packages are specifically intended for use with Hypervel. These packages may have routes, controllers, views, and configuration specifically intended to enhance a Hypervel application. This guide primarily covers the development of those packages that are Hypervel specific.
 
 ## Package Discovery
 
-In a Laravel Hyperf application's `config/app.php` configuration file, the `providers` option defines a list of service providers that should be loaded by Laravel Hyperf. When someone installs your package, you will typically want your service provider to be included in this list. Instead of requiring users to manually add your service provider to the list, you may define the provider in the `extra` section of your package's `composer.json` file. In addition to service providers, you may also list any [facades](/docs/facades) you would like to be registered:
+In a Hypervel application's `config/app.php` configuration file, the `providers` option defines a list of service providers that should be loaded by Hypervel. When someone installs your package, you will typically want your service provider to be included in this list. Instead of requiring users to manually add your service provider to the list, you may define the provider in the `extra` section of your package's `composer.json` file. In addition to service providers, you may also list any [facades](/docs/facades) you would like to be registered:
 
 ```json
 "extra": {
-    "laravel-hyperf": {
+    "hypervel": {
         "providers": [
             "Barryvdh\\Debugbar\\ServiceProvider"
         ],
@@ -24,7 +24,7 @@ In a Laravel Hyperf application's `config/app.php` configuration file, the `prov
 },
 ```
 
-Once your package has been configured for discovery, Laravel Hyperf will automatically register its service providers and facades when it is installed, creating a convenient installation experience for your package's users.
+Once your package has been configured for discovery, Hypervel will automatically register its service providers and facades when it is installed, creating a convenient installation experience for your package's users.
 
 #### Opting Out of Package Discovery
 
@@ -32,7 +32,7 @@ If you are the consumer of a package and would like to disable package discovery
 
 ```json
 "extra": {
-    "laravel-hyperf": {
+    "hypervel": {
         "dont-discover": [
             "barryvdh/laravel-debugbar"
         ]
@@ -44,7 +44,7 @@ You may disable package discovery for all packages using the `*` character insid
 
 ```json
 "extra": {
-    "laravel-hyperf": {
+    "hypervel": {
         "dont-discover": [
             "*"
         ]
@@ -53,21 +53,21 @@ You may disable package discovery for all packages using the `*` character insid
 ```
 
 ::: important
-Laravel Hyperf also supports `Config Provider` for the compatibility with Hyperf. We encourage using config providers that we can empower Hyperf's ecosystem at same time.
+Hypervel also supports `Config Provider` for the compatibility with Hyperf. We encourage using config providers that we can empower Hyperf's ecosystem at same time.
 :::
 
 ## Config Providers
 
-Config providers are placed in each root directory of the component. These providers will supply all the configuration information of the corresponding component, which will be started by the Laravel Hyperf when loaded.
+Config providers are placed in each root directory of the component. These providers will supply all the configuration information of the corresponding component, which will be started by the Hypervel when loaded.
 
-The final configuration information in config providers will be merged into the corresponding implementation class of `Hyperf\Contract\ConfigInterface`. This process enables the configuration initialization of each component when used under the Laravel Hyperf.
+The final configuration information in config providers will be merged into the corresponding implementation class of `Hyperf\Contract\ConfigInterface`. This process enables the configuration initialization of each component when used under the Hypervel.
 
 A sample config provider looks like below:
 
 ```php
 <?php
 
-namespace LaravelHyperf\Foo;
+namespace Hypervel\Foo;
 
 class ConfigProvider
 {
@@ -117,14 +117,14 @@ In addition to the predefined configuration keys above, you can define other con
 ::: note
 Unlike service providers, config providers don't have direct approach to register your resources to the application. You can only declare your resource assets to be published.
 
-Also, resource path in Hyperf framework has strong coupling with `BASE_PATH` constant. If you use helper functions like `base_path`, `storage_path`, `resource_path`, etc, it will only work in Laravel Hyperf.
+Also, resource path in Hyperf framework has strong coupling with `BASE_PATH` constant. If you use helper functions like `base_path`, `storage_path`, `resource_path`, etc, it will only work in Hypervel.
 :::
 
 ## Service Providers
 
-[Service providers](/docs/providers) are the connection point between your package and Laravel Hyperf. A service provider is responsible for binding things into Laravel Hyperf's [service container](/docs/container) and informing Laravel Hyperf where to load package resources such as views, configuration, and language files.
+[Service providers](/docs/providers) are the connection point between your package and Hypervel. A service provider is responsible for binding things into Hypervel's [service container](/docs/container) and informing Hypervel where to load package resources such as views, configuration, and language files.
 
-A service provider extends the `LaravelHyperf\Support\ServiceProvider` class and contains two methods: `register` and `boot`. The base `ServiceProvider` class is located in the `laravel-hyperf/support` Composer package, which you should add to your own package's dependencies. To learn more about the structure and purpose of service providers, check out [their documentation](/docs/providers).
+A service provider extends the `Hypervel\Support\ServiceProvider` class and contains two methods: `register` and `boot`. The base `ServiceProvider` class is located in the `hypervel/support` Composer package, which you should add to your own package's dependencies. To learn more about the structure and purpose of service providers, check out [their documentation](/docs/providers).
 
 ## Resources
 
@@ -144,7 +144,7 @@ public function boot(): void
 }
 ```
 
-Now, when users of your package execute Laravel Hyperf's `vendor:publish` command, your file will be copied to the specified publish location. Once your configuration has been published, its values may be accessed like any other configuration file:
+Now, when users of your package execute Hypervel's `vendor:publish` command, your file will be copied to the specified publish location. Once your configuration has been published, its values may be accessed like any other configuration file:
 
 ```php
 $value = config('courier.option');
@@ -204,7 +204,7 @@ Once your package's migrations have been registered, they will automatically be 
 
 ### Language Files
 
-If your package contains [language files](/docs/localization), you may use the `loadTranslationsFrom` method to inform Laravel Hyperf how to load them. For example, if your package is named `courier`, you should add the following to your service provider's `boot` method:
+If your package contains [language files](/docs/localization), you may use the `loadTranslationsFrom` method to inform Hypervel how to load them. For example, if your package is named `courier`, you should add the following to your service provider's `boot` method:
 
 ```php
 /**
@@ -252,11 +252,11 @@ public function boot(): void
 }
 ```
 
-Now, when users of your package execute Laravel Hyperf's `vendor:publish` Artisan command, your package's language files will be published to the specified publish location.
+Now, when users of your package execute Hypervel's `vendor:publish` Artisan command, your package's language files will be published to the specified publish location.
 
 ### Views
 
-To register your package's [views](/docs/views) with Laravel, you need to tell Laravel Hyperf where the views are located. You may do this using the service provider's `loadViewsFrom` method. The `loadViewsFrom` method accepts two arguments: the path to your view templates and your package's name. For example, if your package's name is `courier`, you would add the following to your service provider's `boot` method:
+To register your package's [views](/docs/views) with Laravel, you need to tell Hypervel where the views are located. You may do this using the service provider's `loadViewsFrom` method. The `loadViewsFrom` method accepts two arguments: the path to your view templates and your package's name. For example, if your package's name is `courier`, you would add the following to your service provider's `boot` method:
 
 ```php
 /**
@@ -278,7 +278,7 @@ Route::get('/dashboard', function () {
 
 #### Overriding Package Views
 
-When you use the `loadViewsFrom` method, Laravel Hyperf actually registers two locations for your views: the application's `resources/views/vendor` directory and the directory you specify. So, using the `courier` package as an example, Laravel Hyperf will first check if a custom version of the view has been placed in the `resources/views/vendor/courier` directory by the developer. Then, if the view has not been customized, Laravel Hyperf will search the package view directory you specified in your call to `loadViewsFrom`. This makes it easy for package users to customize / override your package's views.
+When you use the `loadViewsFrom` method, Hypervel actually registers two locations for your views: the application's `resources/views/vendor` directory and the directory you specify. So, using the `courier` package as an example, Hypervel will first check if a custom version of the view has been placed in the `resources/views/vendor/courier` directory by the developer. Then, if the view has not been customized, Hypervel will search the package view directory you specified in your call to `loadViewsFrom`. This makes it easy for package users to customize / override your package's views.
 
 #### Publishing Views
 
@@ -298,14 +298,14 @@ public function boot(): void
 }
 ```
 
-Now, when users of your package execute Laravel Hyperf's `vendor:publish` Artisan command, your package's views will be copied to the specified publish location.
+Now, when users of your package execute Hypervel's `vendor:publish` Artisan command, your package's views will be copied to the specified publish location.
 
 ### View Components
 
-If you are building a package that utilizes Blade components or placing components in non-conventional directories, you will need to manually register your component class and its HTML tag alias so that Laravel Hyperf knows where to find the component. You should typically register your components in the `boot` method of your package's service provider:
+If you are building a package that utilizes Blade components or placing components in non-conventional directories, you will need to manually register your component class and its HTML tag alias so that Hypervel knows where to find the component. You should typically register your components in the `boot` method of your package's service provider:
 
 ```php
-use LaravelHyperf\Support\Facades\Blade;
+use Hypervel\Support\Facades\Blade;
 use VendorPackage\View\Components\AlertComponent;
 
 /**
@@ -328,7 +328,7 @@ Once your component has been registered, it may be rendered using its tag alias:
 Alternatively, you may use the `componentNamespace` method to autoload component classes by convention. For example, a `Nightshade` package might have `Calendar` and `ColorPicker` components that reside within the `Nightshade\Views\Components` namespace:
 
 ```php
-use LaravelHyperf\Support\Facades\Blade;
+use Hypervel\Support\Facades\Blade;
 
 /**
  * Bootstrap your package's services.
@@ -358,7 +358,7 @@ If your package contains anonymous components, they must be placed within a `com
 
 ## Commands
 
-To register your package's Artisan commands with Laravel Hyperf, you may use the `commands` method. This method expects an array of command class names. Once the commands have been registered, you may execute them using the [Artisan CLI](/docs/artisan):
+To register your package's Artisan commands with Hypervel, you may use the `commands` method. This method expects an array of command class names. Once the commands have been registered, you may execute them using the [Artisan CLI](/docs/artisan):
 
 ```php
 use Courier\Console\Commands\InstallCommand;

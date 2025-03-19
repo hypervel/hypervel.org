@@ -3,9 +3,9 @@
 
 ## Introduction
 
-Laravel Hyperf provides an expressive, minimal API around the [Guzzle HTTP client](http://docs.guzzlephp.org/en/stable/), allowing you to quickly make outgoing HTTP requests to communicate with other web applications. Laravel  Hyperf's wrapper around Guzzle is focused on its most common use cases and a wonderful developer experience.
+Hypervel provides an expressive, minimal API around the [Guzzle HTTP client](http://docs.guzzlephp.org/en/stable/), allowing you to quickly make outgoing HTTP requests to communicate with other web applications. Laravel  Hyperf's wrapper around Guzzle is focused on its most common use cases and a wonderful developer experience.
 
-Before getting started, you should ensure that you have installed the Guzzle package as a dependency of your application. By default, Laravel Hyperf automatically includes this dependency. However, if you have previously removed the package, you may install it again via Composer:
+Before getting started, you should ensure that you have installed the Guzzle package as a dependency of your application. By default, Hypervel automatically includes this dependency. However, if you have previously removed the package, you may install it again via Composer:
 
 ```shell:no-line-numbers
 composer require guzzlehttp/guzzle
@@ -17,18 +17,18 @@ To make requests, you may use the `head`, `get`, `post`, `put`, `patch`, and `de
 
 
 ```php
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\Support\Facades\Http;
 
 $response = Http::get('http://example.com');
 ```
 
-The `get` method returns an instance of `LaravelHyperf\HttpClient\Response`, which provides a variety of methods that may be used to inspect the response:
+The `get` method returns an instance of `Hypervel\HttpClient\Response`, which provides a variety of methods that may be used to inspect the response:
 
 ```php
 $response->body() : string;
 $response->json($key = null, $default = null) : array|mixed;
 $response->object() : object;
-$response->collect($key = null) : LaravelHyperf\Support\Collection;
+$response->collect($key = null) : Hypervel\Support\Collection;
 $response->status() : int;
 $response->successful() : bool;
 $response->redirect(): bool;
@@ -38,7 +38,7 @@ $response->header($header) : string;
 $response->headers() : array;
 ```
 
-The `LaravelHyperf\HttpClient\Response` object also implements the PHP `ArrayAccess` interface, allowing you to access JSON response data directly on the response:
+The `Hypervel\HttpClient\Response` object also implements the PHP `ArrayAccess` interface, allowing you to access JSON response data directly on the response:
 
 ```php
 return Http::get('http://example.com/users/1')['name'];
@@ -71,7 +71,7 @@ The HTTP client also allows you to construct request URLs using the [URI templat
 
 ```php
 Http::withUrlParameters([
-    'endpoint' => 'https://laravel-hyperf.com',
+    'endpoint' => 'https://hypervel.org',
     'page' => 'docs',
     'version' => '9.x',
     'topic' => 'validation',
@@ -91,7 +91,7 @@ return Http::dd()->get('http://example.com');
 Of course, it is common when making `POST`, `PUT`, and `PATCH` requests to send additional data with your request, so these methods accept an array of data as their second argument. By default, data will be sent using the `application/json` content type:
 
 ```php
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\Support\Facades\Http;
 
 $response = Http::post('http://example.com/users', [
     'name' => 'Steve',
@@ -203,10 +203,10 @@ You may specify basic and digest authentication credentials using the `withBasic
 
 ```php
 // Basic authentication...
-$response = Http::withBasicAuth('albert@laravel-hyperf.com', 'secret')->post(/* ... */);
+$response = Http::withBasicAuth('albert@hypervel.org', 'secret')->post(/* ... */);
 
 // Digest authentication...
-$response = Http::withDigestAuth('albert@laravel-hyperf.com', 'secret')->post(/* ... */);
+$response = Http::withDigestAuth('albert@hypervel.org', 'secret')->post(/* ... */);
 ```
 
 #### Bearer Tokens
@@ -225,7 +225,7 @@ The `timeout` method may be used to specify the maximum number of seconds to wai
 $response = Http::timeout(3)->get(/* ... */);
 ```
 
-If the given timeout is exceeded, an instance of `LaravelHyperf\HttpClient\ConnectionException` will  be thrown.
+If the given timeout is exceeded, an instance of `Hypervel\HttpClient\ConnectionException` will  be thrown.
 
 You may specify the maximum number of seconds to wait while trying to connect to a server using the `connectTimeout` method:
 
@@ -261,7 +261,7 @@ If needed, you may pass a third argument to the `retry` method. The third argume
 
 ```php
 use Exception;
-use LaravelHyperf\HttpClient\PendingRequest;
+use Hypervel\HttpClient\PendingRequest;
 
 $response = Http::retry(3, 100, function (Exception $exception, PendingRequest $request) {
     return $exception instanceof ConnectionException;
@@ -272,8 +272,8 @@ If a request attempt fails, you may wish to make a change to the request before 
 
 ```php
 use Exception;
-use LaravelHyperf\HttpClient\PendingRequest;
-use LaravelHyperf\HttpClient\RequestException;
+use Hypervel\HttpClient\PendingRequest;
+use Hypervel\HttpClient\RequestException;
 
 $response = Http::withToken($this->getToken())->retry(2, 0, function (Exception $exception, PendingRequest $request) {
     if (! $exception instanceof RequestException || $exception->response->status() !== 401) {
@@ -286,14 +286,14 @@ $response = Http::withToken($this->getToken())->retry(2, 0, function (Exception 
 })->post(/* ... */);
 ```
 
-If all of the requests fail, an instance of `LaravelHyperf\HttpClient\RequestException` will be thrown. If you would like to disable this behavior, you may provide a `throw` argument with a value of `false`. When disabled, the last response received by the client will be returned after all retries have been attempted:
+If all of the requests fail, an instance of `Hypervel\HttpClient\RequestException` will be thrown. If you would like to disable this behavior, you may provide a `throw` argument with a value of `false`. When disabled, the last response received by the client will be returned after all retries have been attempted:
 
 ```php
 $response = Http::retry(3, 100, throw: false)->post(/* ... */);
 ```
 
 ::: warning
-If all of the requests fail because of a connection issue, a `LaravelHyperf\HttpClient\ConnectionException` will still be thrown even when the `throw` argument is set to `false`.
+If all of the requests fail because of a connection issue, a `Hypervel\HttpClient\ConnectionException` will still be thrown even when the `throw` argument is set to `false`.
 :::
 
 ### Error Handling
@@ -319,10 +319,10 @@ $response->onError(callable $callback);
 
 #### Throwing Exceptions
 
-If you have a response instance and would like to throw an instance of `LaravelHyperf\HttpClient\RequestException` if the response status code indicates a client or server error, you may use the `throw` or `throwIf` methods:
+If you have a response instance and would like to throw an instance of `Hypervel\HttpClient\RequestException` if the response status code indicates a client or server error, you may use the `throw` or `throwIf` methods:
 
 ```php
-use LaravelHyperf\HttpClient\Response;
+use Hypervel\HttpClient\Response;
 
 $response = Http::post(/* ... */);
 
@@ -350,7 +350,7 @@ $response->throwUnlessStatus(200);
 return $response['user']['id'];
 ```
 
-The `LaravelHyperf\HttpClient\RequestException` instance has a public `$response` property which will allow you to inspect the returned response.
+The `Hypervel\HttpClient\RequestException` instance has a public `$response` property which will allow you to inspect the returned response.
 
 The `throw` method returns the response instance if no error occurred, allowing you to chain other operations onto the `throw` method:
 
@@ -361,8 +361,8 @@ return Http::post(/* ... */)->throw()->json();
 If you would like to perform some additional logic before the exception is thrown, you may pass a closure to the `throw` method. The exception will be thrown automatically after the closure is invoked, so you do not need to re-throw the exception from within the closure:
 
 ```php
-use LaravelHyperf\HttpClient\Response;
-use LaravelHyperf\HttpClient\RequestException;
+use Hypervel\HttpClient\Response;
+use Hypervel\HttpClient\RequestException;
 
 return Http::post(/* ... */)->throw(function (Response $response, RequestException $e) {
     // ...
@@ -374,7 +374,7 @@ return Http::post(/* ... */)->throw(function (Response $response, RequestExcepti
 Since Laravel  Hyperf's HTTP client is powered by Guzzle, you may take advantage of [Guzzle Middleware](https://docs.guzzlephp.org/en/stable/handlers-and-middleware.html) to manipulate the outgoing request or inspect the incoming response. To manipulate the outgoing request, register a Guzzle middleware via the `withRequestMiddleware` method:
 
 ```php
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\Support\Facades\Http;
 use Psr\Http\Message\RequestInterface;
 
 $response = Http::withRequestMiddleware(
@@ -387,7 +387,7 @@ $response = Http::withRequestMiddleware(
 Likewise, you can inspect the incoming HTTP response by registering a middleware via the `withResponseMiddleware` method:
 
 ```php
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\Support\Facades\Http;
 use Psr\Http\Message\ResponseInterface;
 
 $response = Http::withResponseMiddleware(
@@ -406,7 +406,7 @@ $response = Http::withResponseMiddleware(
 Sometimes, you may want to register a middleware that applies to every outgoing request and incoming response. To accomplish this, you may use the `globalRequestMiddleware` and `globalResponseMiddleware` methods. Typically, these methods should be invoked in the `boot` method of your application's `AppServiceProvider`:
 
 ```php
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\Support\Facades\Http;
 
 Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
     'User-Agent', 'Example Application/1.0'
@@ -431,12 +431,12 @@ $response = Http::withOptions([
 
 Sometimes, you may wish to make multiple HTTP requests concurrently. In other words, you want several requests to be dispatched at the same time instead of issuing the requests sequentially. This can lead to substantial performance improvements when interacting with slow HTTP APIs.
 
-Unlike Laravel, http client in Laravel Hyperf doesn't provide an additional `pool` method for concurrent requests. Because all the http requests in Laravel Hyperf are coroutine, and you can request them concurrently easily with `LaravelHyperf\Coroutine\parallel` function.
+Unlike Laravel, http client in Hypervel doesn't provide an additional `pool` method for concurrent requests. Because all the http requests in Hypervel are coroutine, and you can request them concurrently easily with `Hypervel\Coroutine\parallel` function.
 
 ```php
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\Support\Facades\Http;
 
-use function LaravelHyperf\Coroutine\parallel;
+use function Hypervel\Coroutine\parallel;
 
 $responses = parallel([
     fn () => Http::get('http://localhost/first'),
@@ -452,8 +452,8 @@ return $responses[0]->ok() &&
 As you can see, each response instance can be accessed based on the order it was added to the array. If you wish, you can name the requests using array key, which allows you to access the corresponding responses by name:
 
 ```php
-use LaravelHyperf\HttpClient\Pool;
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\HttpClient\Pool;
+use Hypervel\Support\Facades\Http;
 
 $responses = parallel([
     'first' => fn () => Http::get('http://localhost/first'),
@@ -466,10 +466,10 @@ return $responses['first']->ok();
 
 ## Macros
 
-The Laravel Hyperf HTTP client allows you to define "macros", which can serve as a fluent, expressive mechanism to configure common request paths and headers when interacting with services throughout your application. To get started, you may define the macro within the `boot` method of your application's `App\Providers\AppServiceProvider` class:
+The Hypervel HTTP client allows you to define "macros", which can serve as a fluent, expressive mechanism to configure common request paths and headers when interacting with services throughout your application. To get started, you may define the macro within the `boot` method of your application's `App\Providers\AppServiceProvider` class:
 
 ```php
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\Support\Facades\Http;
 
 /**
  * Bootstrap any application services.
@@ -492,14 +492,14 @@ $response = Http::github()->get('/');
 
 ## Testing
 
-Many Laravel Hyperf services provide functionality to help you easily and expressively write tests, and Laravel Hyperf's HTTP client is no exception. The `Http` facade's `fake` method allows you to instruct the HTTP client to return stubbed / dummy responses when requests are made.
+Many Hypervel services provide functionality to help you easily and expressively write tests, and Hypervel's HTTP client is no exception. The `Http` facade's `fake` method allows you to instruct the HTTP client to return stubbed / dummy responses when requests are made.
 
 ### Faking Responses
 
 For example, to instruct the HTTP client to return empty, `200` status code responses for every request, you may call the `fake` method with no arguments:
 
 ```php
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\Support\Facades\Http;
 
 Http::fake();
 
@@ -568,10 +568,10 @@ Http::fakeSequence()
 
 #### Fake Callback
 
-If you require more complicated logic to determine what responses to return for certain endpoints, you may pass a closure to the `fake` method. This closure will receive an instance of `LaravelHyperf\HttpClient\Request` and should return a response instance. Within your closure, you may perform whatever logic is necessary to determine what type of response to return:
+If you require more complicated logic to determine what responses to return for certain endpoints, you may pass a closure to the `fake` method. This closure will receive an instance of `Hypervel\HttpClient\Request` and should return a response instance. Within your closure, you may perform whatever logic is necessary to determine what type of response to return:
 
 ```php
-use LaravelHyperf\HttpClient\Request;
+use Hypervel\HttpClient\Request;
 
 Http::fake(function (Request $request) {
     return Http::response('Hello World', 200);
@@ -583,7 +583,7 @@ Http::fake(function (Request $request) {
 If you would like to ensure that all requests sent via the HTTP client have been faked throughout your individual test or complete test suite, you can call the `preventStrayRequests` method. After calling this method, any requests that do not have a corresponding fake response will throw an exception rather than making the actual HTTP request:
 
 ```php
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\Support\Facades\Http;
 
 Http::preventStrayRequests();
 
@@ -592,21 +592,21 @@ Http::fake([
 ]);
 
 // An "ok" response is returned...
-Http::get('https://github.com/laravel-hyperf/laravel-hyperf');
+Http::get('https://github.com/hypervel/hypervel');
 
 // An exception is thrown...
-Http::get('https://laravel-hyperf.com');
+Http::get('https://hypervel.org');
 ```
 
 ### Inspecting Requests
 
 When faking responses, you may occasionally wish to inspect the requests the client receives in order to make sure your application is sending the correct data or headers. You may accomplish this by calling the `Http::assertSent` method after calling `Http::fake`.
 
-The `assertSent` method accepts a closure which will receive an `LaravelHyperf\HttpClient\Request` instance and should return a boolean value indicating if the request matches your expectations. In order for the test to pass, at least one request must have been issued matching the given expectations:
+The `assertSent` method accepts a closure which will receive an `Hypervel\HttpClient\Request` instance and should return a boolean value indicating if the request matches your expectations. In order for the test to pass, at least one request must have been issued matching the given expectations:
 
 ```php
-use LaravelHyperf\HttpClient\Request;
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\HttpClient\Request;
+use Hypervel\Support\Facades\Http;
 
 Http::fake();
 
@@ -628,8 +628,8 @@ Http::assertSent(function (Request $request) {
 If needed, you may assert that a specific request was not sent using the `assertNotSent` method:
 
 ```php
-use LaravelHyperf\HttpClient\Request;
-use LaravelHyperf\Support\Facades\Http;
+use Hypervel\HttpClient\Request;
+use Hypervel\Support\Facades\Http;
 
 Http::fake();
 
@@ -661,47 +661,47 @@ Http::assertNothingSent();
 
 #### Recording Requests / Responses
 
-You may use the `recorded` method to gather all requests and their corresponding responses. The `recorded` method returns a collection of arrays that contains instances of `LaravelHyperf\HttpClient\Request` and `LaravelHyperf\HttpClient\Response`:
+You may use the `recorded` method to gather all requests and their corresponding responses. The `recorded` method returns a collection of arrays that contains instances of `Hypervel\HttpClient\Request` and `Hypervel\HttpClient\Response`:
 
 ```php
 Http::fake([
-    'https://laravel-hyperf.com' => Http::response(status: 500),
-    'https://laravel-hyperf.com/docs' => Http::response(),
+    'https://hypervel.org' => Http::response(status: 500),
+    'https://hypervel.org/docs' => Http::response(),
 ]);
 
-Http::get('https://laravel-hyperf.com');
-Http::get('https://laravel-hyperf.com/docs');
+Http::get('https://hypervel.org');
+Http::get('https://hypervel.org/docs');
 
 $recorded = Http::recorded();
 
 [$request, $response] = $recorded[0];
 ```
 
-Additionally, the `recorded` method accepts a closure which will receive an instance of `LaravelHyperf\HttpClient\Request` and `LaravelHyperf\HttpClient\Response` and may be used to filter request / response pairs based on your expectations:
+Additionally, the `recorded` method accepts a closure which will receive an instance of `Hypervel\HttpClient\Request` and `Hypervel\HttpClient\Response` and may be used to filter request / response pairs based on your expectations:
 
 ```php
-use LaravelHyperf\HttpClient\Request;
-use LaravelHyperf\HttpClient\Response;
+use Hypervel\HttpClient\Request;
+use Hypervel\HttpClient\Response;
 
 Http::fake([
-    'https://laravel-hyperf.com' => Http::response(status: 500),
-    'https://laravel-hyperf.com/docs' => Http::response(),
+    'https://hypervel.org' => Http::response(status: 500),
+    'https://hypervel.org/docs' => Http::response(),
 ]);
 
-Http::get('https://laravel-hyperf.com');
-Http::get('https://laravel-hyperf.com/docs');
+Http::get('https://hypervel.org');
+Http::get('https://hypervel.org/docs');
 
 $recorded = Http::recorded(function (Request $request, Response $response) {
-    return $request->url() !== 'https://laravel-hyperf.com' &&
+    return $request->url() !== 'https://hypervel.org' &&
            $response->successful();
 });
 ```
 
 ## Events
 
-Laravel Hyperf fires three events during the process of sending HTTP requests. The `RequestSending` event is fired prior to a request being sent, while the `ResponseReceived` event is fired after a response is received for a given request. The `ConnectionFailed` event is fired if no response is received for a given request.
+Hypervel fires three events during the process of sending HTTP requests. The `RequestSending` event is fired prior to a request being sent, while the `ResponseReceived` event is fired after a response is received for a given request. The `ConnectionFailed` event is fired if no response is received for a given request.
 
-The `RequestSending` and `ConnectionFailed` events both contain a public `$request` property that you may use to inspect the `LaravelHyperf\HttpClient\Request` instance. Likewise, the `ResponseReceived` event contains a `$request` property as well as a `$response` property which may be used to inspect the `LaravelHyperf\HttpClient\Response` instance. You may register event listeners for this event in your `App\Providers\EventServiceProvider` service provider:
+The `RequestSending` and `ConnectionFailed` events both contain a public `$request` property that you may use to inspect the `Hypervel\HttpClient\Request` instance. Likewise, the `ResponseReceived` event contains a `$request` property as well as a `$response` property which may be used to inspect the `Hypervel\HttpClient\Response` instance. You may register event listeners for this event in your `App\Providers\EventServiceProvider` service provider:
 
 ```php
 /**
@@ -710,13 +710,13 @@ The `RequestSending` and `ConnectionFailed` events both contain a public `$reque
  * @var array
  */
 protected $listen = [
-    'LaravelHyperf\HttpClient\Events\RequestSending' => [
+    'Hypervel\HttpClient\Events\RequestSending' => [
         'App\Listeners\LogRequestSending',
     ],
-    'LaravelHyperf\HttpClient\Events\ResponseReceived' => [
+    'Hypervel\HttpClient\Events\ResponseReceived' => [
         'App\Listeners\LogResponseReceived',
     ],
-    'LaravelHyperf\HttpClient\Events\ConnectionFailed' => [
+    'Hypervel\HttpClient\Events\ConnectionFailed' => [
         'App\Listeners\LogConnectionFailed',
     ],
 ];

@@ -3,9 +3,9 @@
 
 ## Introduction
 
-Laravel Hyperf's localization features provide a convenient way to retrieve strings in various languages, allowing you to easily support multiple languages within your application.
+Hypervel's localization features provide a convenient way to retrieve strings in various languages, allowing you to easily support multiple languages within your application.
 
-Laravel Hyperf provides two ways to manage translation strings. First, language strings may be stored in files within the application's `lang` directory. Within this directory, there may be subdirectories for each language supported by the application. This is the approach Laravel Hyperf uses to manage translation strings for built-in Laravel Hyperf features such as validation error messages:
+Hypervel provides two ways to manage translation strings. First, language strings may be stored in files within the application's `lang` directory. Within this directory, there may be subdirectories for each language supported by the application. This is the approach Hypervel uses to manage translation strings for built-in Hypervel features such as validation error messages:
 
 ```plaintext:no-line-numbers
 /lang
@@ -32,7 +32,7 @@ The default language for your application is stored in the `config/app.php` conf
 You may modify the default language for a single HTTP request at runtime using the `setLocale` method provided by the `App` facade:
 
 ```php
-use LaravelHyperf\Support\Facades\App;
+use Hypervel\Support\Facades\App;
 
 Route::get('/greeting/{locale}', function (string $locale) {
     if (! in_array($locale, ['en', 'es', 'fr'])) {
@@ -56,7 +56,7 @@ You may configure a "fallback language", which will be used when the active lang
 You may use the `currentLocale` and `isLocale` methods on the `App` facade to determine the current locale or check if the locale is a given value:
 
 ```php
-use LaravelHyperf\Support\Facades\App;
+use Hypervel\Support\Facades\App;
 
 $locale = App::currentLocale();
 
@@ -69,7 +69,7 @@ if (App::isLocale('en')) {
 
 ### Using Short Keys
 
-Typically, translation strings are stored in files within the `lang` directory. Within this directory, there should be a subdirectory for each language supported by your application. This is the approach Laravel Hyperf uses to manage translation strings for built-in Laravel Hyperf features such as validation error messages:
+Typically, translation strings are stored in files within the `lang` directory. Within this directory, there should be a subdirectory for each language supported by your application. This is the approach Hypervel uses to manage translation strings for built-in Hypervel features such as validation error messages:
 
 ```plaintext:no-line-numbers
 /lang
@@ -99,7 +99,7 @@ For languages that differ by territory, you should name the language directories
 
 For applications with a large number of translatable strings, defining every string with a "short key" can become confusing when referencing the keys in your views and it is cumbersome to continually invent keys for every translation string supported by your application.
 
-For this reason, Laravel Hyperf also provides support for defining translation strings using the "default" translation of the string as the key. Language files that use translation strings as keys are stored as JSON files in the `lang` directory. For example, if your application has a Spanish translation, you should create a `lang/es.json` file:
+For this reason, Hypervel also provides support for defining translation strings using the "default" translation of the string as the key. Language files that use translation strings as keys are stored as JSON files in the `lang` directory. For example, if your application has a Spanish translation, you should create a `lang/es.json` file:
 
 ```json
 {
@@ -158,7 +158,7 @@ If your placeholder contains all capital letters, or only has its first letter c
 
 ### Pluralization
 
-Pluralization is a complex problem, as different languages have a variety of complex rules for pluralization; however, Laravel Hyperf can help you translate strings differently based on pluralization rules that you define. Using a `|` character, you may distinguish singular and plural forms of a string:
+Pluralization is a complex problem, as different languages have a variety of complex rules for pluralization; however, Hypervel can help you translate strings differently based on pluralization rules that you define. Using a `|` character, you may distinguish singular and plural forms of a string:
 
 ```php
 'apples' => 'There is one apple|There are many apples',

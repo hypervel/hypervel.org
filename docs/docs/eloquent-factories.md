@@ -29,7 +29,7 @@ When testing, you may need to insert a few records into your database before exe
 
 ```php
 use Faker\Generator as Faker;
-use LaravelHyperf\Support\Str;
+use Hypervel\Support\Str;
 
 $factory->define(App\User::class, function (Faker $faker) {
     return [

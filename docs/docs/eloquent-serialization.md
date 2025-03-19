@@ -74,7 +74,7 @@ Sometimes you may wish to limit the attributes, such as passwords, that are incl
 
 namespace App;
 
-use LaravelHyperf\Database\Eloquent\Model;
+use Hypervel\Database\Eloquent\Model;
 
 class User extends Model
 {
@@ -96,7 +96,7 @@ Alternatively, you may use the `visible` property to define a white-list of attr
 
 namespace App;
 
-use LaravelHyperf\Database\Eloquent\Model;
+use Hypervel\Database\Eloquent\Model;
 
 class User extends Model
 {
@@ -130,7 +130,7 @@ Occasionally, when casting models to an array or JSON, you may wish to add attri
 
 namespace App;
 
-use LaravelHyperf\Database\Eloquent\Model;
+use Hypervel\Database\Eloquent\Model;
 
 class User extends Model
 {
@@ -151,7 +151,7 @@ After creating the accessor, add the attribute name to the `appends` property on
 
 namespace App;
 
-use LaravelHyperf\Database\Eloquent\Model;
+use Hypervel\Database\Eloquent\Model;
 
 class User extends Model
 {

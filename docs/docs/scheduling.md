@@ -5,7 +5,7 @@
 
 In the past, you may have written a cron configuration entry for each task you needed to schedule on your server. However, this can quickly become a pain because your task schedule is no longer in source control and you must SSH into your server to view your existing cron entries or add additional entries.
 
-Laravel Hyperf's command scheduler offers a fresh approach to managing scheduled tasks on your server. The scheduler allows you to fluently and expressively define your command schedule within your Laravel Hyperf application itself. When using the scheduler, only a single cron entry is needed on your server. Your task schedule is defined in the `app/Console/Kernel.php` file's `schedule` method. To help you get started, a simple example is defined within the method.
+Hypervel's command scheduler offers a fresh approach to managing scheduled tasks on your server. The scheduler allows you to fluently and expressively define your command schedule within your Hypervel application itself. When using the scheduler, only a single cron entry is needed on your server. Your task schedule is defined in the `app/Console/Kernel.php` file's `schedule` method. To help you get started, a simple example is defined within the method.
 
 ## Defining Schedules
 
@@ -16,9 +16,9 @@ You may define all of your scheduled tasks in the `schedule` method of your appl
 
 namespace App\Console;
 
-use LaravelHyperf\Console\Scheduling\Schedule;
-use LaravelHyperf\Foundation\Console\Kernel as ConsoleKernel;
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Console\Scheduling\Schedule;
+use Hypervel\Foundation\Console\Kernel as ConsoleKernel;
+use Hypervel\Support\Facades\DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -185,10 +185,10 @@ $schedule->command('emails:send')
     ->days([0, 3]);
 ```
 
-Alternatively, you may use the constants available on the `LaravelHyperf\Console\Scheduling\Schedule` class when defining the days on which a task should run:
+Alternatively, you may use the constants available on the `Hypervel\Console\Scheduling\Schedule` class when defining the days on which a task should run:
 
 ```php
-use LaravelHyperf\Console\Scheduling\Schedule;
+use Hypervel\Console\Scheduling\Schedule;
 
 $schedule->command('emails:send')
     ->hourly()
@@ -308,16 +308,16 @@ $schedule->command('report:generate')
 
 #### Naming Single Server Jobs
 
-Sometimes you may need to schedule the same job to be dispatched with different parameters, while still instructing Laravel Hyperf to run each permutation of the job on a single server. To accomplish this, you may assign each schedule definition a unique name via the `name` method:
+Sometimes you may need to schedule the same job to be dispatched with different parameters, while still instructing Hypervel to run each permutation of the job on a single server. To accomplish this, you may assign each schedule definition a unique name via the `name` method:
 
 ```php
-$schedule->job(new CheckUptime('https://laravel-hyperf.com'))
-    ->name('check_uptime:laravel-hyperf.com')
+$schedule->job(new CheckUptime('https://hypervel.org'))
+    ->name('check_uptime:hypervel.org')
     ->everyFiveMinutes()
     ->onOneServer();
 
-$schedule->job(new CheckUptime('https://laravel-hyperf.com'))
-    ->name('check_uptime:laravel-hyperf.com')
+$schedule->job(new CheckUptime('https://hypervel.org'))
+    ->name('check_uptime:hypervel.org')
     ->everyFiveMinutes()
     ->onOneServer();
 ```
@@ -353,14 +353,14 @@ Unlike in Laravel, all the background tasks are executed in coroutines. It's muc
 
 Now that we have learned how to define scheduled tasks, let's discuss how to actually run them on our server. The `schedule:run` Artisan command will evaluate all of your scheduled tasks and determine if they need to run based on the server's current time.
 
-So, when using Laravel Hyperf's scheduler, we only need to run the `schedule:run` command and a scheduler will be running and waiting for the upcoming scheduling tasks constantly.
+So, when using Hypervel's scheduler, we only need to run the `schedule:run` command and a scheduler will be running and waiting for the upcoming scheduling tasks constantly.
 
 ```shell
 php artisan schedule:run
 ```
 
 ::: warning
-In Laravel, `schedule:run` is designed for running in system's cron jobs. However, in Laravel Hyperf it's designed as a long-running process.
+In Laravel, `schedule:run` is designed for running in system's cron jobs. However, in Hypervel it's designed as a long-running process.
 :::
 
 
@@ -372,7 +372,7 @@ If you prefer to run the scheduler in traditional system's scheduler, you can al
 
 ### Sub-Minute Scheduled Tasks
 
-On most operating systems, cron jobs are limited to running a maximum of once per minute. However, Laravel Hyperf's scheduler allows you to schedule tasks to run at more frequent intervals, even as often as once per second:
+On most operating systems, cron jobs are limited to running a maximum of once per minute. However, Hypervel's scheduler allows you to schedule tasks to run at more frequent intervals, even as often as once per second:
 
 ```php
 $schedule->call(function () {
@@ -394,7 +394,7 @@ After receiving a stop signal, the scheduler will wait for unfinished tasks to c
 
 ## Task Output
 
-The Laravel Hyperf scheduler provides several convenient methods for working with the output generated by scheduled tasks. First, using the `sendOutputTo` method, you may send the output to a file for later inspection:
+The Hypervel scheduler provides several convenient methods for working with the output generated by scheduled tasks. First, using the `sendOutputTo` method, you may send the output to a file for later inspection:
 
 ```php
 $schedule->command('emails:send')
@@ -410,7 +410,7 @@ $schedule->command('emails:send')
     ->appendOutputTo($filePath);
 ```
 
-Using the `emailOutputTo` method, you may email the output to an email address of your choice. Before emailing the output of a task, you should configure Laravel Hyperf's [email services](/docs/mail):
+Using the `emailOutputTo` method, you may email the output to an email address of your choice. Before emailing the output of a task, you should configure Hypervel's [email services](/docs/mail):
 
 ```php
 $schedule->command('report:generate')
@@ -459,10 +459,10 @@ $schedule->command('emails:send')
     });
 ```
 
-If output is available from your command, you may access it in your `after`, `onSuccess` or `onFailure` hooks by type-hinting an `LaravelHyperf\Support\Stringable` instance as the `$output` argument of your hook's closure definition:
+If output is available from your command, you may access it in your `after`, `onSuccess` or `onFailure` hooks by type-hinting an `Hypervel\Support\Stringable` instance as the `$output` argument of your hook's closure definition:
 
 ```php
-use LaravelHyperf\Support\Stringable;
+use Hypervel\Support\Stringable;
 
 $schedule->command('emails:send')
     ->daily()
@@ -503,7 +503,7 @@ $schedule->command('emails:send')
     ->pingOnFailure($failureUrl);
 ```
 
-All of the ping methods require the Guzzle HTTP library. Guzzle is typically installed in all new Laravel Hyperf projects by default, but, you may manually install Guzzle into your project using the Composer package manager if it has been accidentally removed:
+All of the ping methods require the Guzzle HTTP library. Guzzle is typically installed in all new Hypervel projects by default, but, you may manually install Guzzle into your project using the Composer package manager if it has been accidentally removed:
 
 ```shell
 composer require guzzlehttp/guzzle
@@ -518,19 +518,19 @@ If needed, you may listen to [events](/docs/events) dispatched by the scheduler.
  * The event listener mappings for the application.
  */
 protected array $listen = [
-    'LaravelHyperf\Console\Events\ScheduledTaskStarting' => [
+    'Hypervel\Console\Events\ScheduledTaskStarting' => [
         'App\Listeners\LogScheduledTaskStarting',
     ],
 
-    'LaravelHyperf\Console\Events\ScheduledTaskFinished' => [
+    'Hypervel\Console\Events\ScheduledTaskFinished' => [
         'App\Listeners\LogScheduledTaskFinished',
     ],
 
-    'LaravelHyperf\Console\Events\ScheduledTaskSkipped' => [
+    'Hypervel\Console\Events\ScheduledTaskSkipped' => [
         'App\Listeners\LogScheduledTaskSkipped',
     ],
 
-    'LaravelHyperf\Console\Events\ScheduledTaskFailed' => [
+    'Hypervel\Console\Events\ScheduledTaskFailed' => [
         'App\Listeners\LogScheduledTaskFailed',
     ],
 ];

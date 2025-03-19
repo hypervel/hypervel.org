@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Laravel Hyperf includes a simple to use rate limiting abstraction which, in conjunction with your application's [cache](cache), provides an easy way to limit any action during a specified window of time.
+Hypervel includes a simple to use rate limiting abstraction which, in conjunction with your application's [cache](cache), provides an easy way to limit any action during a specified window of time.
 
 ::: note
 If you are interested in rate limiting incoming HTTP requests, please consult the [rate limiter middleware documentation](routing#rate-limiting).
@@ -22,12 +22,12 @@ Typically, the rate limiter utilizes your default application cache as defined b
 
 ## Basic Usage
 
-The `LaravelHyperf\Support\Facades\RateLimiter` facade may be used to interact with the rate limiter. The simplest method offered by the rate limiter is the `attempt` method, which rate limits a given callback for a given number of seconds.
+The `Hypervel\Support\Facades\RateLimiter` facade may be used to interact with the rate limiter. The simplest method offered by the rate limiter is the `attempt` method, which rate limits a given callback for a given number of seconds.
 
 The `attempt` method returns `false` when the callback has no remaining attempts available; otherwise, the `attempt` method will return the callback's result or `true`. The first argument accepted by the `attempt` method is a rate limiter "key", which may be any string of your choosing that represents the action being rate limited:
 
 ```php
-use LaravelHyperf\Support\Facades\RateLimiter;
+use Hypervel\Support\Facades\RateLimiter;
 
 $executed = RateLimiter::attempt(
     'send-message:'.$user->id,
@@ -60,7 +60,7 @@ $executed = RateLimiter::attempt(
 If you would like to manually interact with the rate limiter, a variety of other methods are available. For example, you may invoke the `tooManyAttempts` method to determine if a given rate limiter key has exceeded its maximum number of allowed attempts per minute:
 
 ```php
-use LaravelHyperf\Support\Facades\RateLimiter;
+use Hypervel\Support\Facades\RateLimiter;
 
 if (RateLimiter::tooManyAttempts('send-message:'.$user->id, $perMinute = 5)) {
     return 'Too many attempts!';
@@ -75,7 +75,7 @@ Alternatively, you may use the `remaining` method to retrieve the number of atte
 
 
 ```php
-use LaravelHyperf\Support\Facades\RateLimiter;
+use Hypervel\Support\Facades\RateLimiter;
 
 if (RateLimiter::remaining('send-message:'.$user->id, $perMinute = 5)) {
     RateLimiter::increment('send-message:'.$user->id);
@@ -96,7 +96,7 @@ When a key has no more attempts left, the `availableIn` method returns the numbe
 
 
 ```php
-use LaravelHyperf\Support\Facades\RateLimiter;
+use Hypervel\Support\Facades\RateLimiter;
 
 if (RateLimiter::tooManyAttempts('send-message:'.$user->id, $perMinute = 5)) {
     $seconds = RateLimiter::availableIn('send-message:'.$user->id);
@@ -115,7 +115,7 @@ You may reset the number of attempts for a given rate limiter key using the `cle
 
 ```php
 use App\Models\Message;
-use LaravelHyperf\Support\Facades\RateLimiter;
+use Hypervel\Support\Facades\RateLimiter;
 
 /**
  * Mark the message as read.

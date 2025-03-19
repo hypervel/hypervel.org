@@ -3,7 +3,7 @@
 
 ## Introduction
 
-All Eloquent methods that return more than one model result will return instances of the `LaravelHyperf\Database\Eloquent` class, including results retrieved via the `get` method or accessed via a relationship. The Eloquent collection object extends Laravel Hyperf's [base collection](/docs/collections), so it naturally inherits dozens of methods used to fluently work with the underlying array of Eloquent models. Be sure to review the Laravel Hyperf collection documentation to learn all about these helpful methods!
+All Eloquent methods that return more than one model result will return instances of the `Hypervel\Database\Eloquent` class, including results retrieved via the `get` method or accessed via a relationship. The Eloquent collection object extends Hypervel's [base collection](/docs/collections), so it naturally inherits dozens of methods used to fluently work with the underlying array of Eloquent models. Be sure to review the Hypervel collection documentation to learn all about these helpful methods!
 
 All collections also serve as iterators, allowing you to loop over them as if they were simple PHP arrays:
 
@@ -33,9 +33,9 @@ While most Eloquent collection methods return a new instance of an Eloquent coll
 
 ## Available Methods
 
-All Eloquent collections extend the base [Laravel Hyperf collection](/docs/collections#available-methods) object; therefore, they inherit all of the powerful methods provided by the base collection class.
+All Eloquent collections extend the base [Hypervel collection](/docs/collections#available-methods) object; therefore, they inherit all of the powerful methods provided by the base collection class.
 
-In addition, the `LaravelHyperf\Database\Eloquent` class provides a superset of methods to aid with managing your model collections. Most methods return `LaravelHyperf\Database\Eloquent` instances; however, some methods, like `modelKeys`, return an `LaravelHyperf\Support\Collection` instance.
+In addition, the `Hypervel\Database\Eloquent` class provides a superset of methods to aid with managing your model collections. Most methods return `Hypervel\Database\Eloquent` instances; however, some methods, like `modelKeys`, return an `Hypervel\Support\Collection` instance.
 
 <style>
     #collection-method-list > p {
@@ -234,7 +234,7 @@ If you would like to use a custom `Collection` object when interacting with a gi
 namespace App\Models;
 
 use App\Support\UserCollection;
-use LaravelHyperf\Database\Eloquent\Model;
+use Hypervel\Database\Eloquent\Model;
 
 class User extends Model
 {
@@ -248,4 +248,4 @@ class User extends Model
 }
 ```
 
-Once you have defined a `newCollection` method, you will receive an instance of your custom collection anytime Eloquent would normally return an `LaravelHyperf\Database\Eloquent\Collection` instance. If you would like to use a custom collection for every model in your application, you should define the `newCollection` method on a base model class that is extended by all of your application's models.
+Once you have defined a `newCollection` method, you will receive an instance of your custom collection anytime Eloquent would normally return an `Hypervel\Database\Eloquent\Collection` instance. If you would like to use a custom collection for every model in your application, you should define the `newCollection` method on a base model class that is extended by all of your application's models.

@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Context is an important feature in Laravel Hyperf. It is used to store states within coroutines. Contexts in different coroutines are isolated, and when a coroutine terminates, its context will be destroyed automatically. You don't need to worry about memory leaks problem in context.
+Context is an important feature in Hypervel. It is used to store states within coroutines. Contexts in different coroutines are isolated, and when a coroutine terminates, its context will be destroyed automatically. You don't need to worry about memory leaks problem in context.
 
 If you're not familiar with the context management in coroutines, you can read [Isolating global variables with a coroutine context manager in Swoole](https://swoolelabs.com/blog/isolating-variables-with-coroutine-context) for more detailed information.
 
@@ -18,7 +18,7 @@ Do not mutate static variables in coroutines unless you know what you're doing, 
 The `get` method will return the value of the key, if not exists, it will return the default value.
 
 ```php
-use LaravelHyperf\Context\Context;
+use Hypervel\Context\Context;
 
 $foo = Context::get('foo', 'bar');
 
@@ -30,7 +30,7 @@ $foo = Context::get('foo', 'bar', $coroutineId);
 The `set` method will set the value of the key, and return the value of the key.
 
 ```php
-use LaravelHyperf\Context\Context;
+use Hypervel\Context\Context;
 
 // $foo is bar
 $foo = Context::set('foo', 'bar');
@@ -43,7 +43,7 @@ $foo = Context::set('foo', 'bar', $coroutineId);
 The `has` method will return true if the key exists, otherwise false.
 
 ```php
-use LaravelHyperf\Context\Context;
+use Hypervel\Context\Context;
 
 $exists = Context::has('foo');
 
@@ -55,7 +55,7 @@ $exists = Context::has('foo', $coroutineId);
 Sometimes we need to check if a specific key exists. If the key exists, override the value of a key in the context. You may do so using the `override` method.
 
 ```php
-use LaravelHyperf\Context\Context;
+use Hypervel\Context\Context;
 
 $request = Context::override(ServerRequestInterface::class, function (ServerRequestInterface $request) {
     return $request->withAddedHeader('foo', 'bar');
@@ -71,7 +71,7 @@ You can pass `coroutineId` to the third parameter to override the context in a s
 The `destroy` method will delete the value of the key in coroutine context.
 
 ```php
-use LaravelHyperf\Context\Context;
+use Hypervel\Context\Context;
 
 Context::destroy('foo');
 
@@ -83,7 +83,7 @@ Context::destroy('foo', $coroutineId);
 The `destroyAll` method will delete all the values in coroutine context.
 
 ```php
-use LaravelHyperf\Context\Context;
+use Hypervel\Context\Context;
 
 Context::destroyAll('foo');
 
@@ -95,7 +95,7 @@ Context::destroyAll('foo', $coroutineId);
 The `getOrSet` method will return the value of the key, if not exists, it will set the value of the key and return.
 
 ```php
-use LaravelHyperf\Context\Context;
+use Hypervel\Context\Context;
 
 $foo = Context::getOrSet('foo', 'bar');
 
@@ -107,7 +107,7 @@ $foo = Context::getOrSet('foo', 'bar', $coroutineId);
 The `copy` method will copy the context from another coroutine to the current coroutine.
 
 ```php
-use LaravelHyperf\Context\Context;
+use Hypervel\Context\Context;
 
 Context::copy('foo', $fromCoroutineId, $onlyKeys);
 ```
@@ -119,7 +119,7 @@ For compatibility,`Context` also works in non-coroutine environment. All the non
 The `copyFromNonCoroutine` method will copy the context from non-coroutine environment to current coroutine.
 
 ```php
-use LaravelHyperf\Context\Context;
+use Hypervel\Context\Context;
 
 Context::copy('copyFromNonCoroutine', $keys);
 

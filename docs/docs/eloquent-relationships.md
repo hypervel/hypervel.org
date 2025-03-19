@@ -19,7 +19,7 @@ Database tables are often related to one another. For example, a blog post may h
 </div>
 
 ::: note
-Laravel Hyperf's Eloquent is a forked version in the Hyperf framework, which was derived from an early
+Hypervel's Eloquent is a forked version in the Hyperf framework, which was derived from an early
 :::
 
 ## Defining Relationships

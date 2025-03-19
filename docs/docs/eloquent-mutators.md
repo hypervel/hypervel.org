@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Accessors, mutators, and attribute casting allow you to transform Eloquent attribute values when you retrieve or set them on model instances. For example, you may want to use the [Laravel Hyperf encrypter](/docs/encryption) to encrypt a value while it is stored in the database, and then automatically decrypt the attribute when you access it on an Eloquent model. Or, you may want to convert a JSON string that is stored in your database to an array when it is accessed via your Eloquent model.
+Accessors, mutators, and attribute casting allow you to transform Eloquent attribute values when you retrieve or set them on model instances. For example, you may want to use the [Hypervel encrypter](/docs/encryption) to encrypt a value while it is stored in the database, and then automatically decrypt the attribute when you access it on an Eloquent model. Or, you may want to convert a JSON string that is stored in your database to an array when it is accessed via your Eloquent model.
 
 ## Accessors & Mutators
 
@@ -18,7 +18,7 @@ In this example, we'll define an accessor for the `first_name` attribute. The ac
 
 namespace App\Models;
 
-use LaravelHyperf\Database\Eloquent\Model;
+use Hypervel\Database\Eloquent\Model;
 
 class User extends Model
 {
@@ -74,7 +74,7 @@ Let's define a mutator for the `first_name` attribute. This mutator will be auto
 
 namespace App\Models;
 
-use LaravelHyperf\Database\Eloquent\Model;
+use Hypervel\Database\Eloquent\Model;
 
 class User extends Model
 {
@@ -114,7 +114,7 @@ To demonstrate attribute casting, let's cast the `is_admin` attribute, which is 
 
 namespace App\Models;
 
-use LaravelHyperf\Database\Eloquent\Model;
+use Hypervel\Database\Eloquent\Model;
 
 class User extends Model
 {
@@ -159,7 +159,7 @@ The `array` cast is particularly useful when working with columns that are store
 
 namespace App\Models;
 
-use LaravelHyperf\Database\Eloquent\Model;
+use Hypervel\Database\Eloquent\Model;
 
 class User extends Model
 {

@@ -3,11 +3,11 @@
 
 ## Introduction
 
-When you're ready to deploy your Laravel Hyperf application to production, there are some important things you can do to make sure your application is running as efficiently as possible. In this document, we'll cover some great starting points for making sure your Laravel Hyperf application is deployed properly.
+When you're ready to deploy your Hypervel application to production, there are some important things you can do to make sure your application is running as efficiently as possible. In this document, we'll cover some great starting points for making sure your Hypervel application is deployed properly.
 
 ## Server Requirements
 
-Laravel Hyperf has a few system requirements. You should ensure that your web server has the following minimum PHP version and extensions:
+Hypervel has a few system requirements. You should ensure that your web server has the following minimum PHP version and extensions:
 
  - PHP >= 8.2
  - [Swoole PHP extension](https://github.com/swoole/swoole-src) >= 5.1
@@ -33,7 +33,7 @@ server {
     # listening port
     listen 80;
     # Bound domain name, fill in your domain name
-    server_name proxy.laravel-hyperf.com;
+    server_name proxy.hypervel.org;
 
     location / {
         # Forward the client's Host and IP information to the corresponding node
@@ -57,7 +57,7 @@ If you plan to proxy your websocket services, you may use the following configur
 ```nginx
 server {
     listen 80;
-    server_name websocket.laravel-hyperf.com;
+    server_name websocket.hypervel.org;
 
     location / {
         # WebSocket Header

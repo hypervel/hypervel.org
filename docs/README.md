@@ -1,13 +1,13 @@
 ---
 home: true
-title: Laravel Hyperf
+title: Hypervel
 heroImage: icon.svg
 actions:
   - text: Get Started
     link: /docs/introduction
     type: primary
   - text: GitHub
-    link: https://github.com/laravel-hyperf/laravel-hyperf
+    link: https://github.com/hypervel/hypervel
     type: secondary
 features:
   - title: Laravel Friendly
@@ -15,8 +15,8 @@ features:
   - title: High Performance
     details: Leveraging Swoole's native coroutine support, it delivers exceptional performance and efficient concurrency handling.
   - title: Ecosystem Compatibility
-    details: Laravel Hyperf is compatible with the Hyperf ecosystem, sharing the same community resources and packages.
-footer: MIT Licensed | Copyright © 2024-present Laravel Hyperf
+    details: Hypervel is compatible with the Hyperf ecosystem, sharing the same community resources and packages.
+footer: MIT Licensed | Copyright © 2024-present Hypervel
 ---
 
 
@@ -46,7 +46,7 @@ Laravel artisans can enjoy a familiar development experience that mirrors the or
 
 ### Authentication
 
-Authenticating users is as simple as adding an authentication middleware to your Laravel Hyperf route definition:
+Authenticating users is as simple as adding an authentication middleware to your Hypervel route definition:
 
 ```php
 Route::get('/profile', ProfileController::class, [
@@ -57,7 +57,7 @@ Route::get('/profile', ProfileController::class, [
 Once the user is authenticated, you can access the authenticated user via the Auth facade:
 
 ```php
-use LaravelHyperf\Support\Facades\Auth;
+use Hypervel\Support\Facades\Auth;
 
 $user = Auth::user();
 ```
@@ -72,7 +72,7 @@ Of course, you may define your own authentication middleware, allowing you to cu
 
 ### Authorization
 
-You'll often need to check whether an authenticated user is authorized to perform a specific action. Laravel Hyperf's model policies make it a breeze:
+You'll often need to check whether an authenticated user is authorized to perform a specific action. Hypervel's model policies make it a breeze:
 
 ```shell:no-line-numbers
 php artisan make:policy UserPolicy
@@ -97,7 +97,7 @@ public function update(Request $request, Invoice $invoice)
 
 ### Eloquent
 
-Scared of databases? Don't be. Laravel Hyperf’s Eloquent ORM makes it painless to interact with your application's data, and models, migrations, and relationships can be quickly scaffolded:
+Scared of databases? Don't be. Hypervel’s Eloquent ORM makes it painless to interact with your application's data, and models, migrations, and relationships can be quickly scaffolded:
 
 ```shell:no-line-numbers
 php artisan make:model Invoice --migration
@@ -152,7 +152,7 @@ return new class extends Migration {
 
 ### Validation
 
-Laravel has over 90 powerful, built-in validation rules and, using Laravel Hyperf Precognition, can provide live validation on your frontend:
+Laravel has over 90 powerful, built-in validation rules and, using Hypervel Precognition, can provide live validation on your frontend:
 
 ```php
 public function update(Request $request)
@@ -174,7 +174,7 @@ public function update(Request $request)
 
 ### Notifications & Mail
 
-Use Laravel Hyperf to quickly send beautifully styled notifications to your users via email, Slack, SMS, in-app, and more:
+Use Hypervel to quickly send beautifully styled notifications to your users via email, Slack, SMS, in-app, and more:
 
 ```shell:no-line-numbers
 php artisan make:notification InvoicePaid
@@ -194,14 +194,14 @@ $user->notify(new InvoicePaid($invoice));
 
 ### File Storage
 
-Laravel Hyperf provides a robust filesystem abstraction layer, providing a single, unified API for interacting with local filesystems and cloud based filesystems like Amazon S3:
+Hypervel provides a robust filesystem abstraction layer, providing a single, unified API for interacting with local filesystems and cloud based filesystems like Amazon S3:
 
 ```php
 $path = Storage::disk('s3')
     ->put('avatars/1', $request->file('avatar'));
 ```
 
-Regardless of where your files are stored, interact with them using Laravel Hyperf's simple, elegant syntax:
+Regardless of where your files are stored, interact with them using Hypervel's simple, elegant syntax:
 
 ```php
 $content = Storage::get('photo.jpg');
@@ -217,7 +217,7 @@ Storage::put('photo.jpg', $content);
 
 ### Job Queues
 
-Laravel Hyperf lets you to offload slow jobs to a background queue, keeping your web requests snappy:
+Hypervel lets you to offload slow jobs to a background queue, keeping your web requests snappy:
 
 ```php
 $podcast = Podcast::create(/* ... */);
@@ -245,7 +245,7 @@ Schedule recurring jobs and commands with an expressive syntax and say goodbye t
 $schedule->job(NotifySubscribers::class)->hourly();
 ```
 
-Laravel Hyperf's scheduler can even handle multiple servers and offers built-in overlap prevention:
+Hypervel's scheduler can even handle multiple servers and offers built-in overlap prevention:
 
 ```php
 $schedule->job(NotifySubscribers::class)
@@ -262,7 +262,7 @@ $schedule->job(NotifySubscribers::class)
 
 ### Testing
 
-Laravel Hyperf is built for testing. From unit tests to feature tests, you’ll feel more confident in deploying your application:
+Hypervel is built for testing. From unit tests to feature tests, you’ll feel more confident in deploying your application:
 
 ```php
 class RefreshDatabaseTest extends TestCase
@@ -288,7 +288,7 @@ class RefreshDatabaseTest extends TestCase
 
 ### Events & Websockets
 
-Laravel Hyperf's events allow you to send and listen for events across your application, and listeners can easily be dispatched to a background queue:
+Hypervel's events allow you to send and listen for events across your application, and listeners can easily be dispatched to a background queue:
 
 ```php
 OrderShipped::dispatch($order);
@@ -304,7 +304,7 @@ class SendShipmentNotification implements ShouldQueue
 }
 ```
 
-Your frontend application can even subscribe to your Laravel Hyperf events using [Laravel Echo](/docs/broadcasting) and WebSockets, allowing you to build real-time, dynamic applications:
+Your frontend application can even subscribe to your Hypervel events using [Laravel Echo](/docs/broadcasting) and WebSockets, allowing you to build real-time, dynamic applications:
 
 ```js
 Echo.private(`orders.${orderId}`)
@@ -323,13 +323,13 @@ Echo.private(`orders.${orderId}`)
 ## Frequently Asked Questions
 
 <div class="custom-container tip">
-<p><strong>Is Laravel Hyperf compatible with Laravel packages?</strong></p>
-<p>While Laravel Hyperf maintains the similar development experience like Laravel, you can't install Laravel packages on this framework due to the fundamental differences in architecture. However, many Laravel concepts and patterns can be easily adapted for use with Laravel Hyperf.</p>
+<p><strong>Is Hypervel compatible with Laravel packages?</strong></p>
+<p>While Hypervel maintains the similar development experience like Laravel, you can't install Laravel packages on this framework due to the fundamental differences in architecture. However, many Laravel concepts and patterns can be easily adapted for use with Hypervel.</p>
 </div>
 
 <div class="custom-container tip">
-<p><strong>How does Laravel Hyperf achieve high performance?</strong></p>
-<p>Laravel Hyperf achieves high performance through Swoole's coroutine system, which enables non-blocking I/O operations and efficient concurrency handling. This allows the framework to handle more concurrent connections with fewer resources compared to traditional PHP-FPM.</p>
+<p><strong>How does Hypervel achieve high performance?</strong></p>
+<p>Hypervel achieves high performance through Swoole's coroutine system, which enables non-blocking I/O operations and efficient concurrency handling. This allows the framework to handle more concurrent connections with fewer resources compared to traditional PHP-FPM.</p>
 </div>
 
 <div class="custom-container tip">

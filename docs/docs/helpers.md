@@ -1,6 +1,6 @@
 ## Introduction
 
-Laravel Hyperf includes a variety of global "helper" PHP functions. Many of these functions are used by the framework itself; however, you are free to use them in your own applications if you find them convenient.
+Hypervel includes a variety of global "helper" PHP functions. Many of these functions are used by the framework itself; however, you are free to use them in your own applications if you find them convenient.
 
 ## Available Methods
 
@@ -183,7 +183,7 @@ Laravel Hyperf includes a variety of global "helper" PHP functions. Many of thes
 The `Arr::accessible` method determines if the given value is array accessible:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 use Hyperf\Collection\Collection;
 
 $isAccessible = Arr::accessible(['a' => 1, 'b' => 2]);
@@ -209,7 +209,7 @@ $isAccessible = Arr::accessible(new stdClass);
 The `Arr::add` method adds a given key / value pair to an array if the given key doesn't already exist in the array or is set to `null`:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = Arr::add(['name' => 'Desk'], 'price', 100);
 
@@ -226,7 +226,7 @@ $array = Arr::add(['name' => 'Desk', 'price' => null], 'price', 100);
 The `Arr::collapse` method collapses an array of arrays into a single array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = Arr::collapse([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
 
@@ -239,7 +239,7 @@ $array = Arr::collapse([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
 The `Arr::crossJoin` method cross joins the given arrays, returning a Cartesian product with all possible permutations:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $matrix = Arr::crossJoin([1, 2], ['a', 'b']);
 
@@ -274,7 +274,7 @@ $matrix = Arr::crossJoin([1, 2], ['a', 'b'], ['I', 'II']);
 The `Arr::divide` method returns two arrays: one containing the keys and the other containing the values of the given array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 [$keys, $values] = Arr::divide(['name' => 'Desk']);
 
@@ -289,7 +289,7 @@ use LaravelHyperf\Support\Arr;
 The `Arr::dot` method flattens a multi-dimensional array into a single level array that uses "dot" notation to indicate depth:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['products' => ['desk' => ['price' => 100]]];
 
@@ -304,7 +304,7 @@ $flattened = Arr::dot($array);
 The `Arr::except` method removes the given key / value pairs from an array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['name' => 'Desk', 'price' => 100];
 
@@ -319,7 +319,7 @@ $filtered = Arr::except($array, ['price']);
 The `Arr::exists` method checks that the given key exists in the provided array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['name' => 'John Doe', 'age' => 17];
 
@@ -338,7 +338,7 @@ $exists = Arr::exists($array, 'salary');
 The `Arr::first` method returns the first element of an array passing a given truth test:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [100, 200, 300];
 
@@ -352,7 +352,7 @@ $first = Arr::first($array, function (int $value, int $key) {
 A default value may also be passed as the third parameter to the method. This value will be returned if no value passes the truth test:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $first = Arr::first($array, $callback, $default);
 ```
@@ -363,7 +363,7 @@ $first = Arr::first($array, $callback, $default);
 The `Arr::flatten` method flattens a multi-dimensional array into a single level array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['name' => 'Joe', 'languages' => ['PHP', 'Ruby']];
 
@@ -378,7 +378,7 @@ $flattened = Arr::flatten($array);
 The `Arr::forget` method removes a given key / value pair from a deeply nested array using "dot" notation:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['products' => ['desk' => ['price' => 100]]];
 
@@ -393,7 +393,7 @@ Arr::forget($array, 'products.desk');
 The `Arr::get` method retrieves a value from a deeply nested array using "dot" notation:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['products' => ['desk' => ['price' => 100]]];
 
@@ -405,7 +405,7 @@ $price = Arr::get($array, 'products.desk.price');
 The `Arr::get` method also accepts a default value, which will be returned if the specified key is not present in the array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $discount = Arr::get($array, 'products.desk.discount', 0);
 
@@ -418,7 +418,7 @@ $discount = Arr::get($array, 'products.desk.discount', 0);
 The `Arr::has` method checks whether a given item or items exists in an array using "dot" notation:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['product' => ['name' => 'Desk', 'price' => 100]];
 
@@ -437,7 +437,7 @@ $contains = Arr::has($array, ['product.price', 'product.discount']);
 The `Arr::hasAny` method checks whether any item in a given set exists in an array using "dot" notation:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['product' => ['name' => 'Desk', 'price' => 100]];
 
@@ -460,7 +460,7 @@ $contains = Arr::hasAny($array, ['category', 'product.discount']);
 The `Arr::isAssoc` method returns `true` if the given array is an associative array. An array is considered "associative" if it doesn't have sequential numerical keys beginning with zero:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $isAssoc = Arr::isAssoc(['product' => ['name' => 'Desk', 'price' => 100]]);
 
@@ -477,7 +477,7 @@ $isAssoc = Arr::isAssoc([1, 2, 3]);
 The `Arr::isList` method returns `true` if the given array's keys are sequential integers beginning from zero:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $isList = Arr::isList(['foo', 'bar', 'baz']);
 
@@ -494,7 +494,7 @@ $isList = Arr::isList(['product' => ['name' => 'Desk', 'price' => 100]]);
 The `Arr::join` method joins array elements with a string. Using this method's second argument, you may also specify the joining string for the final element of the array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['Tailwind', 'Alpine', 'Laravel', 'Hyperf'];
 
@@ -513,7 +513,7 @@ $joined = Arr::join($array, ', ', ' and ');
 The `Arr::keyBy` method keys the array by the given key. If multiple items have the same key, only the last one will appear in the new array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [
     ['product_id' => 'prod-100', 'name' => 'Desk'],
@@ -536,7 +536,7 @@ $keyed = Arr::keyBy($array, 'product_id');
 The `Arr::last` method returns the last element of an array passing a given truth test:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [100, 200, 300, 110];
 
@@ -550,7 +550,7 @@ $last = Arr::last($array, function (int $value, int $key) {
 A default value may be passed as the third argument to the method. This value will be returned if no value passes the truth test:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $last = Arr::last($array, $callback, $default);
 ```
@@ -561,7 +561,7 @@ $last = Arr::last($array, $callback, $default);
 The `Arr::map` method iterates through the array and passes each value and key to the given callback. The array value is replaced by the value returned by the callback:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['first' => 'james', 'last' => 'kirk'];
 
@@ -578,7 +578,7 @@ $mapped = Arr::map($array, function (string $value, string $key) {
 The `Arr::mapWithKeys` method iterates through the array and passes each value to the given callback. The callback should return an associative array containing a single key / value pair:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [
     [
@@ -611,7 +611,7 @@ $mapped = Arr::mapWithKeys($array, function (array $item, int $key) {
 The `Arr::only` method returns only the specified key / value pairs from the given array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['name' => 'Desk', 'price' => 100, 'orders' => 10];
 
@@ -626,7 +626,7 @@ $slice = Arr::only($array, ['name', 'price']);
 The `Arr::pluck` method retrieves all of the values for a given key from an array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [
     ['developer' => ['id' => 1, 'name' => 'Taylor']],
@@ -639,7 +639,7 @@ $names = Arr::pluck($array, 'developer.name');
 
 You may also specify how you wish the resulting list to be keyed:
 
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $names = Arr::pluck($array, 'developer.name', 'developer.id');
 
@@ -652,7 +652,7 @@ $names = Arr::pluck($array, 'developer.name', 'developer.id');
 The `Arr::prepend` method will push an item onto the beginning of an array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['one', 'two', 'three', 'four'];
 
@@ -664,7 +664,7 @@ $array = Arr::prepend($array, 'zero');
 If needed, you may specify the key that should be used for the value:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['price' => 100];
 
@@ -679,7 +679,7 @@ $array = Arr::prepend($array, 'Desk', 'name');
 The `Arr::prependKeysWith` prepends all key names of an associative array with the given prefix:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [
     'name' => 'Desk',
@@ -702,7 +702,7 @@ $keyed = Arr::prependKeysWith($array, 'product.');
 The `Arr::pull` method returns and removes a key / value pair from an array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['name' => 'Desk', 'price' => 100];
 
@@ -716,7 +716,7 @@ $name = Arr::pull($array, 'name');
 A default value may be passed as the third argument to the method. This value will be returned if the key doesn't exist:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $value = Arr::pull($array, $key, $default);
 ```
@@ -727,7 +727,7 @@ $value = Arr::pull($array, $key, $default);
 The `Arr::query` method converts the array into a query string:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [
     'name' => 'Taylor',
@@ -748,7 +748,7 @@ Arr::query($array);
 The `Arr::random` method returns a random value from an array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [1, 2, 3, 4, 5];
 
@@ -760,7 +760,7 @@ $random = Arr::random($array);
 You may also specify the number of items to return as an optional second argument. Note that providing this argument will return an array even if only one item is desired:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $items = Arr::random($array, 2);
 
@@ -773,7 +773,7 @@ $items = Arr::random($array, 2);
 The `Arr::set` method sets a value within a deeply nested array using "dot" notation:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['products' => ['desk' => ['price' => 100]]];
 
@@ -788,7 +788,7 @@ Arr::set($array, 'products.desk.price', 200);
 The `Arr::shuffle` method randomly shuffles the items in the array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = Arr::shuffle([1, 2, 3, 4, 5]);
 
@@ -801,7 +801,7 @@ $array = Arr::shuffle([1, 2, 3, 4, 5]);
 The `Arr::sort` method sorts an array by its values:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['Desk', 'Table', 'Chair'];
 
@@ -813,7 +813,7 @@ $sorted = Arr::sort($array);
 You may also sort the array by the results of a given closure:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [
     ['name' => 'Desk'],
@@ -840,7 +840,7 @@ $sorted = array_values(Arr::sort($array, function (array $value) {
 The `Arr::sortDesc` method sorts an array in descending order by its values:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = ['Desk', 'Table', 'Chair'];
 
@@ -852,7 +852,7 @@ $sorted = Arr::sortDesc($array);
 You may also sort the array by the results of a given closure:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [
     ['name' => 'Desk'],
@@ -879,7 +879,7 @@ $sorted = array_values(Arr::sortDesc($array, function (array $value) {
 The `Arr::sortRecursive` method recursively sorts an array using the `sort` function for numerically indexed sub-arrays and the `ksort` function for associative sub-arrays:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [
     ['Roman', 'Taylor', 'Li'],
@@ -910,7 +910,7 @@ $sorted = Arr::sortRecursiveDesc($array);
 The `Arr::toCssClasses` method conditionally compiles a CSS class string. The method accepts an array of classes where the array key contains the class or classes you wish to add, while the value is a boolean expression. If the array element has a numeric key, it will always be included in the rendered class list:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $isActive = false;
 $hasError = true;
@@ -930,7 +930,7 @@ $classes = Arr::toCssClasses($array);
 The `Arr::toCssStyles` conditionally compiles a CSS style string. The method accepts an array of classes where the array key contains the class or classes you wish to add, while the value is a boolean expression. If the array element has a numeric key, it will always be included in the rendered class list:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $hasColor = true;
 
@@ -951,7 +951,7 @@ This method powers Laravel's functionality allowing [merging classes with a Blad
 The `Arr::undot` method expands a single-dimensional array that uses "dot" notation into a multi-dimensional array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [
     'user.name' => 'Kevin Malone',
@@ -969,7 +969,7 @@ $array = Arr::undot($array);
 The `Arr::where` method filters an array using the given closure:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [100, '200', 300, '400', 500];
 
@@ -986,7 +986,7 @@ $filtered = Arr::where($array, function (string|int $value, int $key) {
 The `Arr::whereNotNull` method removes all `null` values from the given array:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = [0, null];
 
@@ -1001,7 +1001,7 @@ $filtered = Arr::whereNotNull($array);
 The `Arr::wrap` method wraps the given value in an array. If the given value is already an array it will be returned without modification:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $string = 'Laravel';
 
@@ -1013,7 +1013,7 @@ $array = Arr::wrap($string);
 If the given value is `null`, an empty array will be returned:
 
 ```php
-use LaravelHyperf\Support\Arr;
+use Hypervel\Support\Arr;
 
 $array = Arr::wrap(null);
 
@@ -1208,7 +1208,7 @@ $last = last($array);
 The `Number::abbreviate` method returns the human-readable format of the provided numerical value, with an abbreviation for the units:
 
 ```php
-use LaravelHyperf\Support\Number;
+use Hypervel\Support\Number;
 
 $number = Number::abbreviate(1000);
 
@@ -1229,7 +1229,7 @@ $number = Number::abbreviate(1230000, precision: 2);
 The `Number::clamp` method ensures a given number stays within a specified range. If the number is lower than the minimum, the minimum value is returned. If the number is higher than the maximum, the maximum value is returned:
 
 ```php
-use LaravelHyperf\Support\Number;
+use Hypervel\Support\Number;
 
 $number = Number::clamp(105, min: 10, max: 100);
 
@@ -1254,7 +1254,7 @@ $number = Number::clamp(20, min: 10, max: 100);
 The `Number::currency` method returns the currency representation of the given value as a string:
 
 ```php
-use LaravelHyperf\Support\Number;
+use Hypervel\Support\Number;
 
 $currency = Number::currency(1000);
 
@@ -1275,7 +1275,7 @@ $currency = Number::currency(1000, in: 'EUR', locale: 'de');
 The `Number::fileSize` method returns the file size representation of the given byte value as a string:
 
 ```php
-use LaravelHyperf\Support\Number;
+use Hypervel\Support\Number;
 
 $size = Number::fileSize(1024);
 
@@ -1296,7 +1296,7 @@ $size = Number::fileSize(1024, precision: 2);
 The `Number::forHumans` method returns the human-readable format of the provided numerical value:
 
 ```php
-use LaravelHyperf\Support\Number;
+use Hypervel\Support\Number;
 
 $number = Number::forHumans(1000);
 
@@ -1317,7 +1317,7 @@ $number = Number::forHumans(1230000, precision: 2);
 The `Number::format` method formats the given number into a locale specific string:
 
 ```php
-use LaravelHyperf\Support\Number;
+use Hypervel\Support\Number;
 
 $number = Number::format(100000);
 
@@ -1342,7 +1342,7 @@ $number = Number::format(100000, locale: 'de');
 The `Number::ordinal` method returns a number's ordinal representation:
 
 ```php
-use LaravelHyperf\Support\Number;
+use Hypervel\Support\Number;
 
 $number = Number::ordinal(1);
 
@@ -1363,7 +1363,7 @@ $number = Number::ordinal(21);
 The `Number::percentage` method returns the percentage representation of the given value as a string:
 
 ```php
-use LaravelHyperf\Support\Number;
+use Hypervel\Support\Number;
 
 $percentage = Number::percentage(10);
 
@@ -1388,7 +1388,7 @@ $percentage = Number::percentage(10, precision: 2, locale: 'de');
 The `Number::spell` method transforms the given number into a string of words:
 
 ```php
-use LaravelHyperf\Support\Number;
+use Hypervel\Support\Number;
 
 $number = Number::spell(102);
 
@@ -1429,7 +1429,7 @@ $number = Number::spell(10, until: 10);
 The `Number::useLocale` method sets the default number locale globally, which affects how numbers and currency are formatted by subsequent invocations to the `Number` class's methods:
 
 ```php
-use LaravelHyperf\Support\Number;
+use Hypervel\Support\Number;
 
 /**
  * Bootstrap any application services.
@@ -1446,7 +1446,7 @@ public function boot(): void
 The `Number::withLocale` method executes the given closure using the specified locale and then restores the original locale after the callback has executed:
 
 ```php
-use LaravelHyperf\Support\Number;
+use Hypervel\Support\Number;
 
 $number = Number::withLocale('de', function () {
     return Number::format(1500);
@@ -1616,7 +1616,7 @@ return to_route('users.show', ['user' => 1]);
 If necessary, you may pass the HTTP status code that should be assigned to the redirect and any additional response headers as the third and fourth arguments to the `to_route` method:
 
 ```php
-return to_route('users.show', ['user' => 1], 302, ['X-Framework' => 'Laravel Hyperf']);
+return to_route('users.show', ['user' => 1], 302, ['X-Framework' => 'Hypervel']);
 ```
 
 <a name="method-url"></a>
@@ -1846,7 +1846,7 @@ If you do not want to halt the execution of your script, use the [`dump`](#metho
 <a name="method-dispatch"></a>
 #### `dispatch()`
 
-The `dispatch` function pushes the given [job](/docs/queues#creating-jobs) onto the Laravel Hyperf [job queue](/docs/queues):
+The `dispatch` function pushes the given [job](/docs/queues#creating-jobs) onto the Hypervel [job queue](/docs/queues):
 
 ```php
 dispatch(new App\Jobs\SendEmails);
@@ -2361,16 +2361,16 @@ $result = with(5, null);
 <a name="dates"></a>
 ### Dates
 
-Laravel Hyperf includes [Carbon](https://carbon.nesbot.com/docs/), a powerful date and time manipulation library. To create a new `Carbon` instance, you may invoke the `now` function. This function is globally available within your Laravel Hyperf application:
+Hypervel includes [Carbon](https://carbon.nesbot.com/docs/), a powerful date and time manipulation library. To create a new `Carbon` instance, you may invoke the `now` function. This function is globally available within your Hypervel application:
 
 ```php
 $now = now();
 ```
 
-Or, you may create a new `Carbon` instance using the `LaravelHyperf\Support\Carbon` class:
+Or, you may create a new `Carbon` instance using the `Hypervel\Support\Carbon` class:
 
 ```php
-use LaravelHyperf\Support\Carbon;
+use Hypervel\Support\Carbon;
 
 $now = Carbon::now();
 ```
@@ -2380,12 +2380,12 @@ For a thorough discussion of Carbon and its features, please consult the [offici
 <a name="pipeline"></a>
 ### Pipeline
 
-Laravel Hyperf's `Pipeline` provides a convenient way to "pipe" a given input through a series of invokable classes, closures, or callables, giving each class the opportunity to inspect or modify the input and invoke the next callable in the pipeline:
+Hypervel's `Pipeline` provides a convenient way to "pipe" a given input through a series of invokable classes, closures, or callables, giving each class the opportunity to inspect or modify the input and invoke the next callable in the pipeline:
 
 ```php
 use Closure;
 use App\Models\User;
-use LaravelHyperf\Support\Pipeline;
+use Hypervel\Support\Pipeline;
 
 $user = Pipeline::make()
     ->send($user)
@@ -2408,7 +2408,7 @@ As you can see, each invokable class or closure in the pipeline is provided the 
 
 When the last callable in the pipeline invokes the `$next` closure, the callable provided to the `then` method will be invoked. Typically, this callable will simply return the given input.
 
-Of course, as discussed previously, you are not limited to providing closures to your pipeline. You may also provide invokable classes. If a class name is provided, the class will be instantiated via Laravel Hyperf's [service container](/docs/container), allowing dependencies to be injected into the invokable class:
+Of course, as discussed previously, you are not limited to providing closures to your pipeline. You may also provide invokable classes. If a class name is provided, the class will be instantiated via Hypervel's [service container](/docs/container), allowing dependencies to be injected into the invokable class:
 
 ```php
 $user = Pipeline::make()

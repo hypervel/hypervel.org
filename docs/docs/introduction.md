@@ -1,12 +1,12 @@
 ## Introduction
 
-**Laravel Hyperf** is a Laravel-style PHP framework with native coroutine support for ultra-high performance.
+**Hypervel** is a Laravel-style PHP framework with native coroutine support for ultra-high performance.
 
-Laravel Hyperf ports many core components from Laravel while maintaining familiar usage patterns, making it instantly accessible to Laravel developers. The framework combines the elegant and expressive development experience of Laravel with the powerful performance benefits of coroutine-based programming. If you're a Laravel developer, you'll feel right at home with this framework, requiring minimal learning curve.
+Hypervel ports many core components from Laravel while maintaining familiar usage patterns, making it instantly accessible to Laravel developers. The framework combines the elegant and expressive development experience of Laravel with the powerful performance benefits of coroutine-based programming. If you're a Laravel developer, you'll feel right at home with this framework, requiring minimal learning curve.
 
 This is an ideal choice for building microservices, API gateways, and high-concurrency applications where traditional PHP frameworks often encounter performance constraints.
 
-## Why Laravel Hyperf?
+## Why Hypervel?
 
 While Laravel Octane impressively enhances your Laravel application's performance, it's crucial to understand the nature of modern web applications. In most cases, the majority of latency stems from I/O operations, such as file operations, database queries, and API requests.
 
@@ -14,7 +14,7 @@ However, Laravel doesn't support coroutines - the entire framework is designed f
 
 Imagine building an AI-powered chatbot where each conversation API takes 3-5 seconds to respond. With 10 workers in Laravel Octane receiving 10 concurrent requests, all workers would be blocked until these requests complete.
 
-For I/O-intensive scenarios, even with Laravel Octane's improvements, your application's ability to handle concurrent requests is still limited by the duration of these I/O operations. Laravel Hyperf addresses this issue by leveraging coroutines, allowing for efficient handling of concurrent I/O operations without blocking workers. This approach can significantly improve the performance and concurrency of applications with heavy I/O requirements.
+For I/O-intensive scenarios, even with Laravel Octane's improvements, your application's ability to handle concurrent requests is still limited by the duration of these I/O operations. Hypervel addresses this issue by leveraging coroutines, allowing for efficient handling of concurrent I/O operations without blocking workers. This approach can significantly improve the performance and concurrency of applications with heavy I/O requirements.
 
 Moreover, it's unlikely that Laravel Octane will support coroutines in the near future (see [this issue](https://github.com/laravel/octane/issues/765)), given that only Swoole runtime currently supports this feature and considering backward compatibility with the framework and third-party packages.
 
@@ -34,7 +34,7 @@ At LaraCon 2021, Taylor Otwell announced Laravel Octane — a first-party packag
 
 ## Hyperf
 
-Laravel Hyperf is built on the Hyperf ecosystem, similar to how Laravel relates to Symfony. Hyperf is a high-performance framework powered by Swoole and Swow, with all components natively supporting coroutines and strictly adhering to PSR standards. It allows developers to easily build high-concurrency applications with built-in support for non-blocking I/O.
+Hypervel is built on the Hyperf ecosystem, similar to how Laravel relates to Symfony. Hyperf is a high-performance framework powered by Swoole and Swow, with all components natively supporting coroutines and strictly adhering to PSR standards. It allows developers to easily build high-concurrency applications with built-in support for non-blocking I/O.
 
 The Hyperf project maintains high activity levels on GitHub, with regular feature updates and version releases. This demonstrates strong community engagement and consistent development progress. With over 6,000 stars on GitHub and more than 350 contributors since 2019, Hyperf is a top choice for developers seeking a modern web framework to build high-performance PHP projects with asynchronous I/O support.
 
@@ -76,7 +76,7 @@ Requests/sec:   8230.97
 Transfer/sec:      1.69MB
 ```
 
-* Laravel Hyperf
+* Hypervel
 
 ```text:no-line-numbers
 Running 10s test @ http://127.0.0.1:9501/api
@@ -105,7 +105,7 @@ Transfer/sec:     15.10MB
         "borderWidth": 1
       },
       {
-        "label": "Laravel Hyperf",
+        "label": "Hypervel",
         "data": [96562.80],
         "backgroundColor": "rgba(173, 216, 230, 0.8)",
         "borderColor": "rgba(173, 216, 230, 1)",
@@ -130,7 +130,7 @@ Transfer/sec:     15.10MB
     "plugins": {
       "title": {
         "display": true,
-        "text": "Laravel Octane vs Laravel Hyperf"
+        "text": "Laravel Octane vs Hypervel"
       },
       "legend": {
         "position": "top"
@@ -157,7 +157,7 @@ Requests/sec:      7.92
 Transfer/sec:      1.66KB
 ```
 
-* Laravel Hyperf
+* Hypervel
 
 ```text:no-line-numbers
 Running 10s test @ http://10.10.4.12:9501/api
@@ -188,7 +188,7 @@ Transfer/sec:      1.96MB
         "borderWidth": 1
       },
       {
-        "label": "Laravel Hyperf",
+        "label": "Hypervel",
         "data": [10842.71],
         "backgroundColor": "rgba(173, 216, 230, 0.8)",
         "borderColor": "rgba(173, 216, 230, 1)",
@@ -213,7 +213,7 @@ Transfer/sec:      1.96MB
     "plugins": {
       "title": {
         "display": true,
-        "text": "Laravel Octane vs Laravel Hyperf"
+        "text": "Laravel Octane vs Hypervel"
       },
       "legend": {
         "position": "top"
@@ -224,8 +224,8 @@ Transfer/sec:      1.96MB
 ```
 :::
 
-> Laravel Octane's QPS number is close to 8, but because it differs so significantly from Laravel Hyperf's numbers, it appears this way when generated in the chart.
+> Laravel Octane's QPS number is close to 8, but because it differs so significantly from Hypervel's numbers, it appears this way when generated in the chart.
 
 ::: note
-The QPS results for Laravel Hyperf have little difference between 1 worker and 8 workers configurations. Both configurations achieve approximately 10000 QPS. That means there's limitation in the benchmarking environment. In real cases Laravel Hyperf should have much better performance.
+The QPS results for Hypervel have little difference between 1 worker and 8 workers configurations. Both configurations achieve approximately 10000 QPS. That means there's limitation in the benchmarking environment. In real cases Hypervel should have much better performance.
 :::

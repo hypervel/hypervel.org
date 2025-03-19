@@ -3,9 +3,9 @@
 
 ## Introduction
 
-In addition to providing built-in [authentication](/docs/authentication) services, Laravel Hyperf also provides a simple way to authorize user actions against a given resource. For example, even though a user is authenticated, they may not be authorized to update or delete certain Eloquent models or database records managed by your application. Laravel Hyperf's authorization features provide an easy, organized way of managing these types of authorization checks.
+In addition to providing built-in [authentication](/docs/authentication) services, Hypervel also provides a simple way to authorize user actions against a given resource. For example, even though a user is authenticated, they may not be authorized to update or delete certain Eloquent models or database records managed by your application. Hypervel's authorization features provide an easy, organized way of managing these types of authorization checks.
 
-Laravel Hyperf provides two primary ways of authorizing actions: [gates](#gates) and [policies](#creating-policies). Think of gates and policies like routes and controllers. Gates provide a simple, closure-based approach to authorization while policies, like controllers, group logic around a particular model or resource. In this documentation, we'll explore gates first and then examine policies.
+Hypervel provides two primary ways of authorizing actions: [gates](#gates) and [policies](#creating-policies). Think of gates and policies like routes and controllers. Gates provide a simple, closure-based approach to authorization while policies, like controllers, group logic around a particular model or resource. In this documentation, we'll explore gates first and then examine policies.
 
 You do not need to choose between exclusively using gates or exclusively using policies when building an application. Most applications will most likely contain some mixture of gates and policies, and that is perfectly fine! Gates are most applicable to actions that are not related to any model or resource, such as viewing an administrator dashboard. In contrast, policies should be used when you wish to authorize an action for a particular model or resource.
 
@@ -14,7 +14,7 @@ You do not need to choose between exclusively using gates or exclusively using p
 ### Writing Gates
 
 ::: warning
-Gates are a great way to learn the basics of Laravel Hyperf's authorization features; however, when building robust Laravel Hyperf applications you should consider using [policies](#creating-policies) to organize your authorization rules.
+Gates are a great way to learn the basics of Hypervel's authorization features; however, when building robust Hypervel applications you should consider using [policies](#creating-policies) to organize your authorization rules.
 :::
 
 Gates are simply closures that determine if a user is authorized to perform a given action. Typically, gates are defined within the `boot` method of the `App\Providers\AppServiceProvider` class using the `Gate` facade. Gates always receive a user instance as their first argument and may optionally receive additional arguments such as a relevant Eloquent model.
@@ -24,7 +24,7 @@ In this example, we'll define a gate to determine if a user can update a given `
 ```php
 use App\Models\Post;
 use App\Models\User;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Support\Facades\Gate;
 
 /**
  * Bootstrap any application services.
@@ -41,7 +41,7 @@ Like controllers, gates may also be defined using a class callback array:
 
 ```php
 use App\Policies\PostPolicy;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Support\Facades\Gate;
 
 /**
  * Bootstrap any application services.
@@ -54,7 +54,7 @@ public function boot(): void
 
 ### Authorizing Actions
 
-To authorize an action using gates, you should use the `allows` or `denies` methods provided by the `Gate` facade. Note that you are not required to pass the currently authenticated user to these methods. Laravel Hyperf will automatically take care of passing the user into the gate closure. It is typical to call the gate authorization methods within your application's controllers before performing an action that requires authorization:
+To authorize an action using gates, you should use the `allows` or `denies` methods provided by the `Gate` facade. Note that you are not required to pass the currently authenticated user to these methods. Hypervel will automatically take care of passing the user into the gate closure. It is typical to call the gate authorization methods within your application's controllers before performing an action that requires authorization:
 
 ```php
 <?php
@@ -64,8 +64,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Http\Request;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Http\Request;
+use Hypervel\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -111,7 +111,7 @@ if (Gate::none(['update-post', 'delete-post'], $post)) {
 
 #### Authorizing or Throwing Exceptions
 
-If you would like to attempt to authorize an action and automatically throw an `LaravelHyperf\Auth\Access\AuthorizationException` if the user is not allowed to perform the given action, you may use the `Gate` facade's `authorize` method. Instances of `AuthorizationException` are automatically converted to a 403 HTTP response by Laravel:
+If you would like to attempt to authorize an action and automatically throw an `Hypervel\Auth\Access\AuthorizationException` if the user is not allowed to perform the given action, you may use the `Gate` facade's `authorize` method. Instances of `AuthorizationException` are automatically converted to a 403 HTTP response by Laravel:
 
 ```php
 Gate::authorize('update-post', $post);
@@ -126,7 +126,7 @@ The gate methods for authorizing abilities (`allows`, `denies`, `check`, `any`, 
 ```php
 use App\Models\Category;
 use App\Models\User;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Support\Facades\Gate;
 
 Gate::define('create-post', function (User $user, Category $category, bool $pinned) {
     if (! $user->canPublishToGroup($category->group)) {
@@ -145,12 +145,12 @@ if (Gate::check('create-post', [$category, $pinned])) {
 
 ### Gate Responses
 
-So far, we have only examined gates that return simple boolean values. However, sometimes you may wish to return a more detailed response, including an error message. To do so, you may return an `LaravelHyperf\Auth\Access\Response` from your gate:
+So far, we have only examined gates that return simple boolean values. However, sometimes you may wish to return a more detailed response, including an error message. To do so, you may return an `Hypervel\Auth\Access\Response` from your gate:
 
 ```php
 use App\Models\User;
-use LaravelHyperf\Auth\Access\Response;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Auth\Access\Response;
+use Hypervel\Support\Facades\Gate;
 
 Gate::define('edit-settings', function (User $user) {
     return $user->isAdmin
@@ -181,12 +181,12 @@ Gate::authorize('edit-settings');
 
 #### Customizing The HTTP Response Status
 
-When an action is denied via a Gate, a `403` HTTP response is returned; however, it can sometimes be useful to return an alternative HTTP status code. You may customize the HTTP status code returned for a failed authorization check using the `denyWithStatus` static constructor on the `LaravelHyperf\Auth\Access\Response` class:
+When an action is denied via a Gate, a `403` HTTP response is returned; however, it can sometimes be useful to return an alternative HTTP status code. You may customize the HTTP status code returned for a failed authorization check using the `denyWithStatus` static constructor on the `Hypervel\Auth\Access\Response` class:
 
 ```php
 use App\Models\User;
-use LaravelHyperf\Auth\Access\Response;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Auth\Access\Response;
+use Hypervel\Support\Facades\Gate;
 
 Gate::define('edit-settings', function (User $user) {
     return $user->isAdmin
@@ -199,8 +199,8 @@ Because hiding resources via a `404` response is such a common pattern for web a
 
 ```php
 use App\Models\User;
-use LaravelHyperf\Auth\Access\Response;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Auth\Access\Response;
+use Hypervel\Support\Facades\Gate;
 
 Gate::define('edit-settings', function (User $user) {
     return $user->isAdmin
@@ -215,7 +215,7 @@ Sometimes, you may wish to grant all abilities to a specific user. You may use t
 
 ```php
 use App\Models\User;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Support\Facades\Gate;
 
 Gate::before(function (User $user, string $ability) {
     if ($user->isAdministrator()) {
@@ -242,18 +242,18 @@ Values returned by `after` closures will not override the result of the authoriz
 
 ### Inline Authorization
 
-Occasionally, you may wish to determine if the currently authenticated user is authorized to perform a given action without writing a dedicated gate that corresponds to the action. Laravel Hyperf allows you to perform these types of "inline" authorization checks via the `Gate::allowIf` and `Gate::denyIf` methods. Inline authorization does not execute any defined ["before" or "after" authorization hooks](#intercepting-gate-checks):
+Occasionally, you may wish to determine if the currently authenticated user is authorized to perform a given action without writing a dedicated gate that corresponds to the action. Hypervel allows you to perform these types of "inline" authorization checks via the `Gate::allowIf` and `Gate::denyIf` methods. Inline authorization does not execute any defined ["before" or "after" authorization hooks](#intercepting-gate-checks):
 
 ```php
 use App\Models\User;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Support\Facades\Gate;
 
 Gate::allowIf(fn (User $user) => $user->isAdministrator());
 
 Gate::denyIf(fn (User $user) => $user->banned());
 ```
 
-If the action is not authorized or if no user is currently authenticated, Laravel Hyperf will automatically throw an `LaravelHyperf\Auth\Access\AuthorizationException` exception. Instances of `AuthorizationException` are automatically converted to a 403 HTTP response by Laravel Hyperf's exception handler.
+If the action is not authorized or if no user is currently authenticated, Hypervel will automatically throw an `Hypervel\Auth\Access\AuthorizationException` exception. Instances of `AuthorizationException` are automatically converted to a 403 HTTP response by Hypervel's exception handler.
 
 ## Creating Policies
 
@@ -261,7 +261,7 @@ If the action is not authorized or if no user is currently authenticated, Larave
 
 Policies are classes that organize authorization logic around a particular model or resource. For example, if your application is a blog, you may have an `App\Models\Post` model and a corresponding `App\Policies\PostPolicy` to authorize user actions such as creating or updating posts.
 
-You may generate a policy using the `make:policy` Artisan command. The generated policy will be placed in the `app/Policies` directory. If this directory does not exist in your application, Laravel Hyperf will create it for you:
+You may generate a policy using the `make:policy` Artisan command. The generated policy will be placed in the `app/Policies` directory. If this directory does not exist in your application, Hypervel will create it for you:
 
 ```shell
 php artisan make:policy PostPolicy
@@ -282,7 +282,7 @@ Using the `Gate` facade, you may manually register policies and their correspond
 ```php
 use App\Models\Order;
 use App\Policies\OrderPolicy;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Support\Facades\Gate;
 
 /**
  * Bootstrap any application services.
@@ -326,17 +326,17 @@ You may continue to define additional methods on the policy as needed for the va
 If you used the `--model` option when generating your policy via the Artisan console, it will already contain methods for the `viewAny`, `view`, `create`, `update`, `delete`, `restore`, and `forceDelete` actions.
 
 ::: note
-All policies are resolved via the Laravel Hyperf [service container](/docs/container), allowing you to type-hint any needed dependencies in the policy's constructor to have them automatically injected.
+All policies are resolved via the Hypervel [service container](/docs/container), allowing you to type-hint any needed dependencies in the policy's constructor to have them automatically injected.
 :::
 
 ### Policy Responses
 
-So far, we have only examined policy methods that return simple boolean values. However, sometimes you may wish to return a more detailed response, including an error message. To do so, you may return an `LaravelHyperf\Auth\Access\Response` instance from your policy method:
+So far, we have only examined policy methods that return simple boolean values. However, sometimes you may wish to return a more detailed response, including an error message. To do so, you may return an `Hypervel\Auth\Access\Response` instance from your policy method:
 
 ```php
 use App\Models\Post;
 use App\Models\User;
-use LaravelHyperf\Auth\Access\Response;
+use Hypervel\Auth\Access\Response;
 
 /**
  * Determine if the given post can be updated by the user.
@@ -352,7 +352,7 @@ public function update(User $user, Post $post): Response
 When returning an authorization response from your policy, the `Gate::allows` method will still return a simple boolean value; however, you may use the `Gate::inspect` method to get the full authorization response returned by the gate:
 
 ```php
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Support\Facades\Gate;
 
 $response = Gate::inspect('update', $post);
 
@@ -373,12 +373,12 @@ Gate::authorize('update', $post);
 
 #### Customizing the HTTP Response Status
 
-When an action is denied via a policy method, a `403` HTTP response is returned; however, it can sometimes be useful to return an alternative HTTP status code. You may customize the HTTP status code returned for a failed authorization check using the `denyWithStatus` static constructor on the `LaravelHyperf\Auth\Access\Response` class:
+When an action is denied via a policy method, a `403` HTTP response is returned; however, it can sometimes be useful to return an alternative HTTP status code. You may customize the HTTP status code returned for a failed authorization check using the `denyWithStatus` static constructor on the `Hypervel\Auth\Access\Response` class:
 
 ```php
 use App\Models\Post;
 use App\Models\User;
-use LaravelHyperf\Auth\Access\Response;
+use Hypervel\Auth\Access\Response;
 
 /**
  * Determine if the given post can be updated by the user.
@@ -396,7 +396,7 @@ Because hiding resources via a `404` response is such a common pattern for web a
 ```php
 use App\Models\Post;
 use App\Models\User;
-use LaravelHyperf\Auth\Access\Response;
+use Hypervel\Auth\Access\Response;
 
 /**
  * Determine if the given post can be updated by the user.
@@ -477,7 +477,7 @@ The `before` method of a policy class will not be called if the class doesn't co
 
 ### Via the User Model
 
-The `App\Models\User` model that is included with your Laravel Hyperf application includes two helpful methods for authorizing actions: `can` and `cannot`. The `can` and `cannot` methods receive the name of the action you wish to authorize and the relevant model. For example, let's determine if a user is authorized to update a given `App\Models\Post` model. Typically, this will be done within a controller method:
+The `App\Models\User` model that is included with your Hypervel application includes two helpful methods for authorizing actions: `can` and `cannot`. The `can` and `cannot` methods receive the name of the action you wish to authorize and the relevant model. For example, let's determine if a user is authorized to update a given `App\Models\Post` model. Typically, this will be done within a controller method:
 
 ```php
 <?php
@@ -487,7 +487,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 
 class PostController extends Controller
 {
@@ -521,7 +521,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 
 class PostController extends Controller
 {
@@ -545,7 +545,7 @@ class PostController extends Controller
 
 In addition to helpful methods provided to the `App\Models\User` model, you can always authorize actions via the `Gate` facade's `authorize` method.
 
-Like the `can` method, this method accepts the name of the action you wish to authorize and the relevant model. If the action is not authorized, the `authorize` method will throw an `LaravelHyperf\Auth\Access\AuthorizationException` exception which the Laravel Hyperf exception handler will automatically convert to an HTTP response with a 403 status code:
+Like the `can` method, this method accepts the name of the action you wish to authorize and the relevant model. If the action is not authorized, the `authorize` method will throw an `Hypervel\Auth\Access\AuthorizationException` exception which the Hypervel exception handler will automatically convert to an HTTP response with a 403 status code:
 
 ```php
 <?php
@@ -555,15 +555,15 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Http\Request;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Http\Request;
+use Hypervel\Support\Facades\Gate;
 
 class PostController extends Controller
 {
     /**
      * Update the given blog post.
      *
-     * @throws \LaravelHyperf\Auth\Access\AuthorizationException
+     * @throws \Hypervel\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Post $post): ResponseInterface
     {
@@ -583,13 +583,13 @@ As previously discussed, some policy methods like `create` do not require a mode
 ```php
 use App\Models\Post;
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Http\Request;
-use LaravelHyperf\Support\Facades\Gate;
+use Hypervel\Http\Request;
+use Hypervel\Support\Facades\Gate;
 
 /**
  * Create a new blog post.
  *
- * @throws \LaravelHyperf\Auth\Access\AuthorizationException
+ * @throws \Hypervel\Auth\Access\AuthorizationException
  */
 public function create(Request $request): ResponseInterface
 {
@@ -603,7 +603,7 @@ public function create(Request $request): ResponseInterface
 
 ### Via Middleware
 
-Laravel Hyperf includes a middleware that can authorize actions before the incoming request even reaches your routes or controllers. By default, the `Illuminate\Auth\Middleware\Authorize` middleware may be attached to a route using the `can` [middleware alias](/docs/middleware#middleware-aliases), which is automatically registered by Laravel. Let's explore an example of using the `can` middleware to authorize that a user can update a post:
+Hypervel includes a middleware that can authorize actions before the incoming request even reaches your routes or controllers. By default, the `Illuminate\Auth\Middleware\Authorize` middleware may be attached to a route using the `can` [middleware alias](/docs/middleware#middleware-aliases), which is automatically registered by Laravel. Let's explore an example of using the `can` middleware to authorize that a user can update a post:
 
 ```php
 use App\Models\Post;
@@ -712,7 +712,7 @@ When attempting to determine if the authenticated user can update a given post, 
 /**
  * Update the given blog post.
  *
- * @throws \LaravelHyperf\Auth\Access\AuthorizationException
+ * @throws \Hypervel\Auth\Access\AuthorizationException
  */
 public function update(Request $request, Post $post): ResponseInterface
 {

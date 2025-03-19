@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Laravel Hyperf includes the ability to seed your database with data using seed classes. All seed classes are stored in the `database/seeders` directory. By default, a `DatabaseSeeder` class is defined for you. From this class, you may use the `call` method to run other seed classes, allowing you to control the seeding order.
+Hypervel includes the ability to seed your database with data using seed classes. All seed classes are stored in the `database/seeders` directory. By default, a `DatabaseSeeder` class is defined for you. From this class, you may use the `call` method to run other seed classes, allowing you to control the seeding order.
 
 ::: note
 [Mass assignment protection](/docs/eloquent#mass-assignment) is automatically disabled during database seeding.
@@ -27,9 +27,9 @@ As an example, let's modify the default `DatabaseSeeder` class and add a databas
 namespace Database\Seeders;
 
 use Hyperf\Database\Seeders\Seeder;
-use LaravelHyperf\Support\Facades\DB;
-use LaravelHyperf\Support\Facades\Hash;
-use LaravelHyperf\Support\Str;
+use Hypervel\Support\Facades\DB;
+use Hypervel\Support\Facades\Hash;
+use Hypervel\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -48,7 +48,7 @@ class DatabaseSeeder extends Seeder
 ```
 
 ::: note
-You may type-hint any dependencies you need within the `run` method's signature. They will automatically be resolved via the Laravel Hyperf [service container](/docs/container).
+You may type-hint any dependencies you need within the `run` method's signature. They will automatically be resolved via the Hypervel [service container](/docs/container).
 :::
 
 ### Using Model Factories

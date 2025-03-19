@@ -3,9 +3,9 @@
 
 ## Introduction
 
-Laravel Hyperf's database query builder provides a convenient, fluent interface to creating and running database queries. It can be used to perform most database operations in your application and works perfectly with all of Laravel Hyperf's supported database systems.
+Hypervel's database query builder provides a convenient, fluent interface to creating and running database queries. It can be used to perform most database operations in your application and works perfectly with all of Hypervel's supported database systems.
 
-The Laravel Hyperf query builder uses PDO parameter binding to protect your application against SQL injection attacks. There is no need to clean or sanitize strings passed to the query builder as query bindings.
+The Hypervel query builder uses PDO parameter binding to protect your application against SQL injection attacks. There is no need to clean or sanitize strings passed to the query builder as query bindings.
 
 ::: warning
 PDO does not support binding column names. Therefore, you should never allow user input to dictate the column names referenced by your queries, including "order by" columns.
@@ -22,7 +22,7 @@ You may use the `table` method provided by the `DB` facade to begin a query. The
 
 namespace App\Http\Controllers;
 
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 use Hyperf\ViewEngine\Contract\ViewInterface;
 
 class UserController extends Controller
@@ -39,10 +39,10 @@ class UserController extends Controller
 }
 ```
 
-The `get` method returns an `LaravelHyperf\Support\Collection` instance containing the results of the query where each result is an instance of the PHP `stdClass` object. You may access each column's value by accessing the column as a property of the object:
+The `get` method returns an `Hypervel\Support\Collection` instance containing the results of the query where each result is an instance of the PHP `stdClass` object. You may access each column's value by accessing the column as a property of the object:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 $users = DB::table('users')->get();
 
@@ -52,7 +52,7 @@ foreach ($users as $user) {
 ```
 
 ::: note
-Laravel Hyperf collections provide a variety of extremely powerful methods for mapping and reducing data. For more information on Laravel Hyperf collections, check out the [collection documentation](/docs/collections).
+Hypervel collections provide a variety of extremely powerful methods for mapping and reducing data. For more information on Hypervel collections, check out the [collection documentation](/docs/collections).
 :::
 
 #### Retrieving a Single Row / Column From a Table
@@ -85,10 +85,10 @@ $user = DB::table('users')->find(3);
 
 #### Retrieving a List of Column Values
 
-If you would like to retrieve an `LaravelHyperf\Support\Collection` instance containing the values of a single column, you may use the `pluck` method. In this example, we'll retrieve a collection of user titles:
+If you would like to retrieve an `Hypervel\Support\Collection` instance containing the values of a single column, you may use the `pluck` method. In this example, we'll retrieve a collection of user titles:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 $titles = DB::table('users')->pluck('title');
 
@@ -112,8 +112,8 @@ foreach ($titles as $name => $title) {
 If you need to work with thousands of database records, consider using the `chunk` method provided by the `DB` facade. This method retrieves a small chunk of results at a time and feeds each chunk into a closure for processing. For example, let's retrieve the entire `users` table in chunks of 100 records at a time:
 
 ```php
-use LaravelHyperf\Support\Collection;
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Collection;
+use Hypervel\Support\Facades\DB;
 
 DB::table('users')->orderBy('id')->chunk(100, function (Collection $users) {
     foreach ($users as $user) {
@@ -168,7 +168,7 @@ When updating or deleting records inside the chunk callback, any changes to the 
 The `lazy` method works similarly to [the `chunk` method](#chunking-results) in the sense that it executes the query in chunks. However, instead of passing each chunk into a callback, the `lazy()` method returns a [`LazyCollection`](/docs/collections#lazy-collections), which lets you interact with the results as a single stream:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 DB::table('users')->orderBy('id')->lazy()->each(function (object $user) {
     // ...
@@ -195,7 +195,7 @@ When updating or deleting records while iterating over them, any changes to the 
 The query builder also provides a variety of methods for retrieving aggregate values like `count`, `max`, `min`, `avg`, and `sum`. You may call any of these methods after constructing your query:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 $users = DB::table('users')->count();
 
@@ -231,7 +231,7 @@ if (DB::table('orders')->where('finalized', 1)->doesntExist()) {
 You may not always want to select all columns from a database table. Using the `select` method, you can specify a custom "select" clause for the query:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 $users = DB::table('users')
     ->select('name', 'email as user_email')
@@ -270,7 +270,7 @@ Raw statements will be injected into the query as strings, so you should be extr
 
 ### Raw Methods
 
-Instead of using the `DB::raw` method, you may also use the following methods to insert a raw expression into various parts of your query. **Remember, Laravel Hyperf cannot guarantee that any query using raw expressions is protected against SQL injection vulnerabilities.**
+Instead of using the `DB::raw` method, you may also use the following methods to insert a raw expression into various parts of your query. **Remember, Hypervel cannot guarantee that any query using raw expressions is protected against SQL injection vulnerabilities.**
 
 #### `selectRaw`
 
@@ -332,7 +332,7 @@ $orders = DB::table('orders')
 The query builder may also be used to add join clauses to your queries. To perform a basic "inner join", you may use the `join` method on a query builder instance. The first argument passed to the `join` method is the name of the table you need to join to, while the remaining arguments specify the column constraints for the join. You may even join multiple tables in a single query:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 $users = DB::table('users')
     ->join('contacts', 'users.id', '=', 'contacts.user_id')
@@ -431,7 +431,7 @@ $users = DB::table('users')
 The query builder also provides a convenient method to "union" two or more queries together. For example, you may create an initial query and use the `union` method to union it with more queries:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 $first = DB::table('users')
     ->whereNull('first_name');
@@ -459,7 +459,7 @@ $users = DB::table('users')
     ->get();
 ```
 
-For convenience, if you want to verify that a column is `=` to a given value, you may pass the value as the second argument to the `where` method. Laravel Hyperf will assume you would like to use the `=` operator:
+For convenience, if you want to verify that a column is `=` to a given value, you may pass the value as the second argument to the `where` method. Hypervel will assume you would like to use the `=` operator:
 
 ```php
 $users = DB::table('users')->where('votes', 100)->get();
@@ -621,7 +621,7 @@ WHERE published = true AND NOT (
 
 ### JSON Where Clauses
 
-Laravel Hyperf also supports querying JSON column types on databases that provide support for JSON column types. Currently, this includes MariaDB 10.3+, MySQL 8.0+, PostgreSQL 12.0+, SQL Server 2017+, and SQLite 3.39.0+. To query a JSON column, use the `->` operator:
+Hypervel also supports querying JSON column types on databases that provide support for JSON column types. Currently, this includes MariaDB 10.3+, MySQL 8.0+, PostgreSQL 12.0+, SQL Server 2017+, and SQLite 3.39.0+. To query a JSON column, use the `->` operator:
 
 ```php
 $users = DB::table('users')
@@ -1126,7 +1126,7 @@ DB::table('flights')->upsert(
 );
 ```
 
-In the example above, Laravel Hyperf will attempt to insert two records. If a record already exists with the same `departure` and `destination` column values, Laravel Hyperf will update that record's `price` column.
+In the example above, Hypervel will attempt to insert two records. If a record already exists with the same `departure` and `destination` column values, Hypervel will update that record's `price` column.
 
 ::: warning
 All databases except SQL Server require the columns in the second argument of the `upsert` method to have a "primary" or "unique" index. In addition, the MariaDB and MySQL database drivers ignore the second argument of the `upsert` method and always use the "primary" and "unique" indexes of the table to detect existing records.

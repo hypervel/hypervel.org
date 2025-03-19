@@ -7,9 +7,9 @@ In traditional PHP-FPM environments, I/O operations are blocking by nature. This
 
 However, process-based concurrency has significant drawbacks. The overhead of context switching between processes is substantial, and the concurrent capacity is constrained by available CPU cores. Essentially, improving concurrency requires either vertical scaling (more powerful hardware) or horizontal scaling (more servers). Even solutions like [Laravel Octane](https://laravel.com/docs/octane) cannot fundamentally address these limitations in I/O-intensive scenarios.
 
-> For a detailed comparison, see [Why Laravel Hyperf?](/docs/introduction#why-laravel-hyperf)
+> For a detailed comparison, see [Why Hypervel?](/docs/introduction#why-hypervel)
 
-Unlike Laravel, Laravel Hyperf supports coroutine capabilities out of the box. All th I/O operations are non-blocking I/O throughout the framework. Laravel Hyperf achieves true concurrent request processing within each worker process. When a coroutine encounters an I/O operation, instead of blocking the entire worker process, it yields control to other coroutines, allowing the worker to continue processing additional requests efficiently.
+Unlike Laravel, Hypervel supports coroutine capabilities out of the box. All th I/O operations are non-blocking I/O throughout the framework. Hypervel achieves true concurrent request processing within each worker process. When a coroutine encounters an I/O operation, instead of blocking the entire worker process, it yields control to other coroutines, allowing the worker to continue processing additional requests efficiently.
 
 ## What is Coroutine?
 
@@ -39,23 +39,23 @@ For more detailed information, see [Coroutine](https://en.wikipedia.org/wiki/Cor
 
 ## Coroutine Features
 
-Coroutines in Laravel Hyperf operate within a coroutine container environment. By default, the framework automatically initializes these containers for:
+Coroutines in Hypervel operate within a coroutine container environment. By default, the framework automatically initializes these containers for:
 
 * HTTP requests
 * Console commands
 
 In most scenarios, you won't need to manually create coroutine containers as they're handled automatically by the framework.
 
-All the coroutine-related methods in Laravel Hyperf are defined in `LaravelHyperf\Coroutine\Coroutine`, and functions in `LaravelHyperf\Coroutine` namespace.
+All the coroutine-related methods in Hypervel are defined in `Hypervel\Coroutine\Coroutine`, and functions in `Hypervel\Coroutine` namespace.
 
 ### Creating Container Manually
 
-For scenarios requiring explicit coroutine container creation (e.g., unit tests without a coroutine environment), you can use the `LaravelHyperf\Coroutine\run` function:
+For scenarios requiring explicit coroutine container creation (e.g., unit tests without a coroutine environment), you can use the `Hypervel\Coroutine\run` function:
 
 ```php
-use LaravelHyperf\Coroutine\Coroutine;
+use Hypervel\Coroutine\Coroutine;
 
-use function LaravelHyperf\Coroutine\run;
+use function Hypervel\Coroutine\run;
 
 echo 'My coroutine id: ' . Coroutine::id() . PHP_EOL;
 
@@ -66,7 +66,7 @@ run(function () {
 
 ### Getting Coroutine Id
 
-Each coroutine in Laravel Hyperf has a coroutine id. When executing within a coroutine context:
+Each coroutine in Hypervel has a coroutine id. When executing within a coroutine context:
 
 * The ID is a positive integer
 * IDs are auto-incrementing as new coroutines are created
@@ -74,7 +74,7 @@ Each coroutine in Laravel Hyperf has a coroutine id. When executing within a cor
 You can retrieve the current coroutine ID using:
 
 ```php
-use LaravelHyperf\Coroutine\Coroutine;
+use Hypervel\Coroutine\Coroutine;
 
 $id = Coroutine::id();
 ```
@@ -86,9 +86,9 @@ If `Coroutine::id()` returns `-1`, it indicates that the code is executing outsi
 You can also use `inCoroutine` method to determine if you're in coroutines:
 
 ```php
-use LaravelHyperf\Coroutine\Coroutine;
+use Hypervel\Coroutine\Coroutine;
 
-use function LaravelHyperf\Coroutine\run;
+use function Hypervel\Coroutine\run;
 
 echo 'in coroutine: ' . (int) Coroutine::inCoroutine() . PHP_EOL;
 
@@ -99,10 +99,10 @@ run(function () {
 
 ## Creating a Coroutine
 
-Creating a coroutine in Laravel Hyperf is as easy as pie. If you have development experience in Golang, you will be pretty similar to its syntax:
+Creating a coroutine in Hypervel is as easy as pie. If you have development experience in Golang, you will be pretty similar to its syntax:
 
 ```php
-use function LaravelHyperf\Coroutine\go;
+use function Hypervel\Coroutine\go;
 
 go(function () {
     sleep(1);
@@ -123,10 +123,10 @@ In coroutine
 
 `Hello world!` will be printed first, `In coroutine` will comes out after 1 second. This basic example fully demonstrates how coroutine works.
 
-Besides `go` function, you can also create a coroutine through `LaravelHyperf\Coroutine\Coroutine` class:
+Besides `go` function, you can also create a coroutine through `Hypervel\Coroutine\Coroutine` class:
 
 ```php
-use  LaravelHyperf\Coroutine\Coroutine;
+use  Hypervel\Coroutine\Coroutine;
 
 Coroutine::create(function () {
     sleep(1);
@@ -141,7 +141,7 @@ echo 'Hello world!' . PHP_EOL;
 Coroutines can be nested, enabling the creation of coroutines inside others:
 
 ```php
-use function LaravelHyperf\Coroutine\go;
+use function Hypervel\Coroutine\go;
 
 go(function () {
     echo 'In parent coroutine' . PHP_EOL;
@@ -180,7 +180,7 @@ The key principle to remember is that a try/catch block should only operate with
 #### Wrong Way to Handle Throwables
 
 ```php
-use function LaravelHyperf\Coroutine\go;
+use function Hypervel\Coroutine\go;
 
 try {
     go(function () {
@@ -229,9 +229,9 @@ Coroutines can be considered as application-level executing units controlled by 
 Channels are the implementation of CSP, which provides a way for coroutines to communicate with each other in Swoole.
 
 ```php
-use LaravelHyperf\Coroutine\Channel;
+use Hypervel\Coroutine\Channel;
 
-use function LaravelHyperf\Coroutine\go;
+use function Hypervel\Coroutine\go;
 
 // Create a channel with buffer size 1
 $channel = new Channel(1);
@@ -261,9 +261,9 @@ Channels can be conceptualized as an implementation of the publish-subscribe (pu
 Here's a practical example of using channels for job processing:
 
 ```php
-use LaravelHyperf\Coroutine\Channel;
+use Hypervel\Coroutine\Channel;
 
-use function LaravelHyperf\Coroutine\go;
+use function Hypervel\Coroutine\go;
 
 class JobProcessor
 {
@@ -311,7 +311,7 @@ Key aspects of `defer` are:
 * **Execution context**: Deferred functions run in the same context as the coroutine
 
 ```php
-use function LaravelHyperf\Coroutine\defer;
+use function Hypervel\Coroutine\defer;
 
 defer(function () {
     echo 'Cleanup 1' . PHP_EOL;
@@ -375,9 +375,9 @@ This pattern is particularly useful when you need to:
 * Avoid complex channel management for simple synchronization
 
 ```php
-use LaravelHyperf\Coroutine\WaitGroup;
+use Hypervel\Coroutine\WaitGroup;
 
-use function LaravelHyperf\Coroutine\go;
+use function Hypervel\Coroutine\go;
 
 $waiter = new WaitGroup();
 
@@ -399,9 +399,9 @@ echo "All tasks completed\n";
 Here's an example using `WaitGroup` for concurrent data processing in common use cases:
 
 ```php
-use LaravelHyperf\Coroutine\WaitGroup;
+use Hypervel\Coroutine\WaitGroup;
 
-use function LaravelHyperf\Coroutine\go;
+use function Hypervel\Coroutine\go;
 
 class DataProcessor
 {
@@ -443,7 +443,7 @@ class DataProcessor
 The `parallel` function provides a convenient way to run multiple tasks concurrently and wait for all of them to complete. You can use `parallel` to replace `WaitGroup` in most cases for more convenient and concise usage:
 
 ```php
-use function LaravelHyperf\Coroutine\parallel;
+use function Hypervel\Coroutine\parallel;
 
 $results = parallel([
     function () {
@@ -468,7 +468,7 @@ The `concurrent` function allows you to limit the number of concurrent coroutine
 3. **Implement rate limiting**: Useful when working with APIs or services that have request limits
 
 ```php
-use LaravelHyperf\Coroutine\Concurrent;
+use Hypervel\Coroutine\Concurrent;
 
 // Process jobs with max 10 concurrent coroutines
 $concurrent = new Concurrent(10);
@@ -491,9 +491,9 @@ This is the main reason why Laravel can't really adopt full coroutines. All stat
 For example, consider a web application handling multiple requests concurrently:
 
 ```php
-use LaravelHyperf\Coroutine\Context;
+use Hypervel\Coroutine\Context;
 
-use function LaravelHyperf\Coroutine\go;
+use function Hypervel\Coroutine\go;
 
 // Coroutine 1 handling User A's request
 go(function () {
@@ -531,4 +531,4 @@ You can see [Context](/docs/context) for full usages of context.
 2. **Resource Handling**: Always close resources properly
 3. **Blocking Operations**: Most of stream-based I/O operations in extensions can be automatically hooked as coroutines by Swoole. But there might be some PHP extensions may block the entire process, like: mongoDB.
 
-By following these guidelines and understanding how coroutines work, you can build efficient, concurrent applications with Laravel Hyperf.
+By following these guidelines and understanding how coroutines work, you can build efficient, concurrent applications with Hypervel.

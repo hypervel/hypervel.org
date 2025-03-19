@@ -90,7 +90,7 @@ Route::get('profile', [UserController::class, 'show'], ['middleware' => 'auth'])
 
 #### Constructor Injection
 
-The Laravel Hyperf [service container](/docs/container) is used to resolve all Laravel Hyperf controllers. As a result, you are able to type-hint any dependencies your controller may need in its constructor. The declared dependencies will automatically be resolved and injected into the controller instance:
+The Hypervel [service container](/docs/container) is used to resolve all Hypervel controllers. As a result, you are able to type-hint any dependencies your controller may need in its constructor. The declared dependencies will automatically be resolved and injected into the controller instance:
 
 ```php
 <?php
@@ -112,14 +112,14 @@ class UserController extends Controller
 
 #### Method Injection
 
-In addition to constructor injection, you may also type-hint dependencies on your controller's methods. A common use-case for method injection is injecting the `LaravelHyperf\Http\Request` instance into your controller methods:
+In addition to constructor injection, you may also type-hint dependencies on your controller's methods. A common use-case for method injection is injecting the `Hypervel\Http\Request` instance into your controller methods:
 
 ```php
 <?php
 
 namespace App\Http\Controllers;
 
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 
 class UserController extends Controller
 {
@@ -145,14 +145,14 @@ use App\Http\Controllers\UserController;
 Route::put('/user/{id}', [UserController::class, 'update']);
 ```
 
-You may still type-hint the `LaravelHyperf\Http\Request` and access your `id` parameter by defining your controller method as follows:
+You may still type-hint the `Hypervel\Http\Request` and access your `id` parameter by defining your controller method as follows:
 
 ```php
 <?php
 
 namespace App\Http\Controllers;
 
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 
 class UserController extends Controller
 {

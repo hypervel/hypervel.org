@@ -3,13 +3,13 @@
 
 ## Introduction
 
-When testing Laravel Hyperf applications, you may wish to "mock" certain aspects of your application so they are not actually executed during a given test. For example, when testing a controller that dispatches an event, you may wish to mock the event listeners so they are not actually executed during the test. This allows you to only test the controller's HTTP response without worrying about the execution of the event listeners, since the event listeners can be tested in their own test case.
+When testing Hypervel applications, you may wish to "mock" certain aspects of your application so they are not actually executed during a given test. For example, when testing a controller that dispatches an event, you may wish to mock the event listeners so they are not actually executed during the test. This allows you to only test the controller's HTTP response without worrying about the execution of the event listeners, since the event listeners can be tested in their own test case.
 
-Laravel Hyperf provides helpers for mocking events, jobs, and facades out of the box. These helpers primarily provide a convenience layer over Mockery so you do not have to manually make complicated Mockery method calls. You can also use [Mockery](http://docs.mockery.io/en/latest/) or PHPUnit to create your own mocks or spies.
+Hypervel provides helpers for mocking events, jobs, and facades out of the box. These helpers primarily provide a convenience layer over Mockery so you do not have to manually make complicated Mockery method calls. You can also use [Mockery](http://docs.mockery.io/en/latest/) or PHPUnit to create your own mocks or spies.
 
 ## Mocking Objects
 
-When mocking an object that is going to be injected into your application via Laravel Hyperf's service container, you will need to bind your mocked instance into the container as an `instance` binding. This will instruct the container to use your mocked instance of the object instead of constructing the object itself:
+When mocking an object that is going to be injected into your application via Hypervel's service container, you will need to bind your mocked instance into the container as an `instance` binding. This will instruct the container to use your mocked instance of the object instead of constructing the object itself:
 
 ```php
 use App\Service;
@@ -20,7 +20,7 @@ $this->instance(Service::class, Mockery::mock(Service::class, function ($mock) {
 }));
 ```
 
-In order to make this more convenient, you may use the `mock` method, which is provided by Laravel Hyperf's base test case class:
+In order to make this more convenient, you may use the `mock` method, which is provided by Hypervel's base test case class:
 
 ```php
 use App\Service;
@@ -40,7 +40,7 @@ $this->partialMock(Service::class, function ($mock) {
 });
 ```
 
-Similarly, if you want to spy on an object, Laravel Hyperf's base test case class offers a `spy` method as a convenient wrapper around the `Mockery::spy` method:
+Similarly, if you want to spy on an object, Hypervel's base test case class offers a `spy` method as a convenient wrapper around the `Mockery::spy` method:
 
 ```php
 use App\Service;
@@ -60,9 +60,9 @@ As an alternative to mocking, you may use the `Bus` facade's `fake` method to pr
 namespace Tests\Feature;
 
 use App\Jobs\ShipOrder;
-use LaravelHyperf\Foundation\Testing\RefreshDatabase;
-use LaravelHyperf\Foundation\Testing\WithoutMiddleware;
-use LaravelHyperf\Support\Facades\Bus;
+use Hypervel\Foundation\Testing\RefreshDatabase;
+use Hypervel\Foundation\Testing\WithoutMiddleware;
+use Hypervel\Support\Facades\Bus;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -95,9 +95,9 @@ namespace Tests\Feature;
 
 use App\Events\OrderFailedToShip;
 use App\Events\OrderShipped;
-use LaravelHyperf\Foundation\Testing\RefreshDatabase;
-use LaravelHyperf\Foundation\Testing\WithoutMiddleware;
-use LaravelHyperf\Support\Facades\Event;
+use Hypervel\Foundation\Testing\RefreshDatabase;
+use Hypervel\Foundation\Testing\WithoutMiddleware;
+use Hypervel\Support\Facades\Event;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -163,9 +163,9 @@ namespace Tests\Feature;
 
 use App\Events\OrderCreated;
 use App\Order;
-use LaravelHyperf\Foundation\Testing\RefreshDatabase;
-use LaravelHyperf\Support\Facades\Event;
-use LaravelHyperf\Foundation\Testing\WithoutMiddleware;
+use Hypervel\Foundation\Testing\RefreshDatabase;
+use Hypervel\Support\Facades\Event;
+use Hypervel\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -203,9 +203,9 @@ You may use the `Mail` facade's `fake` method to prevent mail from being sent. Y
 namespace Tests\Feature;
 
 use App\Mail\OrderShipped;
-use LaravelHyperf\Foundation\Testing\RefreshDatabase;
-use LaravelHyperf\Foundation\Testing\WithoutMiddleware;
-use LaravelHyperf\Support\Facades\Mail;
+use Hypervel\Foundation\Testing\RefreshDatabase;
+use Hypervel\Foundation\Testing\WithoutMiddleware;
+use Hypervel\Support\Facades\Mail;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -257,10 +257,10 @@ You may use the `Notification` facade's `fake` method to prevent notifications f
 namespace Tests\Feature;
 
 use App\Notifications\OrderShipped;
-use LaravelHyperf\Foundation\Testing\RefreshDatabase;
-use LaravelHyperf\Foundation\Testing\WithoutMiddleware;
+use Hypervel\Foundation\Testing\RefreshDatabase;
+use Hypervel\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Notifications\AnonymousNotifiable;
-use LaravelHyperf\Support\Facades\Notification;
+use Hypervel\Support\Facades\Notification;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -321,9 +321,9 @@ namespace Tests\Feature;
 use App\Jobs\AnotherJob;
 use App\Jobs\FinalJob;
 use App\Jobs\ShipOrder;
-use LaravelHyperf\Foundation\Testing\RefreshDatabase;
-use LaravelHyperf\Foundation\Testing\WithoutMiddleware;
-use LaravelHyperf\Support\Facades\Queue;
+use Hypervel\Foundation\Testing\RefreshDatabase;
+use Hypervel\Foundation\Testing\WithoutMiddleware;
+use Hypervel\Support\Facades\Queue;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -378,10 +378,10 @@ The `Storage` facade's `fake` method allows you to easily generate a fake disk t
 
 namespace Tests\Feature;
 
-use LaravelHyperf\Foundation\Testing\RefreshDatabase;
-use LaravelHyperf\Foundation\Testing\WithoutMiddleware;
+use Hypervel\Foundation\Testing\RefreshDatabase;
+use Hypervel\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -412,14 +412,14 @@ By default, the `fake` method will delete all files in its temporary directory. 
 
 ## Facades
 
-Unlike traditional static method calls, [facades](/docs/facades) may be mocked. This provides a great advantage over traditional static methods and grants you the same testability you would have if you were using dependency injection. When testing, you may often want to mock a call to a Laravel Hyperf facade in one of your controllers. For example, consider the following controller action:
+Unlike traditional static method calls, [facades](/docs/facades) may be mocked. This provides a great advantage over traditional static methods and grants you the same testability you would have if you were using dependency injection. When testing, you may often want to mock a call to a Hypervel facade in one of your controllers. For example, consider the following controller action:
 
 ```php
 <?php
 
 namespace App\Http\Controllers;
 
-use LaravelHyperf\Support\Facades\Cache;
+use Hypervel\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -437,16 +437,16 @@ class UserController extends Controller
 }
 ```
 
-We can mock the call to the `Cache` facade by using the `shouldReceive` method, which will return an instance of a [Mockery](https://github.com/padraic/mockery) mock. Since facades are actually resolved and managed by the Laravel Hyperf [service container](/docs/container), they have much more testability than a typical static class. For example, let's mock our call to the `Cache` facade's `get` method:
+We can mock the call to the `Cache` facade by using the `shouldReceive` method, which will return an instance of a [Mockery](https://github.com/padraic/mockery) mock. Since facades are actually resolved and managed by the Hypervel [service container](/docs/container), they have much more testability than a typical static class. For example, let's mock our call to the `Cache` facade's `get` method:
 
 ```php
 <?php
 
 namespace Tests\Feature;
 
-use LaravelHyperf\Foundation\Testing\RefreshDatabase;
-use LaravelHyperf\Foundation\Testing\WithoutMiddleware;
-use LaravelHyperf\Support\Facades\Cache;
+use Hypervel\Foundation\Testing\RefreshDatabase;
+use Hypervel\Foundation\Testing\WithoutMiddleware;
+use Hypervel\Support\Facades\Cache;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase

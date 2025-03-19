@@ -3,10 +3,10 @@
 
 ## Introduction
 
-When you start a new Laravel Hyperf project, error and exception handling is already configured for you. The `App\Exceptions\Handler` class is where all exceptions thrown by your application are logged and then rendered to the user. We'll dive deeper into this class throughout this documentation.
+When you start a new Hypervel project, error and exception handling is already configured for you. The `App\Exceptions\Handler` class is where all exceptions thrown by your application are logged and then rendered to the user. We'll dive deeper into this class throughout this documentation.
 
 ::: info
-`App\Exceptions\Handler` is built on top of [Hyperf's ExceptionHandler](https://hyperf.wiki/#/en/exception-handler). Laravel Hyperf migrates the most of error handling features from Laravel.
+`App\Exceptions\Handler` is built on top of [Hyperf's ExceptionHandler](https://hyperf.wiki/#/en/exception-handler). Hypervel migrates the most of error handling features from Laravel.
 :::
 
 ## Configuration
@@ -30,14 +30,14 @@ return [
 ```
 
 ::: warning
-`report` feature replies on `report` method in `LaravelHyperf\Foundation\Exceptions\Contracts\ExceptionHandler`, if you are using custom exception handler, you need to implement the `report` method by yourself.
+`report` feature replies on `report` method in `Hypervel\Foundation\Exceptions\Contracts\ExceptionHandler`, if you are using custom exception handler, you need to implement the `report` method by yourself.
 :::
 
 ## Handling Exceptions
 
 ### Reporting Exceptions
 
-In Laravel Hyperf, exception reporting is used to log exceptions or send them to an external service. By default, exceptions will be logged based on your [logging](/docs/logging) configuration. However, you are free to log exceptions however you wish.
+In Hypervel, exception reporting is used to log exceptions or send them to an external service. By default, exceptions will be logged based on your [logging](/docs/logging) configuration. However, you are free to log exceptions however you wish.
 
 If you need to report different types of exceptions in different ways, you may use the `reportable` method to register a closure that should be executed when an exception of a given type needs to be reported. Laravel will determine what type of exception the closure reports by examining the type-hint of the closure:
 
@@ -55,7 +55,7 @@ public function register(): void
 }
 ```
 
-When you register a custom exception reporting callback using the `reportable` method, Laravel Hyperf will still log the exception using the default logging configuration for the application. If you wish to stop the propagation of the exception to the default logging stack, you may use the `stop` method when defining your reporting callback or return `false` from the callback:
+When you register a custom exception reporting callback using the `reportable` method, Hypervel will still log the exception using the default logging configuration for the application. If you wish to stop the propagation of the exception to the default logging stack, you may use the `stop` method when defining your reporting callback or return `false` from the callback:
 
 ```php
 $this->reportable(function (InvalidOrderException $e) {
@@ -73,7 +73,7 @@ To customize the exception reporting for a given exception, you may also utilize
 
 #### Global Log Context
 
-If available, Laravel Hyperf automatically adds the current user's ID to every exception's log message as contextual data. You may define your own global contextual data by defining a `context` method on your application's `App\Exceptions\Handler` class. This information will be included in every exception's log message written by your application:
+If available, Hypervel automatically adds the current user's ID to every exception's log message as contextual data. You may define your own global contextual data by defining a `context` method on your application's `App\Exceptions\Handler` class. This information will be included in every exception's log message written by your application:
 
 ```php
 /**
@@ -143,7 +143,7 @@ If you would like to ensure that a single instance of an exception is only ever 
 ```php
 namespace App\Exceptions;
 
-use LaravelHyperf\Foundation\Exceptions\Handler as ExceptionHandler;
+use Hypervel\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -179,7 +179,7 @@ report($caught); // ignored
 
 When messages are written to your application's [logs](/docs/logging), the messages are written at a specified [log level](/docs/logging#log-levels), which indicates the severity or importance of the message being logged.
 
-As noted above, even when you register a custom exception reporting callback using the `reportable` method, Laravel Hyperf will still log the exception using the default logging configuration for the application; however, since the log level can sometimes influence the channels on which a message is logged, you may wish to configure the log level that certain exceptions are logged at.
+As noted above, even when you register a custom exception reporting callback using the `reportable` method, Hypervel will still log the exception using the default logging configuration for the application; however, since the log level can sometimes influence the channels on which a message is logged, you may wish to configure the log level that certain exceptions are logged at.
 
 To accomplish this, you may define a `$levels` property on your application's exception handler. This property should contain an array of exception types and their associated log levels:
 
@@ -214,7 +214,7 @@ protected $dontReport = [
 ];
 ```
 
-Internally, Laravel Hyperf already ignores some types of errors for you, such as exceptions resulting from 404 HTTP errors or 403 HTTP responses generated by auth exceptions. If you would like to instruct Laravel Hyperf to stop ignoring a given type of exception, you may invoke the `stopIgnoring` method within your exception handler's `register` method:
+Internally, Hypervel already ignores some types of errors for you, such as exceptions resulting from 404 HTTP errors or 403 HTTP responses generated by auth exceptions. If you would like to instruct Hypervel to stop ignoring a given type of exception, you may invoke the `stopIgnoring` method within your exception handler's `register` method:
 
 ```php
 use Hyperf\HttpMessage\Exception\HttpException;
@@ -232,13 +232,13 @@ public function register(): void
 
 ### Rendering Exceptions
 
-By default, the Laravel Hyperf exception handler will convert exceptions into an HTTP response for you. However, you are free to register a custom rendering closure for exceptions of a given type. You may accomplish this by invoking the `renderable` method within your exception handler.
+By default, the Hypervel exception handler will convert exceptions into an HTTP response for you. However, you are free to register a custom rendering closure for exceptions of a given type. You may accomplish this by invoking the `renderable` method within your exception handler.
 
-The closure passed to the `renderable` method should return an instance of `Psr\Http\Message\ResponseInterface`, which may be generated via the `response` helper. Laravel Hyperf will determine what type of exception the closure renders by examining the type-hint of the closure:
+The closure passed to the `renderable` method should return an instance of `Psr\Http\Message\ResponseInterface`, which may be generated via the `response` helper. Hypervel will determine what type of exception the closure renders by examining the type-hint of the closure:
 
 ```php
 use App\Exceptions\InvalidOrderException;
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 
 /**
  * Register the exception handling callbacks for the application.
@@ -251,11 +251,11 @@ public function register(): void
 }
 ```
 
-You may also use the `renderable` method to override the rendering behavior for built-in Laravel Hypperf or Hyperf exceptions such as `NotFoundHttpException`. If the closure given to the `renderable` method does not return a value, Laravel Hyperf's default exception rendering will be utilized:
+You may also use the `renderable` method to override the rendering behavior for built-in Laravel Hypperf or Hyperf exceptions such as `NotFoundHttpException`. If the closure given to the `renderable` method does not return a value, Hypervel's default exception rendering will be utilized:
 
 ```php
-use LaravelHyperf\Http\Request;
-use LaravelHyperf\HttpMessage\Exceptions\NotFoundHttpException;
+use Hypervel\Http\Request;
+use Hypervel\HttpMessage\Exceptions\NotFoundHttpException;
 
 /**
  * Register the exception handling callbacks for the application.
@@ -274,11 +274,11 @@ public function register(): void
 
 #### Rendering Exceptions as JSON
 
-When rendering an exception, Laravel Hyperf will automatically determine if the exception should be rendered as an HTML or JSON response based on the `Accept` header of the request. If you would like to customize how Laravel Hyperf determines whether to render HTML or JSON exception responses, you may utilize the `shouldRenderJsonWhen` method:
+When rendering an exception, Hypervel will automatically determine if the exception should be rendered as an HTML or JSON response based on the `Accept` header of the request. If you would like to customize how Hypervel determines whether to render HTML or JSON exception responses, you may utilize the `shouldRenderJsonWhen` method:
 
 ```php
-use LaravelHyperf\Http\Request;
-use LaravelHyperf\HttpMessage\Exceptions\NotFoundHttpException;
+use Hypervel\Http\Request;
+use Hypervel\HttpMessage\Exceptions\NotFoundHttpException;
 
 /**
  * Register the exception handling callbacks for the application.
@@ -293,12 +293,12 @@ public function register(): void
 
 #### Customizing the Exception Response
 
-Rarely, you may need to customize the entire HTTP response rendered by Laravel Hyperf's exception handler. To accomplish this, you may register a response customization closure using the `respondUsing` method:
+Rarely, you may need to customize the entire HTTP response rendered by Hypervel's exception handler. To accomplish this, you may register a response customization closure using the `respondUsing` method:
 
 ```php
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Http\Request;
-use LaravelHyperf\HttpMessage\Exceptions\NotFoundHttpException;
+use Hypervel\Http\Request;
+use Hypervel\HttpMessage\Exceptions\NotFoundHttpException;
 
 /**
  * Register the exception handling callbacks for the application.
@@ -328,7 +328,7 @@ Instead of defining custom reporting and rendering behavior in your exception ha
 namespace App\Exceptions;
 
 use Exception;
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 use Psr\Http\Message\ResponseInterface;
 
 class InvalidOrderException extends Exception
@@ -351,7 +351,7 @@ class InvalidOrderException extends Exception
 }
 ```
 
-If your exception extends an exception that is already renderable, such as a built-in Laravel Hyperf or Hyperf exception, you may return `false` from the exception's `render` method to render the exception's default HTTP response:
+If your exception extends an exception that is already renderable, such as a built-in Hypervel or Hyperf exception, you may return `false` from the exception's `render` method to render the exception's default HTTP response:
 
 ```php
 /**
@@ -368,7 +368,7 @@ public function render(Request $request): ResponseInterface|bool
 }
 ```
 
-If your exception contains custom reporting logic that is only necessary when certain conditions are met, you may need to instruct Laravel Hyperf to sometimes report the exception using the default exception handling configuration. To accomplish this, you may return `false` from the exception's `report` method:
+If your exception contains custom reporting logic that is only necessary when certain conditions are met, you may need to instruct Hypervel to sometimes report the exception using the default exception handling configuration. To accomplish this, you may return `false` from the exception's `report` method:
 
 ```php
 /**
@@ -388,7 +388,7 @@ public function report(): bool
 ```
 
 ::: note
-You may type-hint any required dependencies of the `report` method and they will automatically be injected into the method by Laravel Hyperf's [service container](/docs/container).
+You may type-hint any required dependencies of the `report` method and they will automatically be injected into the method by Hypervel's [service container](/docs/container).
 :::
 
 ## HTTP Exceptions
@@ -401,7 +401,7 @@ abort(404);
 
 ### Custom HTTP Error Pages
 
-Laravel Hyperf makes it easy to display custom error pages for various HTTP status codes. For example, to customize the error page for 404 HTTP status codes, create a `resources/views/errors/404.blade.php` view template. This view will be rendered for all 404 errors generated by your application. The views within this directory should be named to match the HTTP status code they correspond to. The `LaravelHyperf\HttpMessage\Exceptions\HttpException` instance raised by the `abort` function will be passed to the view as an `$exception` variable:
+Hypervel makes it easy to display custom error pages for various HTTP status codes. For example, to customize the error page for 404 HTTP status codes, create a `resources/views/errors/404.blade.php` view template. This view will be rendered for all 404 errors generated by your application. The views within this directory should be named to match the HTTP status code they correspond to. The `Hypervel\HttpMessage\Exceptions\HttpException` instance raised by the `abort` function will be passed to the view as an `$exception` variable:
 
 ```html
 <h2>{{ $exception->getMessage() }}</h2>
@@ -413,7 +413,7 @@ You may also define a "fallback" error page for a given series of HTTP status co
 
 ## Whoops Exception Renderer
 
-Laravel Hyperf has a simple built-in HTML error page renderer for debugging. You can choose to use [Whoops](https://github.com/filp/whoops) as an alternative renderer.
+Hypervel has a simple built-in HTML error page renderer for debugging. You can choose to use [Whoops](https://github.com/filp/whoops) as an alternative renderer.
 
 ![Whoops](/images/whoops.png)
 
@@ -421,9 +421,9 @@ Before enabling whoops error handler, make sure you've installed `filp/whoops` p
 
 ```php
 $this->app->bind(
-    \LaravelHyperf\Foundation\Exceptions\Contracts\ExceptionRenderer::class,
-    \LaravelHyperf\Foundation\Exceptions\WhoopsErrorRenderer::class
+    \Hypervel\Foundation\Exceptions\Contracts\ExceptionRenderer::class,
+    \Hypervel\Foundation\Exceptions\WhoopsErrorRenderer::class
 );
 ```
 
-You can also implement your own renderer by implementing the `LaravelHyperf\Foundation\Exceptions\Contracts\ExceptionRenderer` contract.
+You can also implement your own renderer by implementing the `Hypervel\Foundation\Exceptions\Contracts\ExceptionRenderer` contract.

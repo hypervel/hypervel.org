@@ -3,13 +3,13 @@
 
 ## Introduction
 
-Many web applications provide a way for their users to authenticate with the application and "login". Implementing this feature in web applications can be a complex and potentially risky endeavor. For this reason, Laravel Hyperf strives to give you the tools you need to implement authentication quickly, securely, and easily.
+Many web applications provide a way for their users to authenticate with the application and "login". Implementing this feature in web applications can be a complex and potentially risky endeavor. For this reason, Hypervel strives to give you the tools you need to implement authentication quickly, securely, and easily.
 
-At its core, Laravel Hyperf's authentication facilities are made up of "guards" and "providers". Guards define how users are authenticated for each request. For example, Laravel Hyperf ships with a `session` guard which maintains state using session storage and cookies.
+At its core, Hypervel's authentication facilities are made up of "guards" and "providers". Guards define how users are authenticated for each request. For example, Hypervel ships with a `session` guard which maintains state using session storage and cookies.
 
-Providers define how users are retrieved from your persistent storage. Laravel Hyperf ships with support for retrieving users using [Eloquent](/docs/eloquent) and the database query builder. However, you are free to define additional providers as needed for your application.
+Providers define how users are retrieved from your persistent storage. Hypervel ships with support for retrieving users using [Eloquent](/docs/eloquent) and the database query builder. However, you are free to define additional providers as needed for your application.
 
-Your application's authentication configuration file is located at `config/auth.php`. This file contains several well-documented options for tweaking the behavior of Laravel Hyperf's authentication services.
+Your application's authentication configuration file is located at `config/auth.php`. This file contains several well-documented options for tweaking the behavior of Hypervel's authentication services.
 
 ::: note
 Guards and providers should not be confused with "roles" and "permissions". To learn more about authorizing user actions via permissions, please refer to the [authorization](/docs/authorization) documentation.
@@ -17,13 +17,13 @@ Guards and providers should not be confused with "roles" and "permissions". To l
 
 ### Database Considerations
 
-By default, Laravel Hyperf includes an `App\Models\User` [Eloquent model](/docs/eloquent) in your `app/Models` directory. This model may be used with the default Eloquent authentication driver.
+By default, Hypervel includes an `App\Models\User` [Eloquent model](/docs/eloquent) in your `app/Models` directory. This model may be used with the default Eloquent authentication driver.
 
-If your application is not using Eloquent, you may use the `database` authentication provider which uses the Laravel Hyperf query builder.
+If your application is not using Eloquent, you may use the `database` authentication provider which uses the Hypervel query builder.
 
-When building the database schema for the `App\Models\User` model, make sure the password column is at least 60 characters in length. Of course, the `users` table migration that is included in new Laravel Hyperf applications already creates a column that exceeds this length.
+When building the database schema for the `App\Models\User` model, make sure the password column is at least 60 characters in length. Of course, the `users` table migration that is included in new Hypervel applications already creates a column that exceeds this length.
 
-> `remember_token` is not implemented in Laravel Hyperf by default.
+> `remember_token` is not implemented in Hypervel by default.
 
 ## Authentication Quickstart
 
@@ -32,7 +32,7 @@ When building the database schema for the `App\Models\User` model, make sure the
 You will often need to interact with the currently authenticated user. While handling an incoming request, you may access the authenticated user via the `Auth` facade's `user` method:
 
 ```php
-use LaravelHyperf\Support\Facades\Auth;
+use Hypervel\Support\Facades\Auth;
 
 // Retrieve the currently authenticated user...
 $user = Auth::user();
@@ -41,7 +41,7 @@ $user = Auth::user();
 $id = Auth::id();
 ```
 
-Alternatively, once a user is authenticated, you may access the authenticated user via an `LaravelHyperf\Http\Request` instance. Remember, type-hinted classes will automatically be injected into your controller methods. By type-hinting the `LaravelHyperf\Http\Request` object, you may gain convenient access to the authenticated user from any controller method in your application via the request's `user` method:
+Alternatively, once a user is authenticated, you may access the authenticated user via an `Hypervel\Http\Request` instance. Remember, type-hinted classes will automatically be injected into your controller methods. By type-hinting the `Hypervel\Http\Request` object, you may gain convenient access to the authenticated user from any controller method in your application via the request's `user` method:
 
 ```php
 <?php
@@ -49,7 +49,7 @@ Alternatively, once a user is authenticated, you may access the authenticated us
 namespace App\Http\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 
 class FlightController extends Controller
 {
@@ -72,7 +72,7 @@ class FlightController extends Controller
 To determine if the user making the incoming HTTP request is authenticated, you may use the `check` method on the `Auth` facade. This method will return `true` if the user is authenticated:
 
 ```php
-use LaravelHyperf\Support\Facades\Auth;
+use Hypervel\Support\Facades\Auth;
 
 if (Auth::check()) {
     // The user is logged in...
@@ -85,7 +85,7 @@ Even though it is possible to determine if a user is authenticated using the `ch
 
 ### Protecting Routes
 
-[Route middleware](/docs/middleware) can be used to only allow authenticated users to access a given route. Laravel Hyperf ships with an `auth` middleware, which is a [middleware alias](/docs/middleware#middleware-aliases) for the `LaravelHyperf\Auth\Middleware\Authenticate` class. Since this middleware is already aliased internally by Laravel Hyperf, all you need to do is attach the middleware to a route definition:
+[Route middleware](/docs/middleware) can be used to only allow authenticated users to access a given route. Hypervel ships with an `auth` middleware, which is a [middleware alias](/docs/middleware#middleware-aliases) for the `Hypervel\Auth\Middleware\Authenticate` class. Since this middleware is already aliased internally by Hypervel, all you need to do is attach the middleware to a route definition:
 
 ```php
 Route::get('/flights', function () {
@@ -95,7 +95,7 @@ Route::get('/flights', function () {
 
 #### Handling Unauthenticated Users
 
-When the `auth` middleware detects an unauthenticated user, it will throw `LaravelHyperf\Auth\AuthenticationException`. You may catch this exception and customize your next steps, such as redirecting user to another route.
+When the `auth` middleware detects an unauthenticated user, it will throw `Hypervel\Auth\AuthenticationException`. You may catch this exception and customize your next steps, such as redirecting user to another route.
 
 #### Specifying a Guard
 
@@ -109,16 +109,16 @@ Route::get('/flights', function () {
 
 ## Manually Authenticating Users
 
-We will access Laravel Hyperf's authentication services via the `Auth` [facade](/docs/facades), so we'll need to make sure to import the `Auth` facade at the top of the class. Next, let's check out the `attempt` method. The `attempt` method is normally used to handle authentication attempts from your application's "login" form. If authentication is successful, you should regenerate the user's [session](/docs/session) to prevent [session fixation](https://en.wikipedia.org/wiki/Session_fixation):
+We will access Hypervel's authentication services via the `Auth` [facade](/docs/facades), so we'll need to make sure to import the `Auth` facade at the top of the class. Next, let's check out the `attempt` method. The `attempt` method is normally used to handle authentication attempts from your application's "login" form. If authentication is successful, you should regenerate the user's [session](/docs/session) to prevent [session fixation](https://en.wikipedia.org/wiki/Session_fixation):
 
 ```php
 <?php
 
 namespace App\Http\Controllers;
 
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Support\Facades\Auth;
+use Hypervel\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -147,7 +147,7 @@ class LoginController extends Controller
 
 The `attempt` method accepts an array of key / value pairs as its first argument. The values in the array will be used to find the user in your database table. So, in the example above, the user will be retrieved by the value of the `email` column. If the user is found, the hashed password stored in the database will be compared with the `password` value passed to the method via the array. You should not hash the incoming request's `password` value, since the framework will automatically hash the value before comparing it to the hashed password in the database. An authenticated session will be started for the user if the two hashed passwords match.
 
-Remember, Laravel Hyperf's authentication services will retrieve users from your database based on your authentication guard's "provider" configuration. In the default `config/auth.php` configuration file, the Eloquent user provider is specified and it is instructed to use the `App\Models\User` model when retrieving users. You may change these values within your configuration file based on the needs of your application.
+Remember, Hypervel's authentication services will retrieve users from your database based on your authentication guard's "provider" configuration. In the default `config/auth.php` configuration file, the Eloquent user provider is specified and it is instructed to use the `App\Models\User` model when retrieving users. You may change these values within your configuration file based on the needs of your application.
 
 The `attempt` method will return `true` if authentication was successful. Otherwise, `false` will be returned.
 
@@ -208,10 +208,10 @@ if (Auth::guard('admin')->attempt($credentials)) {
 
 #### Authenticate a User Instance
 
-If you need to set an existing user instance as the currently authenticated user, you may pass the user instance to the `Auth` facade's `login` method. The given user instance must be an implementation of the `LaravelHyperf\Auth\Contracts\Authenticatable` [contract](/docs/contracts). The `App\Models\User` model included with Laravel Hyperf already implements this interface. This method of authentication is useful when you already have a valid user instance, such as directly after a user registers with your application:
+If you need to set an existing user instance as the currently authenticated user, you may pass the user instance to the `Auth` facade's `login` method. The given user instance must be an implementation of the `Hypervel\Auth\Contracts\Authenticatable` [contract](/docs/contracts). The `App\Models\User` model included with Hypervel already implements this interface. This method of authentication is useful when you already have a valid user instance, such as directly after a user registers with your application:
 
 ```php
-use LaravelHyperf\Support\Facades\Auth;
+use Hypervel\Support\Facades\Auth;
 
 Auth::login($user);
 ```
@@ -253,9 +253,9 @@ To manually log users out of your application, you may use the `logout` method p
 In addition to calling the `logout` method, it is recommended that you invalidate the user's session and regenerate their [CSRF token](/docs/csrf). After logging the user out, you would typically redirect the user to the root of your application:
 
 ```php
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Support\Facades\Auth;
+use Hypervel\Support\Facades\Auth;
 
 /**
  * Log the user out of the application.
@@ -274,7 +274,7 @@ public function logout(Request $request): ResponseInterface
 
 ## Password Confirmation
 
-While building your application, you may occasionally have actions that should require the user to confirm their password before the action is performed or before the user is redirected to a sensitive area of the application. Laravel Hyperf includes built-in middleware to make this process a breeze. Implementing this feature will require you to define two routes: one route to display a view asking the user to confirm their password and another route to confirm that the password is valid and redirect the user to their intended destination.
+While building your application, you may occasionally have actions that should require the user to confirm their password before the action is performed or before the user is redirected to a sensitive area of the application. Hypervel includes built-in middleware to make this process a breeze. Implementing this feature will require you to define two routes: one route to display a view asking the user to confirm their password and another route to confirm that the password is valid and redirect the user to their intended destination.
 
 ### Configuration
 
@@ -299,8 +299,8 @@ As you might expect, the view that is returned by this route should have a form 
 Next, we will define a route that will handle the form request from the "confirm password" view. This route will be responsible for validating the password:
 
 ```php
-use LaravelHyperf\Http\Request;
-use LaravelHyperf\Support\Facades\Hash;
+use Hypervel\Http\Request;
+use Hypervel\Support\Facades\Hash;
 
 Route::post('/confirm-password', function (Request $request) {
     if (! Hash::check($request->password, $request->user()->password)) {
@@ -313,7 +313,7 @@ Route::post('/confirm-password', function (Request $request) {
 
 ## Adding Custom Guards
 
-You may define your own authentication guards using the `extend` method on the `Auth` facade. You should place your call to the `extend` method within a [service provider](/docs/providers). Since Laravel Hyperf already ships with an `AppServiceProvider`, we can place the code in that provider:
+You may define your own authentication guards using the `extend` method on the `Auth` facade. You should place your call to the `extend` method within a [service provider](/docs/providers). Since Hypervel already ships with an `AppServiceProvider`, we can place the code in that provider:
 
 ```php
 <?php
@@ -321,9 +321,9 @@ You may define your own authentication guards using the `extend` method on the `
 namespace App\Providers;
 
 use App\Services\Auth\JwtGuard;
-use LaravelHyperf\Foundation\Contracts\Application;
-use LaravelHyperf\Support\Facades\Auth;
-use LaravelHyperf\Support\ServiceProvider;
+use Hypervel\Foundation\Contracts\Application;
+use Hypervel\Support\Facades\Auth;
+use Hypervel\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -335,7 +335,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Auth::extend('jwt', function (Application $app, string $name, array $config) {
-            // Return an instance of LaravelHyperf\Auth\Contracts\Guard...
+            // Return an instance of Hypervel\Auth\Contracts\Guard...
 
             return new JwtGuard(Auth::createUserProvider($config['provider']));
         });
@@ -343,7 +343,7 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-As you can see in the example above, the callback passed to the `extend` method should return an implementation of `LaravelHyperf\Auth\Contracts\Guard`. This interface contains a few methods you will need to implement to define a custom guard. Once your custom guard has been defined, you may reference the guard in the `guards` configuration of your `auth.php` configuration file:
+As you can see in the example above, the callback passed to the `extend` method should return an implementation of `Hypervel\Auth\Contracts\Guard`. This interface contains a few methods you will need to implement to define a custom guard. Once your custom guard has been defined, you may reference the guard in the `guards` configuration of your `auth.php` configuration file:
 
 ```php
 'guards' => [
@@ -362,7 +362,7 @@ To get started, call the `Auth::viaRequest` method within the `boot` method of y
 
 ```php
 use App\Models\User;
-use LaravelHyperf\Support\Facades\Auth;
+use Hypervel\Support\Facades\Auth;
 
 /**
  * Bootstrap any application services.
@@ -395,7 +395,7 @@ Route::group(function () {
 
 ## Adding Custom User Providers
 
-If you are not using a traditional relational database to store your users, you will need to extend Laravel Hyperf with your own authentication user provider. We will use the `provider` method on the `Auth` facade to define a custom user provider. The user provider resolver should return an implementation of `LaravelHyperf\Auth\Contracts\UserProvider`:
+If you are not using a traditional relational database to store your users, you will need to extend Hypervel with your own authentication user provider. We will use the `provider` method on the `Auth` facade to define a custom user provider. The user provider resolver should return an implementation of `Hypervel\Auth\Contracts\UserProvider`:
 
 ```php
 <?php
@@ -403,9 +403,9 @@ If you are not using a traditional relational database to store your users, you 
 namespace App\Providers;
 
 use App\Extensions\MongoUserProvider;
-use LaravelHyperf\Foundation\Contracts\Application;
-use LaravelHyperf\Support\Facades\Auth;
-use LaravelHyperf\Support\ServiceProvider;
+use Hypervel\Foundation\Contracts\Application;
+use Hypervel\Support\Facades\Auth;
+use Hypervel\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -417,7 +417,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Auth::provider('mongo', function (Application $app, array $config) {
-            // Return an instance of LaravelHyperf\Auth\Contracts\UserProvider...
+            // Return an instance of Hypervel\Auth\Contracts\UserProvider...
 
             return new MongoUserProvider($app->make('mongo.connection'));
         });
@@ -448,14 +448,14 @@ Finally, you may reference this provider in your `guards` configuration:
 
 ### The User Provider Contract
 
-`LaravelHyperf\Auth\Contracts\UserProvider` implementations are responsible for fetching an `LaravelHyperf\Auth\Contracts\Authenticatable` implementation out of a persistent storage system, such as MySQL, MongoDB, etc. These two interfaces allow the Laravel Hyperf authentication mechanisms to continue functioning regardless of how the user data is stored or what type of class is used to represent the authenticated user:
+`Hypervel\Auth\Contracts\UserProvider` implementations are responsible for fetching an `Hypervel\Auth\Contracts\Authenticatable` implementation out of a persistent storage system, such as MySQL, MongoDB, etc. These two interfaces allow the Hypervel authentication mechanisms to continue functioning regardless of how the user data is stored or what type of class is used to represent the authenticated user:
 
-Let's take a look at the `LaravelHyperf\Auth\Contracts\UserProvider` contract:
+Let's take a look at the `Hypervel\Auth\Contracts\UserProvider` contract:
 
 ```php
 <?php
 
-namespace LaravelHyperf\Auth\Contracts;
+namespace Hypervel\Auth\Contracts;
 
 interface UserProvider
 {
@@ -478,7 +478,7 @@ Now that we have explored each of the methods on the `UserProvider`, let's take 
 ```php
 <?php
 
-namespace LaravelHyperf\Auth\Contracts;
+namespace Hypervel\Auth\Contracts;
 
 interface Authenticatable
 {
@@ -490,4 +490,4 @@ interface Authenticatable
 
 This interface is simple. The `getAuthIdentifierName` method should return the name of the "primary key" column for the user and the `getAuthIdentifier` method should return the "primary key" of the user. When using a MySQL back-end, this would likely be the auto-incrementing primary key assigned to the user record. The `getAuthPassword` method should return the user's hashed password.
 
-This interface allows the authentication system to work with any "user" class, regardless of what ORM or storage abstraction layer you are using. By default, Laravel Hyperf includes an `App\Models\User` class in the `app/Models` directory which implements this interface.
+This interface allows the authentication system to work with any "user" class, regardless of what ORM or storage abstraction layer you are using. By default, Hypervel includes an `App\Models\User` class in the `app/Models` directory which implements this interface.

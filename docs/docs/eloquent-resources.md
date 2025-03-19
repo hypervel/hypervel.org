@@ -3,11 +3,11 @@
 
 ## Introduction
 
-When building an API, you may need a transformation layer that sits between your Eloquent models and the JSON responses that are actually returned to your application's users. Laravel Hyperf's resource classes allow you to expressively and easily transform your models and model collections into JSON.
+When building an API, you may need a transformation layer that sits between your Eloquent models and the JSON responses that are actually returned to your application's users. Hypervel's resource classes allow you to expressively and easily transform your models and model collections into JSON.
 
 ## Generating Resources
 
-To generate a resource class, you may use the `make:resource` Artisan command. By default, resources will be placed in the `app/Http/Resources` directory of your application. Resources extend the `LaravelHyperf\Http\Resources\Json\JsonResource` class:
+To generate a resource class, you may use the `make:resource` Artisan command. By default, resources will be placed in the `app/Http/Resources` directory of your application. Resources extend the `Hypervel\Http\Resources\Json\JsonResource` class:
 
 ```shell:no-line-numbers
 php artisan make:resource User
@@ -17,7 +17,7 @@ php artisan make:resource User
 
 In addition to generating resources that transform individual models, you may generate resources that are responsible for transforming collections of models. This allows your response to include links and other meta information that is relevant to an entire collection of a given resource.
 
-To create a resource collection, you should use the `--collection` flag when creating the resource. Or, including the word `Collection` in the resource name will indicate to Laravel Hyperf that it should create a collection resource. Collection resources extend the `LaravelHyperf\Http\Resources\Json\ResourceCollection` class:
+To create a resource collection, you should use the `--collection` flag when creating the resource. Or, including the word `Collection` in the resource name will indicate to Hypervel that it should create a collection resource. Collection resources extend the `Hypervel\Http\Resources\Json\ResourceCollection` class:
 
 ```shell:no-line-numbers
 php artisan make:resource Users --collection
@@ -31,14 +31,14 @@ php artisan make:resource UserCollection
 This is a high-level overview of resources and resource collections. You are highly encouraged to read the other sections of this documentation to gain a deeper understanding of the customization and power offered to you by resources.
 :::
 
-Before diving into all of the options available to you when writing resources, let's first take a high-level look at how resources are used within Laravel Hyperf. A resource class represents a single model that needs to be transformed into a JSON structure. For example, here is a simple `User` resource class:
+Before diving into all of the options available to you when writing resources, let's first take a high-level look at how resources are used within Hypervel. A resource class represents a single model that needs to be transformed into a JSON structure. For example, here is a simple `User` resource class:
 
 ```php
 <?php
 
 namespace App\Http\Resources;
 
-use LaravelHyperf\Http\Resources\Json\JsonResource;
+use Hypervel\Http\Resources\Json\JsonResource;
 
 class User extends JsonResource
 {
@@ -97,7 +97,7 @@ Once the resource collection class has been generated, you may easily define any
 
 namespace App\Http\Resources;
 
-use LaravelHyperf\Http\Resources\Json\ResourceCollection;
+use Hypervel\Http\Resources\Json\ResourceCollection;
 
 class UserCollection extends ResourceCollection
 {
@@ -132,14 +132,14 @@ Route::get('/users', function () {
 
 #### Preserving Collection Keys
 
-When returning a resource collection from a route, Laravel Hyperf resets the collection's keys so that they are in simple numerical order. However, you may add a `preserveKeys` property to your resource class indicating if collection keys should be preserved:
+When returning a resource collection from a route, Hypervel resets the collection's keys so that they are in simple numerical order. However, you may add a `preserveKeys` property to your resource class indicating if collection keys should be preserved:
 
 ```php
 <?php
 
 namespace App\Http\Resources;
 
-use LaravelHyperf\Http\Resources\Json\JsonResource;
+use Hypervel\Http\Resources\Json\JsonResource;
 
 class User extends JsonResource
 {
@@ -172,7 +172,7 @@ For example, `UserCollection` will attempt to map the given user instances into 
 
 namespace App\Http\Resources;
 
-use LaravelHyperf\Http\Resources\Json\ResourceCollection;
+use Hypervel\Http\Resources\Json\ResourceCollection;
 
 class UserCollection extends ResourceCollection
 {
@@ -196,7 +196,7 @@ In essence, resources are simple. They only need to transform a given model into
 
 namespace App\Http\Resources;
 
-use LaravelHyperf\Http\Resources\Json\JsonResource;
+use Hypervel\Http\Resources\Json\JsonResource;
 
 class User extends JsonResource
 {
@@ -277,7 +277,7 @@ However, if you need to customize the meta data returned with the collection, it
 
 namespace App\Http\Resources;
 
-use LaravelHyperf\Http\Resources\Json\ResourceCollection;
+use Hypervel\Http\Resources\Json\ResourceCollection;
 
 class UserCollection extends ResourceCollection
 {
@@ -338,7 +338,7 @@ If you would like to disable the wrapping of the outermost resource, you may use
 
 namespace App\Providers;
 
-use LaravelHyperf\Http\Resources\Json\Resource;
+use Hypervel\Http\Resources\Json\Resource;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -369,14 +369,14 @@ The `withoutWrapping` method only affects the outermost response and will not re
 
 You have total freedom to determine how your resource's relationships are wrapped. If you would like all resource collections to be wrapped in a `data` key, regardless of their nesting, you should define a resource collection class for each resource and return the collection within a `data` key.
 
-You may be wondering if this will cause your outermost resource to be wrapped in two `data` keys. Don't worry, Laravel Hyperf will never let your resources be accidentally double-wrapped, so you don't have to be concerned about the nesting level of the resource collection you are transforming:
+You may be wondering if this will cause your outermost resource to be wrapped in two `data` keys. Don't worry, Hypervel will never let your resources be accidentally double-wrapped, so you don't have to be concerned about the nesting level of the resource collection you are transforming:
 
 ```php
 <?php
 
 namespace App\Http\Resources;
 
-use LaravelHyperf\Http\Resources\Json\ResourceCollection;
+use Hypervel\Http\Resources\Json\ResourceCollection;
 
 class CommentsCollection extends ResourceCollection
 {
@@ -394,7 +394,7 @@ class CommentsCollection extends ResourceCollection
 
 ### Data Wrapping And Pagination
 
-When returning paginated collections in a resource response, Laravel Hyperf will wrap your resource data in a `data` key even if the `withoutWrapping` method has been called. This is because paginated responses always contain `meta` and `links` keys with information about the paginator's state:
+When returning paginated collections in a resource response, Hypervel will wrap your resource data in a `data` key even if the `withoutWrapping` method has been called. This is because paginated responses always contain `meta` and `links` keys with information about the paginator's state:
 
 ```json
 {
@@ -477,7 +477,7 @@ Paginated responses always contain `meta` and `links` keys with information abou
 
 ### Conditional Attributes
 
-Sometimes you may wish to only include an attribute in a resource response if a given condition is met. For example, you may wish to only include a value if the current user is an "administrator". Laravel Hyperf provides a variety of helper methods to assist you in this situation. The `when` method may be used to conditionally add an attribute to a resource response:
+Sometimes you may wish to only include an attribute in a resource response if a given condition is met. For example, you may wish to only include a value if the current user is an "administrator". Hypervel provides a variety of helper methods to assist you in this situation. The `when` method may be used to conditionally add an attribute to a resource response:
 
 ```php
 /**
@@ -630,7 +630,7 @@ public function toArray()
 }
 ```
 
-When returning additional meta data from your resources, you never have to worry about accidentally overriding the `links` or `meta` keys that are automatically added by Laravel Hyperf when returning paginated responses. Any additional `links` you define will be merged with the links provided by the paginator.
+When returning additional meta data from your resources, you never have to worry about accidentally overriding the `links` or `meta` keys that are automatically added by Hypervel when returning paginated responses. Any additional `links` you define will be merged with the links provided by the paginator.
 
 #### Top Level Meta Data
 
@@ -641,7 +641,7 @@ Sometimes you may wish to only include certain meta data with a resource respons
 
 namespace App\Http\Resources;
 
-use LaravelHyperf\Http\Resources\Json\ResourceCollection;
+use Hypervel\Http\Resources\Json\ResourceCollection;
 
 class UserCollection extends ResourceCollection
 {

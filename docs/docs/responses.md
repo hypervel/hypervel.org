@@ -5,7 +5,7 @@
 
 #### Strings and Arrays
 
-All routes and controllers should return a response to be sent back to the user's browser. Laravel Hyperf provides several different ways to return responses. The most basic response is returning a string from a route or controller. The framework will automatically convert the string into a full HTTP response:
+All routes and controllers should return a response to be sent back to the user's browser. Hypervel provides several different ways to return responses. The most basic response is returning a string from a route or controller. The framework will automatically convert the string into a full HTTP response:
 
 ```php
 Route::get('/', function () {
@@ -27,9 +27,9 @@ Did you know you can also return [Eloquent collections](/docs/eloquent-collectio
 
 #### Response Objects
 
-Typically, you won't just be returning simple strings or arrays from your route actions. Instead, you will be returning full `LaravelHyperf\Http\Response` instances or [views](/docs/views).
+Typically, you won't just be returning simple strings or arrays from your route actions. Instead, you will be returning full `Hypervel\Http\Response` instances or [views](/docs/views).
 
-Returning a full `Response` instance allows you to customize the response's HTTP status code and headers. A `Response` instance inherits from the `LaravelHyperf\Http\Response` class, which provides a variety of methods for building HTTP responses:
+Returning a full `Response` instance allows you to customize the response's HTTP status code and headers. A `Response` instance inherits from the `Hypervel\Http\Response` class, which provides a variety of methods for building HTTP responses:
 
 ```php
 Route::get('/home', function () {
@@ -39,12 +39,12 @@ Route::get('/home', function () {
 ```
 
 ::: warning
-Unlike `Illuminate\Http\Response` in Laravel, `LaravelHyperf\Http\Response` doesn't extend `Symfony\Component\HttpFoundation\Response`. Some methods available in Laravel's Response object might not be present in Hyperf's implementation.
+Unlike `Illuminate\Http\Response` in Laravel, `Hypervel\Http\Response` doesn't extend `Symfony\Component\HttpFoundation\Response`. Some methods available in Laravel's Response object might not be present in Hyperf's implementation.
 :::
 
 #### Eloquent Models and Collections
 
-You may also return [Eloquent ORM](/docs/eloquent) models and collections directly from your routes and controllers. When you do, Laravel Hyperf will automatically convert the models and collections to JSON responses while respecting the model's [hidden attributes](/docs/eloquent-serialization#hiding-attributes-from-json):
+You may also return [Eloquent ORM](/docs/eloquent) models and collections directly from your routes and controllers. When you do, Hypervel will automatically convert the models and collections to JSON responses while respecting the model's [hidden attributes](/docs/eloquent-serialization#hiding-attributes-from-json):
 
 ```php
 use App\Models\User;
@@ -67,10 +67,10 @@ return response($content)
 
 ### Attaching Cookies to Responses
 
-You may attach a cookie to an outgoing `LaravelHyperf\Http\Response` instance using the `cookie` method. You should pass the name, value, and the number of minutes the cookie should be considered valid to this method:
+You may attach a cookie to an outgoing `Hypervel\Http\Response` instance using the `cookie` method. You should pass the name, value, and the number of minutes the cookie should be considered valid to this method:
 
 ```php
-use LaravelHyperf\Support\Facades\Cookie;
+use Hypervel\Support\Facades\Cookie;
 
 return response('Hello World')->cookie(
     ->withCookie(Cookie::make('name', 'value', $minutes));
@@ -80,7 +80,7 @@ return response('Hello World')->cookie(
 The `cookie` method also accepts a few more arguments which are used less frequently. Generally, these arguments have the same purpose and meaning as the arguments that would be given to PHP's native [setcookie](https://secure.php.net/manual/en/function.setcookie.php) method:
 
 ```php
-use LaravelHyperf\Support\Facades\Cookie;
+use Hypervel\Support\Facades\Cookie;
 
 return response('Hello World')->cookie(
     Cookie::make('name', 'value', $minutes, $path, $domain, $secure, $httpOnly)
@@ -90,17 +90,17 @@ return response('Hello World')->cookie(
 If you would like to ensure that a cookie is sent with the outgoing response but you do not yet have an instance of that response, you can use the `Cookie` facade to "queue" cookies for attachment to the response when it is sent. The `queue` method accepts the arguments needed to create a cookie instance. These cookies will be attached to the outgoing response before it is sent to the browser:
 
 ```php
-use LaravelHyperf\Support\Facades\Cookie;
+use Hypervel\Support\Facades\Cookie;
 
 Cookie::queue('name', 'value', $minutes);
 ```
 
 ::: note
-You need to enable `LaravelHyperf\Cookie\Middleware\AddQueuedCookiesToResponse::class` middleware in your `app/Http/Kernel.php` file before using this feature.
+You need to enable `Hypervel\Cookie\Middleware\AddQueuedCookiesToResponse::class` middleware in your `app/Http/Kernel.php` file before using this feature.
 
 #### Generating Cookie Instances
 
-If you would like to generate a `LaravelHyperf\Cookie\Cookie` instance that can be attached to a response instance at a later time, you may use the global `cookie` helper. This cookie will not be sent back to the client unless it is attached to a response instance:
+If you would like to generate a `Hypervel\Cookie\Cookie` instance that can be attached to a response instance at a later time, you may use the global `cookie` helper. This cookie will not be sent back to the client unless it is attached to a response instance:
 
 ```php
 $cookie = cookie('name', 'value', $minutes);
@@ -113,7 +113,7 @@ return response('Hello World')->cookie($cookie);
 You may use the `Cookie` facade's `expire` method to expire a cookie:
 
 ```php
-use LaravelHyperf\Support\Facades\Cookie;
+use Hypervel\Support\Facades\Cookie;
 
 Cookie::expire('name');
 ```
@@ -130,7 +130,7 @@ Route::get('/dashboard', function () {
 
 ## Other Response Types
 
-The `response` helper may be used to generate other types of response instances. When the `response` helper is called without arguments, an implementation of the `LaravelHyperf\Http\Contracts\ResponseContract` [contract](/docs/contracts) is returned. This contract provides several helpful methods for generating responses.
+The `response` helper may be used to generate other types of response instances. When the `response` helper is called without arguments, an implementation of the `Hypervel\Http\Contracts\ResponseContract` [contract](/docs/contracts) is returned. This contract provides several helpful methods for generating responses.
 
 ### View Responses
 
@@ -182,7 +182,7 @@ return response()->streamDownload(function () {
 In large data processing, you should chunk your output to avoid memory overflow. In this case, you can use the `write` method to write the data to the response:
 
 ```php
-use LaravelHyperf\Http\StreamOutput;
+use Hypervel\Http\StreamOutput;
 
 return response()->streamDownload(function (StreamOutput $output) {
     $response->write('large-data-chunk-1');
@@ -196,12 +196,12 @@ return response()->streamDownload(function (StreamOutput $output) {
 The `stream` method may be used to stream a response to the client. This method is useful for streaming large data or for implementing server-side events. The `stream` method accepts a callback as its first argument, which will be called repeatedly to stream the response to the client. The callback will receive the `StreamOutput` instance as its only argument:
 
 ```php
-use LaravelHyperf\Http\StreamOutput;
+use Hypervel\Http\StreamOutput;
 
 return response()->stream(function (StreamOutput $output) {
     $response->write('Hello World');
     // ...
-    $response->write('Laravel Hyperf is awesome!');
+    $response->write('Hypervel is awesome!');
 }, $headers);
 ```
 
@@ -222,8 +222,8 @@ If you would like to define a custom response that you can re-use in a variety o
 
 namespace App\Providers;
 
-use LaravelHyperf\Support\Facades\Response;
-use LaravelHyperf\Support\ServiceProvider;
+use Hypervel\Support\Facades\Response;
+use Hypervel\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

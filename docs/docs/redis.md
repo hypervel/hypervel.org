@@ -5,10 +5,10 @@
 
 [Redis](https://redis.io) is an open source, advanced key-value store. It is often referred to as a data structure server since keys can contain [strings](https://redis.io/docs/data-types/strings/), [hashes](https://redis.io/docs/data-types/hashes/), [lists](https://redis.io/docs/data-types/lists/), [sets](https://redis.io/docs/data-types/sets/), and [sorted sets](https://redis.io/docs/data-types/sorted-sets/).
 
-Before using Redis with Laravel Hyperf Hyperf, you need to install and use the [PhpRedis](https://github.com/phpredis/phpredis) PHP extension via PECL.
+Before using Redis with Hypervel Hyperf, you need to install and use the [PhpRedis](https://github.com/phpredis/phpredis) PHP extension via PECL.
 
 ::: warning
-Unlike in Laravel, Laravel Hyperf doesn't support `predis` as an alternative for connection driver.
+Unlike in Laravel, Hypervel doesn't support `predis` as an alternative for connection driver.
 :::
 
 ## Configuration
@@ -18,7 +18,7 @@ You may configure your application's Redis settings via the `config/database.php
 ```php
 'redis' => [
     'options' => [
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel-hyperf'), '_') . '_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'hypervel'), '_') . '_database_'),
         ],
 
     'default' => [
@@ -76,7 +76,7 @@ You can also configure `seeds` in `cluster` option without filling name for the 
 
 Redis Sentinel provides high availability for Redis by implementing monitoring, notifications, automatic failover, and configuration provider. Sentinel helps manage your Redis deployment by constantly checking if your master and replica instances are working as expected.
 
-To configure Redis Sentinel in your Laravel Hyperf application, you can use the following configuration in your `config/database.php`:
+To configure Redis Sentinel in your Hypervel application, you can use the following configuration in your `config/database.php`:
 
 ```php
 'redis' => [
@@ -92,11 +92,11 @@ To configure Redis Sentinel in your Laravel Hyperf application, you can use the 
 ],
 ```
 
-When Sentinel is enabled, Laravel Hyperf will automatically handle failover scenarios by connecting to the current Redis master node as determined by the Sentinel cluster.
+When Sentinel is enabled, Hypervel will automatically handle failover scenarios by connecting to the current Redis master node as determined by the Sentinel cluster.
 
 ### Connection Pooling
 
-Laravel Hyperf implements connection pooling for Redis to efficiently manage and reuse Redis connections. Connection pooling helps improve performance by maintaining a pool of pre-established connections that can be reused across requests, rather than creating and destroying connections for each operation. This reduces connection overhead and improves response times, especially in high-concurrency scenarios.
+Hypervel implements connection pooling for Redis to efficiently manage and reuse Redis connections. Connection pooling helps improve performance by maintaining a pool of pre-established connections that can be reused across requests, rather than creating and destroying connections for each operation. This reduces connection overhead and improves response times, especially in high-concurrency scenarios.
 
 
 ```php
@@ -141,7 +141,7 @@ The PhpRedis extension may also be configured to use a variety of serializers an
 'redis' => [
     'options' => [
         'cluster' => env('REDIS_CLUSTER', 'redis'),
-        'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel-hyperf'), '_').'_database_'),
+        'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'hypervel'), '_').'_database_'),
         'serializer' => Redis::SERIALIZER_MSGPACK,
         'compression' => Redis::COMPRESSION_LZ4,
     ],
@@ -163,7 +163,7 @@ You may interact with Redis by calling various methods on the `Redis` [facade](/
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use LaravelHyperf\Support\Facades\Redis;
+use Hypervel\Support\Facades\Redis;
 use use Hyperf\ViewEngine\Contract\ViewInterface;
 
 class UserController extends Controller
@@ -180,10 +180,10 @@ class UserController extends Controller
 }
 ```
 
-As mentioned above, you may call any of Redis' commands on the `Redis` facade. Laravel Hyperf uses magic methods to pass the commands to the Redis server. If a Redis command expects arguments, you should pass those to the facade's corresponding method:
+As mentioned above, you may call any of Redis' commands on the `Redis` facade. Hypervel uses magic methods to pass the commands to the Redis server. If a Redis command expects arguments, you should pass those to the facade's corresponding method:
 
 ```php
-use LaravelHyperf\Support\Facades\Redis;
+use Hypervel\Support\Facades\Redis;
 
 Redis::set('name', 'Taylor');
 
@@ -216,7 +216,7 @@ The `Redis` facade's `transaction` method provides a convenient wrapper around R
 
 ```php
 use Redis;
-use LaravelHyperf\Support\Facades;
+use Hypervel\Support\Facades;
 
 Facades\Redis::transaction(function (Redis $redis) {
     $redis->incr('user_visits', 1);
@@ -258,7 +258,7 @@ Sometimes you may need to execute dozens of Redis commands. Instead of making a 
 
 ```php
 use Redis;
-use LaravelHyperf\Support\Facades;
+use Hypervel\Support\Facades;
 
 Facades\Redis::pipeline(function (Redis $pipe) {
     for ($i = 0; $i < 1000; $i++) {
@@ -269,7 +269,7 @@ Facades\Redis::pipeline(function (Redis $pipe) {
 
 ## Pub / Sub
 
-Laravel Hyperf provides a convenient interface to the Redis `publish` and `subscribe` commands. These Redis commands allow you to listen for messages on a given "channel". You may publish messages to the channel from another application, or even using another programming language, allowing easy communication between applications and processes.
+Hypervel provides a convenient interface to the Redis `publish` and `subscribe` commands. These Redis commands allow you to listen for messages on a given "channel". You may publish messages to the channel from another application, or even using another programming language, allowing easy communication between applications and processes.
 
 First, let's setup a channel listener using the `subscribe` method. We'll place this method call within an [Artisan command](/docs/artisan) since calling the `subscribe` method begins a long-running process:
 
@@ -279,7 +279,7 @@ First, let's setup a channel listener using the `subscribe` method. We'll place 
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use LaravelHyperf\Support\Facades\Redis;
+use Hypervel\Support\Facades\Redis;
 
 class RedisSubscribe extends Command
 {
@@ -308,7 +308,7 @@ class RedisSubscribe extends Command
 Now we may publish messages to the channel using the `publish` method:
 
 ```php
-use LaravelHyperf\Support\Facades\Redis;
+use Hypervel\Support\Facades\Redis;
 
 Route::get('/publish', function () {
     // ...

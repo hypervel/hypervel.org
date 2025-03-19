@@ -7,23 +7,23 @@ In many modern web applications, WebSockets are used to implement realtime, live
 
 For example, imagine your application is able to export a user's data to a CSV file and email it to them. However, creating this CSV file takes several minutes so you choose to create and mail the CSV within a [queued job](/docs/queues). When the CSV has been created and mailed to the user, we can use event broadcasting to dispatch an `App\Events\UserDataExported` event that is received by our application's JavaScript. Once the event is received, we can display a message to the user that their CSV has been emailed to them without them ever needing to refresh the page.
 
-To assist you in building these types of features, Laravel Hyperf makes it easy to "broadcast" your server-side Laravel Hyperf [events](/docs/events) over a WebSocket connection. Broadcasting your Laravel Hyperf events allows you to share the same event names and data between your server-side Laravel Hyperf application and your client-side JavaScript application.
+To assist you in building these types of features, Hypervel makes it easy to "broadcast" your server-side Hypervel [events](/docs/events) over a WebSocket connection. Broadcasting your Hypervel events allows you to share the same event names and data between your server-side Hypervel application and your client-side JavaScript application.
 
-The core concepts behind broadcasting are simple: clients connect to named channels on the frontend, while your Laravel Hyperf application broadcasts events to these channels on the backend. These events can contain any additional data you wish to make available to the frontend.
+The core concepts behind broadcasting are simple: clients connect to named channels on the frontend, while your Hypervel application broadcasts events to these channels on the backend. These events can contain any additional data you wish to make available to the frontend.
 
 ## Server Side Installation
 
-To get started using Laravel Hyperf's event broadcasting, we need to do some configuration within the Laravel Hyperf application as well as install a few packages.
+To get started using Hypervel's event broadcasting, we need to do some configuration within the Hypervel application as well as install a few packages.
 
-Event broadcasting is accomplished by a server-side broadcasting driver that broadcasts your Laravel Hyperf events so that Laravel Echo (a JavaScript library) can receive them within the browser client. Don't worry - we'll walk through each part of the installation process step-by-step.
+Event broadcasting is accomplished by a server-side broadcasting driver that broadcasts your Hypervel events so that Laravel Echo (a JavaScript library) can receive them within the browser client. Don't worry - we'll walk through each part of the installation process step-by-step.
 
 ### Configuration
 
-All of your application's event broadcasting configuration is stored in the `config/broadcasting.php` configuration file. Laravel Hyperf supports several broadcast drivers out of the box: [Pusher Channels](https://pusher.com/channels), [Redis](/docs/redis), and a `log` driver for local development and debugging. Additionally, a `null` driver is included which allows you to totally disable broadcasting during testing. A configuration example is included for each of these drivers in the `config/broadcasting.php` configuration file.
+All of your application's event broadcasting configuration is stored in the `config/broadcasting.php` configuration file. Hypervel supports several broadcast drivers out of the box: [Pusher Channels](https://pusher.com/channels), [Redis](/docs/redis), and a `log` driver for local development and debugging. Additionally, a `null` driver is included which allows you to totally disable broadcasting during testing. A configuration example is included for each of these drivers in the `config/broadcasting.php` configuration file.
 
 ### Broadcast Service Provider
 
-Before broadcasting any events, you will first need to register the `App\Providers\BroadcastServiceProvider`. In new Laravel Hyperf applications, you only need to uncomment this provider in the `providers` array of your `config/app.php` configuration file. This `BroadcastServiceProvider` contains the code necessary to register the broadcast authorization routes and callbacks.
+Before broadcasting any events, you will first need to register the `App\Providers\BroadcastServiceProvider`. In new Hypervel applications, you only need to uncomment this provider in the `providers` array of your `config/app.php` configuration file. This `BroadcastServiceProvider` contains the code necessary to register the broadcast authorization routes and callbacks.
 
 ### Queue Configuration
 
@@ -155,7 +155,7 @@ The Laravel Echo `reverb` broadcaster requires laravel-echo v1.16.0+.
 npm install --save-dev laravel-echo pusher-js
 ```
 
-Once Echo is installed, you are ready to create a fresh Echo instance in your application's JavaScript. A great place to do this is at the bottom of the `resources/js/bootstrap.js` file that is included with the Laravel Hyperf framework. By default, an example Echo configuration is already included in this file - you simply need to uncomment it:
+Once Echo is installed, you are ready to create a fresh Echo instance in your application's JavaScript. A great place to do this is at the bottom of the `resources/js/bootstrap.js` file that is included with the Hypervel framework. By default, an example Echo configuration is already included in this file - you simply need to uncomment it:
 
 ```js
 import Echo from 'laravel-echo';
@@ -240,7 +240,7 @@ npm run dev
 
 ## Concept Overview
 
-Laravel Hyperf's event broadcasting allows you to broadcast your server-side Laravel events to your client-side JavaScript application using a driver-based approach to WebSockets. Currently, Laravel Hyperf ships with [Pusher Channels](https://pusher.com/channels) and [Ably](https://ably.com) drivers. The events may be easily consumed on the client-side using the [Laravel Echo](/docs/broadcasting#client-side-installation) JavaScript package.
+Hypervel's event broadcasting allows you to broadcast your server-side Laravel events to your client-side JavaScript application using a driver-based approach to WebSockets. Currently, Hypervel ships with [Pusher Channels](https://pusher.com/channels) and [Ably](https://ably.com) drivers. The events may be easily consumed on the client-side using the [Laravel Echo](/docs/broadcasting#client-side-installation) JavaScript package.
 
 Events are broadcast over "channels", which may be specified as public or private. Any visitor to your application may subscribe to a public channel without any authentication or authorization; however, in order to subscribe to a private channel, a user must be authenticated and authorized to listen on that channel.
 
@@ -270,11 +270,11 @@ When a user is viewing one of their orders, we don't want them to have to refres
 namespace App\Events;
 
 use App\Models\Order;
-use LaravelHyperf\Broadcasting\Channel;
-use LaravelHyperf\Broadcasting\InteractsWithSockets;
-use LaravelHyperf\Broadcasting\PresenceChannel;
-use LaravelHyperf\Broadcasting\Contracts\ShouldBroadcast;
-use LaravelHyperf\Queue\SerializesModels;
+use Hypervel\Broadcasting\Channel;
+use Hypervel\Broadcasting\InteractsWithSockets;
+use Hypervel\Broadcasting\PresenceChannel;
+use Hypervel\Broadcasting\Contracts\ShouldBroadcast;
+use Hypervel\Queue\SerializesModels;
 
 class OrderShipmentStatusUpdated implements ShouldBroadcast
 {
@@ -290,8 +290,8 @@ class OrderShipmentStatusUpdated implements ShouldBroadcast
 The `ShouldBroadcast` interface requires our event to define a `broadcastOn` method. This method is responsible for returning the channels that the event should broadcast on. An empty stub of this method is already defined on generated event classes, so we only need to fill in its details. We only want the creator of the order to be able to view status updates, so we will broadcast the event on a private channel that is tied to the order:
 
 ```php
-use LaravelHyperf\Broadcasting\Channel;
-use LaravelHyperf\Broadcasting\PrivateChannel;
+use Hypervel\Broadcasting\Channel;
+use Hypervel\Broadcasting\PrivateChannel;
 
 /**
  * Get the channel the event should broadcast on.
@@ -305,12 +305,12 @@ public function broadcastOn(): Channel
 If you wish the event to broadcast on multiple channels, you may return an `array` instead:
 
 ```php
-use LaravelHyperf\Broadcasting\PrivateChannel;
+use Hypervel\Broadcasting\PrivateChannel;
 
 /**
  * Get the channels the event should broadcast on.
  *
- * @return array<int, \LaravelHyperf\Broadcasting\Channel>
+ * @return array<int, \Hypervel\Broadcasting\Channel>
  */
 public function broadcastOn(): array
 {
@@ -351,7 +351,7 @@ Echo.private(`orders.${orderId}`)
 
 ## Defining Broadcast Events
 
-To inform Laravel Hyperf that a given event should be broadcast, you must implement the `LaravelHyperf\Broadcasting\Contracts\ShouldBroadcast` interface on the event class. This interface is already imported into all event classes generated by the framework so you may easily add it to any of your events.
+To inform Hypervel that a given event should be broadcast, you must implement the `Hypervel\Broadcasting\Contracts\ShouldBroadcast` interface on the event class. This interface is already imported into all event classes generated by the framework so you may easily add it to any of your events.
 
 The `ShouldBroadcast` interface requires you to implement a single method: `broadcastOn`. The `broadcastOn` method should return a channel or array of channels that the event should broadcast on. The channels should be instances of `Channel`, `PrivateChannel`, or `PresenceChannel`. Instances of `Channel` represent public channels that any user may subscribe to, while `PrivateChannels` and `PresenceChannels` represent private channels that require [channel authorization](/docs/broadcasting#authorizing-channels):
 
@@ -361,12 +361,12 @@ The `ShouldBroadcast` interface requires you to implement a single method: `broa
 namespace App\Events;
 
 use App\Models\User;
-use LaravelHyperf\Broadcasting\Channel;
-use LaravelHyperf\Broadcasting\InteractsWithSockets;
-use LaravelHyperf\Broadcasting\PresenceChannel;
-use LaravelHyperf\Broadcasting\PrivateChannel;
-use LaravelHyperf\Broadcasting\Contracts\ShouldBroadcast;
-use LaravelHyperf\Queue\SerializesModels;
+use Hypervel\Broadcasting\Channel;
+use Hypervel\Broadcasting\InteractsWithSockets;
+use Hypervel\Broadcasting\PresenceChannel;
+use Hypervel\Broadcasting\PrivateChannel;
+use Hypervel\Broadcasting\Contracts\ShouldBroadcast;
+use Hypervel\Queue\SerializesModels;
 
 class ServerCreated implements ShouldBroadcast
 {
@@ -382,7 +382,7 @@ class ServerCreated implements ShouldBroadcast
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, \LaravelHyperf\Broadcasting\Channel>
+     * @return array<int, \Hypervel\Broadcasting\Channel>
      */
     public function broadcastOn(): array
     {
@@ -397,7 +397,7 @@ After implementing the `ShouldBroadcast` interface, you only need to fire the [e
 
 ### Broadcast Name
 
-By default, Laravel Hyperf will broadcast the event using the event's class name. However, you may customize the broadcast name by defining a `broadcastAs` method on the event:
+By default, Hypervel will broadcast the event using the event's class name. However, you may customize the broadcast name by defining a `broadcastAs` method on the event:
 
 ```php
 /**
@@ -478,7 +478,7 @@ If you would like to broadcast your event using the `sync` queue instead of the 
 ```php
 <?php
 
-use LaravelHyperf\Broadcasting\Contracts\ShouldBroadcastNow;
+use Hypervel\Broadcasting\Contracts\ShouldBroadcastNow;
 
 class OrderShipmentStatusUpdated implements ShouldBroadcastNow
 {
@@ -511,9 +511,9 @@ If your queue connection's `after_commit` configuration option is set to `false`
 
 namespace App\Events;
 
-use LaravelHyperf\Broadcasting\Contracts\ShouldBroadcast;
-use LaravelHyperf\Events\Contracts\ShouldDispatchAfterCommit;
-use LaravelHyperf\Queue\SerializesModels;
+use Hypervel\Broadcasting\Contracts\ShouldBroadcast;
+use Hypervel\Events\Contracts\ShouldDispatchAfterCommit;
+use Hypervel\Queue\SerializesModels;
 
 class ServerCreated implements ShouldBroadcast, ShouldDispatchAfterCommit
 {
@@ -527,11 +527,11 @@ To learn more about working around these issues, please review the documentation
 
 ## Authorizing Channels
 
-Private channels require you to authorize that the currently authenticated user can actually listen on the channel. This is accomplished by making an HTTP request to your Laravel Hyperf application with the channel name and allowing your application to determine if the user can listen on that channel. When using [Laravel Echo](/docs/broadcasting#client-side-installation), the HTTP request to authorize subscriptions to private channels will be made automatically; however, you do need to define the proper routes to respond to these requests.
+Private channels require you to authorize that the currently authenticated user can actually listen on the channel. This is accomplished by making an HTTP request to your Hypervel application with the channel name and allowing your application to determine if the user can listen on that channel. When using [Laravel Echo](/docs/broadcasting#client-side-installation), the HTTP request to authorize subscriptions to private channels will be made automatically; however, you do need to define the proper routes to respond to these requests.
 
 ### Defining Authorization Routes
 
-Thankfully, Laravel Hyperf makes it easy to define the routes to respond to channel authorization requests. In the `App\Providers\BroadcastServiceProvider` included with your Laravel Hyperf application, you will see a call to the `Broadcast::routes` method. This method will register the `/broadcasting/auth` route to handle authorization requests:
+Thankfully, Hypervel makes it easy to define the routes to respond to channel authorization requests. In the `App\Providers\BroadcastServiceProvider` included with your Hypervel application, you will see a call to the `Broadcast::routes` method. This method will register the `/broadcasting/auth` route to handle authorization requests:
 
 ```php
 Broadcast::routes();
@@ -673,7 +673,7 @@ class OrderChannel
 ```
 
 ::: tip
-Like many other classes in Laravel Hyperf, channel classes will automatically be resolved by the service container. So, you may type-hint any dependencies required by your channel in its constructor.
+Like many other classes in Hypervel, channel classes will automatically be resolved by the service container. So, you may type-hint any dependencies required by your channel in its constructor.
 :::
 
 ## Broadcasting Events
@@ -708,12 +708,12 @@ axios.post('/task', task)
 However, remember that we also broadcast the task's creation. If your JavaScript application is also listening for this event in order to add tasks to the task list, you will have duplicate tasks in your list: one from the end-point and one from the broadcast. You may solve this by using the `toOthers` method to instruct the broadcaster to not broadcast the event to the current user.
 
 ::: important
-Your event must use the `LaravelHyperf\Broadcasting\InteractsWithSockets` trait in order to call the `toOthers` method.
+Your event must use the `Hypervel\Broadcasting\InteractsWithSockets` trait in order to call the `toOthers` method.
 :::
 
 #### Configuration
 
-When you initialize a Laravel Echo instance, a socket ID is assigned to the connection. If you are using a global [Axios](https://github.com/mzabriskie/axios) instance to make HTTP requests from your JavaScript application, the socket ID will automatically be attached to every outgoing request as an `X-Socket-ID` header. Then, when you call the `toOthers` method, Laravel Hyperf will extract the socket ID from the header and instruct the broadcaster to not broadcast to any connections with that socket ID.
+When you initialize a Laravel Echo instance, a socket ID is assigned to the connection. If you are using a global [Axios](https://github.com/mzabriskie/axios) instance to make HTTP requests from your JavaScript application, the socket ID will automatically be attached to every outgoing request as an `X-Socket-ID` header. Then, when you call the `toOthers` method, Hypervel will extract the socket ID from the header and instruct the broadcaster to not broadcast to any connections with that socket ID.
 
 If you are not using a global Axios instance, you will need to manually configure your JavaScript application to send the `X-Socket-ID` header with all outgoing requests. You may retrieve the socket ID using the `Echo.socketId` method:
 
@@ -738,13 +738,13 @@ Alternatively, you may specify the event's broadcast connection by calling the `
 
 namespace App\Events;
 
-use LaravelHyperf\Broadcasting\Channel;
-use LaravelHyperf\Broadcasting\InteractsWithBroadcasting;
-use LaravelHyperf\Broadcasting\InteractsWithSockets;
-use LaravelHyperf\Broadcasting\PresenceChannel;
-use LaravelHyperf\Broadcasting\PrivateChannel;
-use LaravelHyperf\Broadcasting\Contracts\ShouldBroadcast;
-use LaravelHyperf\Queue\SerializesModels;
+use Hypervel\Broadcasting\Channel;
+use Hypervel\Broadcasting\InteractsWithBroadcasting;
+use Hypervel\Broadcasting\InteractsWithSockets;
+use Hypervel\Broadcasting\PresenceChannel;
+use Hypervel\Broadcasting\PrivateChannel;
+use Hypervel\Broadcasting\Contracts\ShouldBroadcast;
+use Hypervel\Queue\SerializesModels;
 
 class OrderShipmentStatusUpdated implements ShouldBroadcast
 {
@@ -876,7 +876,7 @@ Presence channels may receive events just like public or private channels. Using
 /**
  * Get the channels the event should broadcast on.
  *
- * @return array<int, \LaravelHyperf\Broadcasting\Channel>
+ * @return array<int, \Hypervel\Broadcasting\Channel>
  */
 public function broadcastOn(): array
 {
@@ -909,24 +909,24 @@ Echo.join(`chat.${roomId}`)
 ## Model Broadcasting
 
 ::: important
-Before reading the following documentation about model broadcasting, we recommend you become familiar with the general concepts of Laravel Hyperf's model broadcasting services as well as how to manually create and listen to broadcast events.
+Before reading the following documentation about model broadcasting, we recommend you become familiar with the general concepts of Hypervel's model broadcasting services as well as how to manually create and listen to broadcast events.
 :::
 
 It is common to broadcast events when your application's [Eloquent](/docs/eloquent) models are created, updated, or deleted. Of course, this can easily be accomplished by manually [defining custom events for Eloquent model state changes](/docs/eloquent#events) and marking those events with the `ShouldBroadcast` interface.
 
 However, if you are not using these events for any other purposes in your application, it can be cumbersome to create event classes for the sole purpose of broadcasting them. To remedy this, Laravel allows you to indicate that an Eloquent model should automatically broadcast its state changes.
 
-To get started, your Eloquent model should use the `LaravelHyperf\Database\Eloquent\BroadcastsEvents` trait. In addition, the model should define a `broadcastOn` method, which will return an array of channels that the model's events should broadcast on:
+To get started, your Eloquent model should use the `Hypervel\Database\Eloquent\BroadcastsEvents` trait. In addition, the model should define a `broadcastOn` method, which will return an array of channels that the model's events should broadcast on:
 
 ```php
 <?php
 
 namespace App\Models;
 
-use LaravelHyperf\Broadcasting\Channel;
-use LaravelHyperf\Broadcasting\PrivateChannel;
-use LaravelHyperf\Database\Eloquent\BroadcastsEvents;
-use LaravelHyperf\Database\Eloquent\Model;
+use Hypervel\Broadcasting\Channel;
+use Hypervel\Broadcasting\PrivateChannel;
+use Hypervel\Database\Eloquent\BroadcastsEvents;
+use Hypervel\Database\Eloquent\Model;
 use Hyperf\Database\Model\Relations\BelongsTo;
 
 class Post extends Model
@@ -944,7 +944,7 @@ class Post extends Model
     /**
      * Get the channels that model events should broadcast on.
      *
-     * @return array<int, \LaravelHyperf\Broadcasting\Channel|\Hyperf\Database\Model\Model>
+     * @return array<int, \Hypervel\Broadcasting\Channel|\Hyperf\Database\Model\Model>
      */
     public function broadcastOn(string $event): array
     {
@@ -961,7 +961,7 @@ In addition, you may have noticed that the `broadcastOn` method receives a strin
 /**
  * Get the channels that model events should broadcast on.
  *
- * @return array<string, array<int, \LaravelHyperf\Broadcasting\Channel|\Hyperf\Database\Model\Model>>
+ * @return array<string, array<int, \Hypervel\Broadcasting\Channel|\Hyperf\Database\Model\Model>>
  */
 public function broadcastOn(string $event): array
 {
@@ -974,10 +974,10 @@ public function broadcastOn(string $event): array
 
 #### Customizing Model Broadcasting Event Creation
 
-Occasionally, you may wish to customize how Laravel Hyperf creates the underlying model broadcasting event. You may accomplish this by defining a `newBroadcastableEvent` method on your Eloquent model. This method should return an `LaravelHyperf\Database\Eloquent\BroadcastableModelEventOccurred` instance:
+Occasionally, you may wish to customize how Hypervel creates the underlying model broadcasting event. You may accomplish this by defining a `newBroadcastableEvent` method on your Eloquent model. This method should return an `Hypervel\Database\Eloquent\BroadcastableModelEventOccurred` instance:
 
 ```php
-use LaravelHyperf\Database\Eloquent\BroadcastableModelEventOccurred;
+use Hypervel\Database\Eloquent\BroadcastableModelEventOccurred;
 
 /**
  * Create a new broadcastable model event for the model.
@@ -994,17 +994,17 @@ protected function newBroadcastableEvent(string $event): BroadcastableModelEvent
 
 #### Channel Conventions
 
-As you may have noticed, the `broadcastOn` method in the model example above did not return `Channel` instances. Instead, Eloquent models were returned directly. If an Eloquent model instance is returned by your model's `broadcastOn` method (or is contained in an array returned by the method), Laravel Hyperf will automatically instantiate a private channel instance for the model using the model's class name and primary key identifier as the channel name.
+As you may have noticed, the `broadcastOn` method in the model example above did not return `Channel` instances. Instead, Eloquent models were returned directly. If an Eloquent model instance is returned by your model's `broadcastOn` method (or is contained in an array returned by the method), Hypervel will automatically instantiate a private channel instance for the model using the model's class name and primary key identifier as the channel name.
 
-So, an `App\Models\User` model with an id of 1 would be converted into an `LaravelHyperf\Broadcasting\PrivateChannel` instance with a name of `App.Models.User.1`. Of course, in addition to returning Eloquent model instances from your model's `broadcastOn` method, you may return complete `Channel` instances in order to have full control over the model's channel names:
+So, an `App\Models\User` model with an id of 1 would be converted into an `Hypervel\Broadcasting\PrivateChannel` instance with a name of `App.Models.User.1`. Of course, in addition to returning Eloquent model instances from your model's `broadcastOn` method, you may return complete `Channel` instances in order to have full control over the model's channel names:
 
 ```php
-use LaravelHyperf\Broadcasting\PrivateChannel;
+use Hypervel\Broadcasting\PrivateChannel;
 
 /**
  * Get the channels that model events should broadcast on.
  *
- * @return array<int, \LaravelHyperf\Broadcasting\Channel>
+ * @return array<int, \Hypervel\Broadcasting\Channel>
  */
 public function broadcastOn(string $event): array
 {
@@ -1014,7 +1014,7 @@ public function broadcastOn(string $event): array
 }
 ```
 
-If you plan to explicitly return a channel instance from your model's `broadcastOn` method, you may pass an Eloquent model instance to the channel's constructor. When doing so, Laravel Hyperf will use the model channel conventions discussed above to convert the Eloquent model into a channel name string:
+If you plan to explicitly return a channel instance from your model's `broadcastOn` method, you may pass an Eloquent model instance to the channel's constructor. When doing so, Hypervel will use the model channel conventions discussed above to convert the Eloquent model into a channel name string:
 
 ```php
 return [new Channel($this->user)];
@@ -1028,7 +1028,7 @@ $user->broadcastChannel()
 
 #### Event Conventions
 
-Since model broadcast events are not associated with an "actual" event within your application's `App\Events` directory, they are assigned a name and a payload based on conventions. Laravel Hyperf's convention is to broadcast the event using the class name of the model (not including the namespace) and the name of the model event that triggered the broadcast.
+Since model broadcast events are not associated with an "actual" event within your application's `App\Events` directory, they are assigned a name and a payload based on conventions. Hypervel's convention is to broadcast the event using the class name of the model (not including the namespace) and the name of the model event that triggered the broadcast.
 
 So, for example, an update to the `App\Models\Post` model would broadcast an event to your client-side application as `PostUpdated` with the following payload:
 
@@ -1046,7 +1046,7 @@ So, for example, an update to the `App\Models\Post` model would broadcast an eve
 
 The deletion of the `App\Models\User` model would broadcast an event named UserDeleted.
 
-If you would like, you may define a custom broadcast name and payload by adding a `broadcastAs` and `broadcastWith` method to your model. These methods receive the name of the model event / operation that is occurring, allowing you to customize the event's name and payload for each model operation. If `null` is returned from the `broadcastAs` method, Laravel Hyperf will use the model broadcasting event name conventions discussed above when broadcasting the event:
+If you would like, you may define a custom broadcast name and payload by adding a `broadcastAs` and `broadcastWith` method to your model. These methods receive the name of the model event / operation that is occurring, allowing you to customize the event's name and payload for each model operation. If `null` is returned from the `broadcastAs` method, Hypervel will use the model broadcasting event name conventions discussed above when broadcasting the event:
 
 ```php
 /**
@@ -1078,7 +1078,7 @@ public function broadcastWith(string $event): array
 
 Once you have added the `BroadcastsEvents` trait to your model and defined your model's `broadcastOn` method, you are ready to start listening for broadcasted model events within your client-side application. Before getting started, you may wish to consult the complete documentation on [listening for events](/docs/broadcasting#listening-for-events).
 
-First, use the `private` method to retrieve an instance of a channel, then call the `listen` method to listen for a specified event. Typically, the channel name given to the `private` method should correspond to Laravel Hyperf's [model broadcasting conventions](/docs/broadcasting#model-broadcasting-conventions).
+First, use the `private` method to retrieve an instance of a channel, then call the `listen` method to listen for a specified event. Typically, the channel name given to the `private` method should correspond to Hypervel's [model broadcasting conventions](/docs/broadcasting#model-broadcasting-conventions).
 
 Once you have obtained a channel instance, you may use the `listen` method to listen for a particular event. Since model broadcast events are not associated with an "actual" event within your application's `App\Events` directory, the [event name](/docs/broadcasting#model-broadcasting-event-conventions) must be prefixed with a . to indicate it does not belong to a particular namespace. Each model broadcast event has a `model` property which contains all of the broadcastable properties of the model:
 
@@ -1095,7 +1095,7 @@ Echo.private(`App.Models.User.${this.user.id}`)
 When using [Pusher Channels](https://pusher.com/channels), you must enable the "Client Events" option in the "App Settings" section of your [application dashboard](https://dashboard.pusher.com) in order to send client events.
 :::
 
-Sometimes you may wish to broadcast an event to other connected clients without hitting your Laravel Hyperf application at all. This can be particularly useful for things like "typing" notifications, where you want to alert users of your application that another user is typing a message on a given screen.
+Sometimes you may wish to broadcast an event to other connected clients without hitting your Hypervel application at all. This can be particularly useful for things like "typing" notifications, where you want to alert users of your application that another user is typing a message on a given screen.
 
 To broadcast client events, you may use Echo's `whisper` method:
 
@@ -1128,4 +1128,4 @@ Echo.private(`App.Models.User.${userId}`)
     });
 ```
 
-In this example, all notifications sent to user model's channel would be received by the callback. A channel authorization callback for the `App.Models.User.{id}` channel is included in the default `BroadcastServiceProvider` that ships with the Laravel Hyperf framework.
+In this example, all notifications sent to user model's channel would be received by the callback. A channel authorization callback for the `App.Models.User.{id}` channel is included in the default `BroadcastServiceProvider` that ships with the Hypervel framework.

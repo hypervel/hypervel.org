@@ -3,10 +3,10 @@
 
 ## Basic Routing
 
-The most basic Laravel Hyperf routes accept a URI and a closure, providing a very simple and expressive method of defining routes and behavior without complicated routing configuration files:
+The most basic Hypervel routes accept a URI and a closure, providing a very simple and expressive method of defining routes and behavior without complicated routing configuration files:
 
 ```php
-use LaravelHyperf\Support\Facades\Route;
+use Hypervel\Support\Facades\Route;
 
 Route::get('/greeting', function () {
     return 'Hello World';
@@ -14,12 +14,12 @@ Route::get('/greeting', function () {
 ```
 
 ::: important
-Laravel Hyperf uses `nikic/fast-route` as the core routing component. And the usage of Laravel Hyperf's routing system is similar to routing in Lumen framework.
+Hypervel uses `nikic/fast-route` as the core routing component. And the usage of Hypervel's routing system is similar to routing in Lumen framework.
 :::
 
 #### The Default Route Files
 
-All Laravel Hyperf routes are defined in your route files, which are located in the `routes` directory. These files are automatically loaded by your application's `App\Providers\RouteServiceProvider`. The `routes/web.php` file defines routes that are for your web interface. These routes are assigned the `web` middleware group. The routes in `routes/api.php` are stateless and are assigned the `api` middleware group.
+All Hypervel routes are defined in your route files, which are located in the `routes` directory. These files are automatically loaded by your application's `App\Providers\RouteServiceProvider`. The `routes/web.php` file defines routes that are for your web interface. These routes are assigned the `web` middleware group. The routes in `routes/api.php` are stateless and are assigned the `api` middleware group.
 
 For most applications, you will begin by defining routes in your `routes/web.php` file. The routes defined in `routes/web.php` may be accessed by entering the defined route's URL in your browser. For example, you may access the following route by navigating to `http://example.com/user` in your browser:
 
@@ -62,10 +62,10 @@ When defining multiple routes that share the same URI, routes using the `get`, `
 
 #### Dependency Injection
 
-You may type-hint any dependencies required by your route in your route's callback signature. The declared dependencies will automatically be resolved and injected into the callback by the Laravel [service container](/docs/container). For example, you may type-hint the `LaravelHyperf\Http\Request` class to have the current HTTP request automatically injected into your route callback:
+You may type-hint any dependencies required by your route in your route's callback signature. The declared dependencies will automatically be resolved and injected into the callback by the Laravel [service container](/docs/container). For example, you may type-hint the `Hypervel\Http\Request` class to have the current HTTP request automatically injected into your route callback:
 
 ```php
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 
 Route::get('/users', function (Request $request) {
     // ...
@@ -80,7 +80,7 @@ The `route:list` Artisan command can easily provide an overview of all of the ro
 php artisan route:list
 ```
 
-You may also instruct Laravel Hyperf to only show routes that begin with a given URI:
+You may also instruct Hypervel to only show routes that begin with a given URI:
 
 ```shell
 php artisan route:list --path=api
@@ -114,10 +114,10 @@ Route parameters cannot contain the `-` character. Use an underscore (`_`) inste
 
 #### Parameters and Dependency Injection
 
-If your route has dependencies that you would like the Laravel Hyperf service container to automatically inject into your route's callback, you should list your route parameters after your dependencies:
+If your route has dependencies that you would like the Hypervel service container to automatically inject into your route's callback, you should list your route parameters after your dependencies:
 
 ```php
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 
 Route::get('/user/{id}', function (Request $request, string $id) {
     return 'User '.$id;
@@ -233,11 +233,11 @@ Route::group('/admin', function () {
 
 ## Route Model Binding
 
-When injecting a model ID to a route or controller action, you will often query the database to retrieve the model that corresponds to that ID. Laravel Hyperf route model binding provides a convenient way to automatically inject the model instances directly into your routes. For example, instead of injecting a user's ID, you can inject the entire `User` model instance that matches the given ID.
+When injecting a model ID to a route or controller action, you will often query the database to retrieve the model that corresponds to that ID. Hypervel route model binding provides a convenient way to automatically inject the model instances directly into your routes. For example, instead of injecting a user's ID, you can inject the entire `User` model instance that matches the given ID.
 
 ### Implicit Binding
 
-Laravel Hyperf automatically resolves Eloquent models defined in routes or controller actions whose type-hinted variable names match a route segment name. For example:
+Hypervel automatically resolves Eloquent models defined in routes or controller actions whose type-hinted variable names match a route segment name. For example:
 
 ```php
 use App\Models\User;
@@ -247,7 +247,7 @@ Route::get('/users/{user}', function (User $user) {
 });
 ```
 
-Since the `$user` variable is type-hinted as the `App\Models\User` Eloquent model and the variable name matches the `{user}` URI segment, Laravel Hyperf will automatically inject the model instance that has an ID matching the corresponding value from the request URI. If a matching model instance is not found in the database, a 404 HTTP response will automatically be generated.
+Since the `$user` variable is type-hinted as the `App\Models\User` Eloquent model and the variable name matches the `{user}` URI segment, Hypervel will automatically inject the model instance that has an ID matching the corresponding value from the request URI. If a matching model instance is not found in the database, a 404 HTTP response will automatically be generated.
 
 Of course, implicit binding is also possible when using controller methods. Again, note the `{user}` URI segment matches the `$user` variable in the controller which contains an `App\Models\User` type-hint:
 
@@ -266,7 +266,7 @@ public function show(User $user)
 ```
 
 ::: info
-This feature is provided via `LaravelHyperf\Router\Middleware\SubstituteBindings`, and it's disabled by default. You can extend this middleware to customize your resolving behaviors.
+This feature is provided via `Hypervel\Router\Middleware\SubstituteBindings`, and it's disabled by default. You can extend this middleware to customize your resolving behaviors.
 :::
 
 ### Implicit Enum Binding
@@ -289,7 +289,7 @@ You may define a route that will only be invoked if the `{category}` route segme
 
 ```php
 use App\Enums\Category;
-use LaravelHyperf\Support\Facades\Route;
+use Hypervel\Support\Facades\Route;
 
 Route::get('/categories/{category}', function (Category $category) {
     return $category->value;
@@ -298,8 +298,8 @@ Route::get('/categories/{category}', function (Category $category) {
 
 #### Throttling With Redis
 
-Typically, the `throttle` middleware is mapped to the `LaravelHyperf\Router\Middleware\ThrottleRequests` class. This mapping is defined in your application's HTTP kernel (`App\Http\Kernel`). However, if you are using Redis as your application's cache driver, you may wish to change this mapping to use the `Illuminate\Routing\Middleware\ThrottleRequestsWithRedis` class. This class is more efficient at managing rate limiting using Redis:
+Typically, the `throttle` middleware is mapped to the `Hypervel\Router\Middleware\ThrottleRequests` class. This mapping is defined in your application's HTTP kernel (`App\Http\Kernel`). However, if you are using Redis as your application's cache driver, you may wish to change this mapping to use the `Illuminate\Routing\Middleware\ThrottleRequestsWithRedis` class. This class is more efficient at managing rate limiting using Redis:
 
 ```php
-'throttle' => \LaravelHyperf\Router\Middleware\ThrottleRequests::class,
+'throttle' => \Hypervel\Router\Middleware\ThrottleRequests::class,
 ```

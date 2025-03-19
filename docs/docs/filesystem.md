@@ -1,12 +1,12 @@
 ## Introduction
 
-Laravel Hyperf provides a powerful filesystem abstraction thanks to the wonderful [Flysystem](https://github.com/thephpleague/flysystem) PHP package by Frank de Jonge. The Laravel Hyperf Flysystem integration provides simple drivers for working with local filesystems, SFTP, Amazon S3 and Google Cloud Storage. Even better, it's amazingly simple to switch between these storage options between your local development machine and production server as the API remains the same for each system.
+Hypervel provides a powerful filesystem abstraction thanks to the wonderful [Flysystem](https://github.com/thephpleague/flysystem) PHP package by Frank de Jonge. The Hypervel Flysystem integration provides simple drivers for working with local filesystems, SFTP, Amazon S3 and Google Cloud Storage. Even better, it's amazingly simple to switch between these storage options between your local development machine and production server as the API remains the same for each system.
 
 ## Configuration
 
-Laravel Hyperf's filesystem configuration file is located at `config/filesystems.php`. Within this file, you may configure all of your filesystem "disks". Each disk represents a particular storage driver and storage location. Example configurations for each supported driver are included in the configuration file so you can modify the configuration to reflect your storage preferences and credentials.
+Hypervel's filesystem configuration file is located at `config/filesystems.php`. Within this file, you may configure all of your filesystem "disks". Each disk represents a particular storage driver and storage location. Example configurations for each supported driver are included in the configuration file so you can modify the configuration to reflect your storage preferences and credentials.
 
-The `local` driver interacts with files stored locally on the server running the Laravel Hyperf application while the `s3` driver is used to write to Amazon's S3 cloud storage service.
+The `local` driver interacts with files stored locally on the server running the Hypervel application while the `s3` driver is used to write to Amazon's S3 cloud storage service.
 
 ::: note
 You may configure as many disks as you like and may even have multiple disks that use the same driver.
@@ -17,14 +17,14 @@ You may configure as many disks as you like and may even have multiple disks tha
 When using the `local` driver, all file operations are relative to the `root` directory defined in your `filesystems` configuration file. By default, this value is set to the `storage/app` directory. Therefore, the following method would write to `storage/app/example.txt`:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 Storage::disk('local')->put('example.txt', 'Contents');
 ```
 
 ### Driver Pool
 
-Laravel Hyperf provides an elegant way to create object pools for your disk drivers. Object pools can keep your drivers safe in coroutines and help you control the concurrency number for each disk.
+Hypervel provides an elegant way to create object pools for your disk drivers. Object pools can keep your drivers safe in coroutines and help you control the concurrency number for each disk.
 
 `s3` and `gcs` drivers are configured as object pools by default. You can customize the pool config for your disks in the `filesystems.php` config:
 
@@ -67,7 +67,7 @@ Before using the FTP driver, you will need to install the Flysystem FTP package 
 composer require league/flysystem-ftp "^3.0"
 ```
 
-Laravel Hyperf 's Flysystem integrations work great with FTP; however, a sample configuration is not included with the framework's default `filesystems.php` configuration file. If you need to configure an FTP filesystem, you may use the configuration example below:
+Hypervel 's Flysystem integrations work great with FTP; however, a sample configuration is not included with the framework's default `filesystems.php` configuration file. If you need to configure an FTP filesystem, you may use the configuration example below:
 
 ```php
 'ftp' => [
@@ -93,7 +93,7 @@ Before using the SFTP driver, you will need to install the Flysystem SFTP packag
 composer require league/flysystem-sftp-v3 "^3.0"
 ```
 
-Laravel Hyperf's Flysystem integrations work great with SFTP; however, a sample configuration is not included with the framework's default `filesystems.php` configuration file. If you need to configure an SFTP filesystem, you may use the configuration example below:
+Hypervel's Flysystem integrations work great with SFTP; however, a sample configuration is not included with the framework's default `filesystems.php` configuration file. If you need to configure an SFTP filesystem, you may use the configuration example below:
 
 ```php
 'sftp' => [
@@ -169,7 +169,7 @@ Typically, after updating the disk's credentials to match the credentials of the
 
 #### MinIO
 
-In order for Laravel Hyperf's Flysystem integration to generate proper URLs when using MinIO, you should define the `AWS_URL` environment variable so that it matches your application's local URL and includes the bucket name in the URL path:
+In order for Hypervel's Flysystem integration to generate proper URLs when using MinIO, you should define the `AWS_URL` environment variable so that it matches your application's local URL and includes the bucket name in the URL path:
 
 ```ini
 AWS_URL=http://localhost:9000/local
@@ -184,7 +184,7 @@ Generating temporary storage URLs via the `temporaryUrl` method is not supported
 The `Storage` facade may be used to interact with any of your configured disks. For example, you may use the `put` method on the facade to store an avatar on the default disk. If you call methods on the `Storage` facade without first calling the `disk` method, the method will automatically be passed to the default disk:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 Storage::put('avatars/1', $content);
 ```
@@ -200,7 +200,7 @@ Storage::disk('s3')->put('avatars/1', $content);
 Sometimes you may wish to create a disk at runtime using a given configuration without that configuration actually being present in your application's `filesystems` configuration file. To accomplish this, you may pass a configuration array to the `Storage` facade's `build` method:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 $disk = Storage::build([
     'driver' => 'local',
@@ -255,7 +255,7 @@ return Storage::download('file.jpg', $name, $headers);
 You may use the `url` method to get the URL for a given file. If you are using the `local` driver, this will typically just prepend `/storage` to the given path and return a relative URL to the file. If you are using the `s3` driver, the fully qualified remote URL will be returned:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 $url = Storage::url('file.jpg');
 ```
@@ -284,7 +284,7 @@ If you would like to pre-define the host for URLs generated using the `Storage` 
 Using the `temporaryUrl` method, you may create temporary URLs to files stored using the `s3` driver. This method accepts a path and a `DateTime` instance specifying when the URL should expire:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 $url = Storage::temporaryUrl(
     'file.jpg', now()->addMinutes(5)
@@ -312,9 +312,9 @@ If you need to customize how temporary URLs are created for a specific storage d
 namespace App\Providers;
 
 use DateTime;
-use LaravelHyperf\Support\Facades\Storage;
-use LaravelHyperf\Support\Facades\URL;
-use LaravelHyperf\Support\ServiceProvider;
+use Hypervel\Support\Facades\Storage;
+use Hypervel\Support\Facades\URL;
+use Hypervel\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -345,7 +345,7 @@ The ability to generate temporary upload URLs is only supported by the `s3` driv
 If you need to generate a temporary URL that can be used to upload a file directly from your client-side application, you may use the `temporaryUploadUrl` method. This method accepts a path and a `DateTime` instance specifying when the URL should expire. The `temporaryUploadUrl` method returns an associative array which may be destructured into the upload URL and the headers that should be included with the upload request:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 ['url' => $url, 'headers' => $headers] = Storage::temporaryUploadUrl(
     'file.jpg', now()->addMinutes(5)
@@ -356,10 +356,10 @@ This method is primarily useful in serverless environments that require the clie
 
 ### File Metadata
 
-In addition to reading and writing files, Laravel Hyperf can also provide information about the files themselves. For example, the `size` method may be used to get the size of a file in bytes:
+In addition to reading and writing files, Hypervel can also provide information about the files themselves. For example, the `size` method may be used to get the size of a file in bytes:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 $size = Storage::size('file.jpg');
 ```
@@ -381,7 +381,7 @@ $mime = Storage::mimeType('file.jpg');
 You may use the `path` method to get the path for a given file. If you are using the `local` driver, this will return the absolute path to the file. If you are using the `s3` driver, this method will return the relative path to the file in the S3 bucket:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 $path = Storage::path('file.jpg');
 ```
@@ -391,7 +391,7 @@ $path = Storage::path('file.jpg');
 The `put` method may be used to store file contents on a disk. You may also pass a PHP `resource` to the `put` method, which will use Flysystem's underlying stream support. Remember, all file paths should be specified relative to the "root" location configured for the disk:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 Storage::put('file.jpg', $contents);
 
@@ -440,10 +440,10 @@ Storage::move('old/file.jpg', 'new/file.jpg');
 
 ### Automatic Streaming
 
-Streaming files to storage offers significantly reduced memory usage. If you would like Laravel Hyperf to automatically manage streaming a given file to your storage location, you may use the `putFile` or `putFileAs` method. This method accepts either a path string or `LaravelHyperf\Http\UploadedFile` instance and will automatically stream the file to your desired location:
+Streaming files to storage offers significantly reduced memory usage. If you would like Hypervel to automatically manage streaming a given file to your storage location, you may use the `putFile` or `putFileAs` method. This method accepts either a path string or `Hypervel\Http\UploadedFile` instance and will automatically stream the file to your desired location:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 // Automatically generate a unique ID for filename...
 $path = Storage::putFile('photos', '/path/to/photo'));
@@ -462,7 +462,7 @@ Storage::putFile('photos', '/path/to/photo', 'public');
 
 ### File Uploads
 
-In web applications, one of the most common use-cases for storing files is storing user uploaded files such as photos and documents. Laravel Hyperf makes it very easy to store uploaded files using the `store` method on an uploaded file instance. Call the `store` method with the path at which you wish to store the uploaded file:
+In web applications, one of the most common use-cases for storing files is storing user uploaded files such as photos and documents. Hypervel makes it very easy to store uploaded files using the `store` method on an uploaded file instance. Call the `store` method with the path at which you wish to store the uploaded file:
 
 ```php
 <?php
@@ -470,7 +470,7 @@ In web applications, one of the most common use-cases for storing files is stori
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 
 class UserAvatarController extends Controller
 {
@@ -513,7 +513,7 @@ $path = Storage::putFileAs(
 ```
 
 ::: warning
-Unprintable and invalid unicode characters will automatically be removed from file paths. Therefore, you may wish to sanitize your file paths before passing them to Laravel Hyperf's file storage methods. File paths are normalized using the `League\Flysystem\WhitespacePathNormalizer::normalizePath` method.
+Unprintable and invalid unicode characters will automatically be removed from file paths. Therefore, you may wish to sanitize your file paths before passing them to Hypervel's file storage methods. File paths are normalized using the `League\Flysystem\WhitespacePathNormalizer::normalizePath` method.
 :::
 
 
@@ -559,12 +559,12 @@ $extension = $file->extension(); // Determine the file's extension based on the 
 
 ### File Visibility
 
-In Laravel Hyperf's Flysystem integration, "visibility" is an abstraction of file permissions across multiple platforms. Files may either be declared `public` or `private`. When a file is declared `public`, you are indicating that the file should generally be accessible to others. For example, when using the S3 driver, you may retrieve URLs for `public` files.
+In Hypervel's Flysystem integration, "visibility" is an abstraction of file permissions across multiple platforms. Files may either be declared `public` or `private`. When a file is declared `public`, you are indicating that the file should generally be accessible to others. For example, when using the S3 driver, you may retrieve URLs for `public` files.
 
 You can set the visibility when writing the file via the `put` method:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 Storage::put('file.jpg', $contents, 'public');
 ```
@@ -615,7 +615,7 @@ When using the `local` driver, `public` [visibility](#file-visibility) translate
 The `delete` method accepts a single filename or an array of files to delete:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 Storage::delete('file.jpg');
 
@@ -625,7 +625,7 @@ Storage::delete(['file.jpg', 'file2.jpg']);
 If necessary, you may specify the disk that the file should be deleted from:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 Storage::disk('s3')->delete('path/file.jpg');
 ```
@@ -637,7 +637,7 @@ Storage::disk('s3')->delete('path/file.jpg');
 The `files` method returns an array of all of the files in a given directory. If you would like to retrieve a list of all files within a given directory including all subdirectories, you may use the `allFiles` method:
 
 ```php
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Support\Facades\Storage;
 
 $files = Storage::files($directory);
 
@@ -672,15 +672,15 @@ Storage::deleteDirectory($directory);
 
 ## Testing
 
-The `Storage` facade's `fake` method allows you to easily generate a fake disk that, combined with the file generation utilities of the `LaravelHyperf\Http\UploadedFile` class, greatly simplifies the testing of file uploads. For example:
+The `Storage` facade's `fake` method allows you to easily generate a fake disk that, combined with the file generation utilities of the `Hypervel\Http\UploadedFile` class, greatly simplifies the testing of file uploads. For example:
 
 ```php
 <?php
 
 namespace Tests\Feature;
 
-use LaravelHyperf\Http\UploadedFile;
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Http\UploadedFile;
+use Hypervel\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -716,7 +716,7 @@ The `image` method requires the [GD extension](https://www.php.net/manual/en/boo
 
 ## Custom Filesystems
 
-Laravel Hyperf's Flysystem integration provides support for several "drivers" out of the box; however, Flysystem is not limited to these and has adapters for many other storage systems. You can create a custom driver if you want to use one of these additional adapters in your Laravel Hyperf application.
+Hypervel's Flysystem integration provides support for several "drivers" out of the box; however, Flysystem is not limited to these and has adapters for many other storage systems. You can create a custom driver if you want to use one of these additional adapters in your Hypervel application.
 
 In order to define a custom filesystem you will need a Flysystem adapter. Let's add a community maintained Dropbox adapter to our project:
 
@@ -731,10 +731,10 @@ Next, you can register the driver within the `boot` method of one of your applic
 
 namespace App\Providers;
 
-use LaravelHyperf\Foundation\Contracts\Application;
-use LaravelHyperf\Filesystem\FilesystemAdapter;
-use LaravelHyperf\Support\Facades\Storage;
-use LaravelHyperf\Support\ServiceProvider;
+use Hypervel\Foundation\Contracts\Application;
+use Hypervel\Filesystem\FilesystemAdapter;
+use Hypervel\Support\Facades\Storage;
+use Hypervel\Support\ServiceProvider;
 use League\Flysystem\Filesystem;
 use Spatie\Dropbox\Client as DropboxClient;
 use Spatie\FlysystemDropbox\DropboxAdapter;
@@ -769,7 +769,7 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-The first argument of the `extend` method is the name of the driver and the second is a closure that receives the `$app` and `$config` variables. The closure must return an instance of `LaravelHyperf\Filesystem\FilesystemAdapter`. The `$config` variable contains the values defined in `config/filesystems.php` for the specified disk. The third argument determines if this driver supports object pooling, and it's set as `true` by default.
+The first argument of the `extend` method is the name of the driver and the second is a closure that receives the `$app` and `$config` variables. The closure must return an instance of `Hypervel\Filesystem\FilesystemAdapter`. The `$config` variable contains the values defined in `config/filesystems.php` for the specified disk. The third argument determines if this driver supports object pooling, and it's set as `true` by default.
 
 ::: warning
 Most of the time you should set them poolable for keeping them safe in coroutines.

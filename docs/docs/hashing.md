@@ -3,15 +3,15 @@
 
 ## Introduction
 
-The Laravel Hyperf `Hash` [facade](/docs/facades) provides secure Bcrypt and Argon2 hashing for storing user passwords.
+The Hypervel `Hash` [facade](/docs/facades) provides secure Bcrypt and Argon2 hashing for storing user passwords.
 
 Bcrypt is a great choice for hashing passwords because its "work factor" is adjustable, which means that the time it takes to generate a hash can be increased as hardware power increases. When hashing passwords, slow is good. The longer an algorithm takes to hash a password, the longer it takes malicious users to generate "rainbow tables" of all possible string hash values that may be used in brute force attacks against applications.
 
 ## Configuration
 
-By default, Laravel Hyperf uses the `bcrypt` hashing driver when hashing data. However, several other hashing drivers are supported, including [`argon`](https://en.wikipedia.org/wiki/Argon2) and [`argon2id`](https://en.wikipedia.org/wiki/Argon2).
+By default, Hypervel uses the `bcrypt` hashing driver when hashing data. However, several other hashing drivers are supported, including [`argon`](https://en.wikipedia.org/wiki/Argon2) and [`argon2id`](https://en.wikipedia.org/wiki/Argon2).
 
-You may specify your application's hashing driver using the `HASH_DRIVER` environment variable. But, if you want to customize all of Laravel Hyperf's hashing driver options, you should publish the complete `hashing` configuration file using the `vendor:publish` Artisan command:
+You may specify your application's hashing driver using the `HASH_DRIVER` environment variable. But, if you want to customize all of Hypervel's hashing driver options, you should publish the complete `hashing` configuration file using the `vendor:publish` Artisan command:
 
 ```shell
 php artisan vendor:publish hashing
@@ -29,8 +29,8 @@ You may hash a password by calling the `make` method on the `Hash` facade:
 namespace App\Http\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Http\Request;
-use LaravelHyperf\Support\Facades\Hash;
+use Hypervel\Http\Request;
+use Hypervel\Support\Facades\Hash;
 
 class PasswordController extends Controller
 {
@@ -52,7 +52,7 @@ class PasswordController extends Controller
 
 #### Adjusting The Bcrypt Work Factor
 
-If you are using the Bcrypt algorithm, the `make` method allows you to manage the work factor of the algorithm using the `rounds` option; however, the default work factor managed by Laravel Hyperf is acceptable for most applications:
+If you are using the Bcrypt algorithm, the `make` method allows you to manage the work factor of the algorithm using the `rounds` option; however, the default work factor managed by Hypervel is acceptable for most applications:
 
 ```php
 $hashed = Hash::make('password', [
@@ -62,7 +62,7 @@ $hashed = Hash::make('password', [
 
 #### Adjusting The Argon2 Work Factor
 
-If you are using the Argon2 algorithm, the `make` method allows you to manage the work factor of the algorithm using the `memory`, `time`, and `threads` options; however, the default values managed by Laravel Hyperf are acceptable for most applications:
+If you are using the Argon2 algorithm, the `make` method allows you to manage the work factor of the algorithm using the `memory`, `time`, and `threads` options; however, the default values managed by Hypervel are acceptable for most applications:
 
 ```php
 $hashed = Hash::make('password', [

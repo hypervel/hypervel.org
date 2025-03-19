@@ -5,17 +5,17 @@
 
 Migrations are like version control for your database, allowing your team to define and share the application's database schema definition. If you have ever had to tell a teammate to manually add a column to their local database schema after pulling in your changes from source control, you've faced the problem that database migrations solve.
 
-The Laravel Hyperf `Schema` [facade](/docs/facades) provides database agnostic support for creating and manipulating tables across all of Laravel Hyperf's supported database systems. Typically, migrations will use this facade to create and modify database tables and columns.
+The Hypervel `Schema` [facade](/docs/facades) provides database agnostic support for creating and manipulating tables across all of Hypervel's supported database systems. Typically, migrations will use this facade to create and modify database tables and columns.
 
 ## Generating Migrations
 
-You may use the `make:migration` [Artisan command](/docs/artisan) to generate a database migration. The new migration will be placed in your `database/migrations` directory. Each migration filename contains a timestamp that allows Laravel Hyperf to determine the order of the migrations:
+You may use the `make:migration` [Artisan command](/docs/artisan) to generate a database migration. The new migration will be placed in your `database/migrations` directory. Each migration filename contains a timestamp that allows Hypervel to determine the order of the migrations:
 
 ```shell:no-line-numbers
 php artisan make:migration create_flights_table
 ```
 
-Laravel Hyperf will use the name of the migration to attempt to guess the name of the table and whether or not the migration will be creating a new table. If Laravel Hyperf is able to determine the table name from the migration name, Laravel Hyperf will pre-fill the generated migration file with the specified table. Otherwise, you may simply specify the table in the migration file manually.
+Hypervel will use the name of the migration to attempt to guess the name of the table and whether or not the migration will be creating a new table. If Hypervel is able to determine the table name from the migration name, Hypervel will pre-fill the generated migration file with the specified table. Otherwise, you may simply specify the table in the migration file manually.
 
 If you would like to specify a custom path for the generated migration, you may use the `--path` option when executing the `make:migration` command. The given path should be relative to your application's base path.
 
@@ -27,14 +27,14 @@ Migration stubs may be customized using [stub publishing](/docs/artisan#stub-cus
 
 A migration class contains two methods: `up` and `down`. The `up` method is used to add new tables, columns, or indexes to your database, while the `down` method should reverse the operations performed by the `up` method.
 
-Within both of these methods, you may use the Laravel Hyperf schema builder to expressively create and modify tables. To learn about all of the methods available on the `Schema` builder, [check out its documentation](#creating-tables). For example, the following migration creates a `flights` table:
+Within both of these methods, you may use the Hypervel schema builder to expressively create and modify tables. To learn about all of the methods available on the `Schema` builder, [check out its documentation](#creating-tables). For example, the following migration creates a `flights` table:
 
 ```php
 <?php
 
 use Hyperf\Database\Migrations\Migration;
 use Hyperf\Database\Schema\Blueprint;
-use LaravelHyperf\Support\Facades\Schema;
+use Hypervel\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -185,7 +185,7 @@ To create a new database table, use the `create` method on the `Schema` facade. 
 
 ```php
 use Hyperf\Database\Schema\Blueprint;
-use LaravelHyperf\Support\Facades\Schema;
+use Hypervel\Support\Facades\Schema;
 
 Schema::create('users', function (Blueprint $table) {
     $table->id();
@@ -273,7 +273,7 @@ The `table` method on the `Schema` facade may be used to update existing tables.
 
 ```php
 use Hyperf\Database\Schema\Blueprint;
-use LaravelHyperf\Support\Facades\Schema;
+use Hypervel\Support\Facades\Schema;
 
 Schema::table('users', function (Blueprint $table) {
     $table->integer('votes');
@@ -286,7 +286,7 @@ Schema::table('users', function (Blueprint $table) {
 To rename an existing database table, use the `rename` method:
 
 ```php
-use LaravelHyperf\Support\Facades\Schema;
+use Hypervel\Support\Facades\Schema;
 
 Schema::rename($from, $to);
 ```
@@ -301,7 +301,7 @@ Schema::dropIfExists('users');
 
 #### Renaming Tables With Foreign Keys
 
-Before renaming a table, you should verify that any foreign key constraints on the table have an explicit name in your migration files instead of letting Laravel Hyperf assign a convention based name. Otherwise, the foreign key constraint name will refer to the old table name.
+Before renaming a table, you should verify that any foreign key constraints on the table have an explicit name in your migration files instead of letting Hypervel assign a convention based name. Otherwise, the foreign key constraint name will refer to the old table name.
 
 ## Columns
 
@@ -311,7 +311,7 @@ The `table` method on the `Schema` facade may be used to update existing tables.
 
 ```php
 use Hyperf\Database\Schema\Blueprint;
-use LaravelHyperf\Support\Facades\Schema;
+use Hypervel\Support\Facades\Schema;
 
 Schema::table('users', function (Blueprint $table) {
     $table->integer('votes');
@@ -1023,7 +1023,7 @@ In addition to the column types listed above, there are several column "modifier
 
 ```php
 use Hyperf\Database\Schema\Blueprint;
-use LaravelHyperf\Support\Facades\Schema;
+use Hypervel\Support\Facades\Schema;
 
 Schema::table('users', function (Blueprint $table) {
     $table->string('email')->nullable();
@@ -1058,12 +1058,12 @@ The following table contains all of the available column modifiers. This list do
 
 #### Default Expressions
 
-The `default` modifier accepts a value or an `Hyperf\Database\Query\Expression` instance. Using an `Expression` instance will prevent Laravel Hyperf from wrapping the value in quotes and allow you to use database specific functions. One situation where this is particularly useful is when you need to assign default values to JSON columns:
+The `default` modifier accepts a value or an `Hyperf\Database\Query\Expression` instance. Using an `Expression` instance will prevent Hypervel from wrapping the value in quotes and allow you to use database specific functions. One situation where this is particularly useful is when you need to assign default values to JSON columns:
 
 ```php
 <?php
 
-use LaravelHyperf\Support\Facades\Schema;
+use Hypervel\Support\Facades\Schema;
 use Hyperf\Database\Schema\Blueprint;
 use Hyperf\Database\Query\Expression;
 use Hyperf\Database\Migrations\Migration;
@@ -1158,7 +1158,7 @@ Schema::table('users', function (Blueprint $table) {
 
 #### Available Command Aliases
 
-Laravel Hyperf provides several convenient methods related to dropping common types of columns. Each of these methods is described in the table below:
+Hypervel provides several convenient methods related to dropping common types of columns. Each of these methods is described in the table below:
 
 <div class="overflow-auto">
 
@@ -1177,11 +1177,11 @@ Laravel Hyperf provides several convenient methods related to dropping common ty
 
 ### Creating Indexes
 
-The Laravel Hyperf schema builder supports several types of indexes. The following example creates a new `email` column and specifies that its values should be unique. To create the index, we can chain the `unique` method onto the column definition:
+The Hypervel schema builder supports several types of indexes. The following example creates a new `email` column and specifies that its values should be unique. To create the index, we can chain the `unique` method onto the column definition:
 
 ```php
 use Hyperf\Database\Schema\Blueprint;
-use LaravelHyperf\Support\Facades\Schema;
+use Hypervel\Support\Facades\Schema;
 
 Schema::table('users', function (Blueprint $table) {
     $table->string('email')->unique();
@@ -1200,7 +1200,7 @@ You may even pass an array of columns to an index method to create a compound (o
 $table->index(['account_id', 'created_at']);
 ```
 
-When creating an index, Laravel Hyperf will automatically generate an index name based on the table, column names, and the index type, but you may pass a second argument to the method to specify the index name yourself:
+When creating an index, Hypervel will automatically generate an index name based on the table, column names, and the index type, but you may pass a second argument to the method to specify the index name yourself:
 
 ```php
 $table->unique('email', 'unique_email');
@@ -1208,7 +1208,7 @@ $table->unique('email', 'unique_email');
 
 #### Available Index Types
 
-Laravel Hyperf's schema builder blueprint class provides methods for creating each type of index supported by Laravel Hyperf. Each index method accepts an optional second argument to specify the name of the index. If omitted, the name will be derived from the names of the table and column(s) used for the index, as well as the index type. Each of the available index methods is described in the table below:
+Hypervel's schema builder blueprint class provides methods for creating each type of index supported by Hypervel. Each index method accepts an optional second argument to specify the name of the index. If omitted, the name will be derived from the names of the table and column(s) used for the index, as well as the index type. Each of the available index methods is described in the table below:
 
 <div class="overflow-auto">
 
@@ -1235,7 +1235,7 @@ $table->renameIndex('from', 'to')
 
 ### Dropping Indexes
 
-To drop an index, you must specify the index's name. By default, Laravel Hyperf automatically assigns an index name based on the table name, the name of the indexed column, and the index type. Here are some examples:
+To drop an index, you must specify the index's name. By default, Hypervel automatically assigns an index name based on the table name, the name of the indexed column, and the index type. Here are some examples:
 
 <div class="overflow-auto">
 
@@ -1259,11 +1259,11 @@ Schema::table('geo', function (Blueprint $table) {
 
 ### Foreign Key Constraints
 
-Laravel Hyperf also provides support for creating foreign key constraints, which are used to force referential integrity at the database level. For example, let's define a `user_id` column on the `posts` table that references the `id` column on a `users` table:
+Hypervel also provides support for creating foreign key constraints, which are used to force referential integrity at the database level. For example, let's define a `user_id` column on the `posts` table that references the `id` column on a `users` table:
 
 ```php
 use Hyperf\Database\Schema\Blueprint;
-use LaravelHyperf\Support\Facades\Schema;
+use Hypervel\Support\Facades\Schema;
 
 Schema::table('posts', function (Blueprint $table) {
     $table->unsignedBigInteger('user_id');
@@ -1272,7 +1272,7 @@ Schema::table('posts', function (Blueprint $table) {
 });
 ```
 
-Since this syntax is rather verbose, Laravel Hyperf provides additional, terser methods that use conventions to provide a better developer experience. When using the `foreignId` method to create your column, the example above can be rewritten like so:
+Since this syntax is rather verbose, Hypervel provides additional, terser methods that use conventions to provide a better developer experience. When using the `foreignId` method to create your column, the example above can be rewritten like so:
 
 ```php
 Schema::table('posts', function (Blueprint $table) {
@@ -1280,7 +1280,7 @@ Schema::table('posts', function (Blueprint $table) {
 });
 ```
 
-The `foreignId` method creates an `UNSIGNED BIGINT` equivalent column, while the `constrained` method will use conventions to determine the table and column being referenced. If your table name does not match Laravel Hyperf's conventions, you may manually provide it to the `constrained` method. In addition, the name that should be assigned to the generated index may be specified as well:
+The `foreignId` method creates an `UNSIGNED BIGINT` equivalent column, while the `constrained` method will use conventions to determine the table and column being referenced. If your table name does not match Hypervel's conventions, you may manually provide it to the `constrained` method. In addition, the name that should be assigned to the generated index may be specified as well:
 
 ```php
 Schema::table('posts', function (Blueprint $table) {
@@ -1332,7 +1332,7 @@ To drop a foreign key, you may use the `dropForeign` method, passing the name of
 $table->dropForeign('posts_user_id_foreign');
 ```
 
-Alternatively, you may pass an array containing the column name that holds the foreign key to the `dropForeign` method. The array will be converted to a foreign key constraint name using Laravel Hyperf's constraint naming conventions:
+Alternatively, you may pass an array containing the column name that holds the foreign key to the `dropForeign` method. The array will be converted to a foreign key constraint name using Hypervel's constraint naming conventions:
 
 ```php
 $table->dropForeign(['user_id']);

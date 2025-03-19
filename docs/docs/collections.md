@@ -3,7 +3,7 @@
 
 ## Introduction
 
-The `LaravelHyperf\Support\Collection` class provides a fluent, convenient wrapper for working with arrays of data. For example, check out the following code. We'll use the `collect` helper to create a new collection instance from the array, run the `strtoupper` function on each element, and then remove all empty elements:
+The `Hypervel\Support\Collection` class provides a fluent, convenient wrapper for working with arrays of data. For example, check out the following code. We'll use the `collect` helper to create a new collection instance from the array, run the `strtoupper` function on each element, and then remove all empty elements:
 
 ```php
 $collection = collect(['taylor', 'abigail', null])->map(function (?string $name) {
@@ -17,7 +17,7 @@ As you can see, the `Collection` class allows you to chain its methods to perfor
 
 ### Creating Collections
 
-As mentioned above, the `collect` helper returns a new `LaravelHyperf\Support\Collection` instance for the given array. So, creating a collection is as simple as:
+As mentioned above, the `collect` helper returns a new `Hypervel\Support\Collection` instance for the given array. So, creating a collection is as simple as:
 
 ```php
 $collection = collect([1, 2, 3]);
@@ -29,11 +29,11 @@ The results of [Eloquent](/docs/eloquent) queries are always returned as `Collec
 
 ### Extending Collections
 
-Collections are "macroable", which allows you to add additional methods to the `Collection` class at run time. The `LaravelHyperf\Support\Collection` class' `macro` method accepts a closure that will be executed when your macro is called. The macro closure may access the collection's other methods via `$this`, just as if it were a real method of the collection class. For example, the following code adds a `toUpper` method to the `Collection` class:
+Collections are "macroable", which allows you to add additional methods to the `Collection` class at run time. The `Hypervel\Support\Collection` class' `macro` method accepts a closure that will be executed when your macro is called. The macro closure may access the collection's other methods via `$this`, just as if it were a real method of the collection class. For example, the following code adds a `toUpper` method to the `Collection` class:
 
 ```php
-use LaravelHyperf\Support\Collection;
-use LaravelHyperf\Support\Str;
+use Hypervel\Support\Collection;
+use Hypervel\Support\Str;
 
 Collection::macro('toUpper', function () {
     return $this->map(function (string $value) {
@@ -55,8 +55,8 @@ Typically, you should declare collection macros in the `boot` method of a [servi
 If necessary, you may define macros that accept additional arguments:
 
 ```php
-use LaravelHyperf\Support\Collection;
-use LaravelHyperf\Support\Facades\Lang;
+use Hypervel\Support\Collection;
+use Hypervel\Support\Facades\Lang;
 
 Collection::macro('toLocale', function (string $locale) {
     return $this->map(function (string $value) use ($locale) {
@@ -364,7 +364,7 @@ $collection = $lazyCollection->collect();
 
 $collection::class;
 
-// 'LaravelHyperf\Support\Collection'
+// 'Hypervel\Support\Collection'
 
 $collection->all();
 
@@ -1089,13 +1089,13 @@ In this example, calling `flatten` without providing the depth would have also f
 The `flip` method swaps the collection's keys with their corresponding values:
 
 ```php
-$collection = collect(['language' => 'php', 'framework' => 'laravel hyperf']);
+$collection = collect(['language' => 'php', 'framework' => 'Hypervel']);
 
 $flipped = $collection->flip();
 
 $flipped->all();
 
-// ['language' => 'php', 'laravel hyperf' => 'framework']
+// ['language' => 'php', 'Hypervel' => 'framework']
 ```
 
 <a name="method-forget"></a>
@@ -1104,13 +1104,13 @@ $flipped->all();
 The `forget` method removes an item from the collection by its key:
 
 ```php
-$collection = collect(['language' => 'php', 'framework' => 'laravel hyperf']);
+$collection = collect(['language' => 'php', 'framework' => 'Hypervel']);
 
 $collection->forget('language');
 
 $collection->all();
 
-// ['framework' => 'laravel hyperf']
+// ['framework' => 'Hypervel']
 ```
 
 ::: warning
@@ -1138,7 +1138,7 @@ $chunk->all();
 The `get` method returns the item at a given key. If the key does not exist, `null` is returned:
 
 ```php
-$collection = collect(['language' => 'php', 'framework' => 'laravel hyperf']);
+$collection = collect(['language' => 'php', 'framework' => 'Hypervel']);
 
 $value = $collection->get('language');
 
@@ -1148,7 +1148,7 @@ $value = $collection->get('language');
 You may optionally pass a default value as the second argument:
 
 ```php
-$collection = collect(['language' => 'php', 'framework' => 'laravel hyperf']);
+$collection = collect(['language' => 'php', 'framework' => 'Hypervel']);
 
 $value = $collection->get('age', 34);
 
@@ -1960,7 +1960,7 @@ $resource->collection->all();
 The `pipeThrough` method passes the collection to the given array of closures and returns the result of the executed closures:
 
 ```php
-use LaravelHyperf\Support\Collection;
+use Hypervel\Support\Collection;
 
 $collection = collect([1, 2, 3]);
 
@@ -2179,7 +2179,7 @@ If the collection instance has fewer items than requested, the `random` method w
 The `random` method also accepts a closure, which will receive the current collection instance:
 
 ```php
-use LaravelHyperf\Support\Collection;
+use Hypervel\Support\Collection;
 
 $random = $collection->random(fn (Collection $items) => min(10, count($items)));
 
@@ -3737,7 +3737,7 @@ $filtered->all();
 The static `wrap` method wraps the given value in a collection when applicable:
 
 ```php
-use LaravelHyperf\Support\Collection;
+use Hypervel\Support\Collection;
 
 $collection = Collection::wrap('John Doe');
 
@@ -3803,12 +3803,12 @@ return $users->sum->votes;
 ### Introduction
 
 ::: warning
-Before learning more about Laravel Hyperf's lazy collections, take some time to familiarize yourself with [PHP generators](https://www.php.net/manual/en/language.generators.overview.php).
+Before learning more about Hypervel's lazy collections, take some time to familiarize yourself with [PHP generators](https://www.php.net/manual/en/language.generators.overview.php).
 :::
 
 To supplement the already powerful `Collection` class, the `LazyCollection` class leverages PHP's [generators](https://www.php.net/manual/en/language.generators.overview.php) to allow you to work with very large datasets while keeping memory usage low.
 
-For example, imagine your application needs to process a multi-gigabyte log file while taking advantage of Laravel Hyperf's collection methods to parse the logs. Instead of reading the entire file into memory at once, lazy collections may be used to keep only a small part of the file in memory at a given time:
+For example, imagine your application needs to process a multi-gigabyte log file while taking advantage of Hypervel's collection methods to parse the logs. Instead of reading the entire file into memory at once, lazy collections may be used to keep only a small part of the file in memory at a given time:
 
 ```php
 use App\Models\LogEntry;
@@ -3827,7 +3827,7 @@ LazyCollection::make(function () {
 });
 ```
 
-Or, imagine you need to iterate through 10,000 Eloquent models. When using traditional Laravel Hyperf collections, all 10,000 Eloquent models must be loaded into memory at the same time:
+Or, imagine you need to iterate through 10,000 Eloquent models. When using traditional Hypervel collections, all 10,000 Eloquent models must be loaded into memory at the same time:
 
 ```php
 use App\Models\User;

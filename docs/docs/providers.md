@@ -3,23 +3,23 @@
 
 ## Introduction
 
-Service providers are the central place of all Laravel Hyperf application bootstrapping. Your own application, as well as all of Laravel's core services, are bootstrapped via service providers.
+Service providers are the central place of all Hypervel application bootstrapping. Your own application, as well as all of Laravel's core services, are bootstrapped via service providers.
 
-Laravel Hyperf ensures that all components are properly configured and ready for use as soon as the application starts. This approach allows for a modular and flexible configuration system, where each component can manage its own configuration independently.
+Hypervel ensures that all components are properly configured and ready for use as soon as the application starts. This approach allows for a modular and flexible configuration system, where each component can manage its own configuration independently.
 
 But, what do we mean by "bootstrapped"? In general, we mean **registering** things, including registering service container bindings, event listeners, middleware, and even routes. Service providers are the central place to configure your application.
 
-If you open the `config/app.php` file included with Laravel Hyperf, you will see a providers array. These are all of the service provider classes that will be loaded for your application. By default, a set of Laravel Hyperf core service providers are listed in this array.
+If you open the `config/app.php` file included with Hypervel, you will see a providers array. These are all of the service provider classes that will be loaded for your application. By default, a set of Hypervel core service providers are listed in this array.
 
-In this overview, you will learn how to write your own service providers and register them with your Laravel Hyperf application.
+In this overview, you will learn how to write your own service providers and register them with your Hypervel application.
 
 ::: note
-If you would like to learn more about how Laravel Hyperf handles requests and works internally, check out our documentation on the Laravel [request lifecycle](/docs/lifecycle).
+If you would like to learn more about how Hypervel handles requests and works internally, check out our documentation on the Laravel [request lifecycle](/docs/lifecycle).
 :::
 
 ## Writing Service Providers
 
-All service providers extend the `LaravelHyperf\Support\ServiceProvider` class. Most service providers contain a `register` and a `boot` method. Within the `register` method, you should **only bind things into the [service container](/docs/container)**. You should never attempt to register any event listeners, routes, or any other piece of functionality within the `register` method.
+All service providers extend the `Hypervel\Support\ServiceProvider` class. Most service providers contain a `register` and a `boot` method. Within the `register` method, you should **only bind things into the [service container](/docs/container)**. You should never attempt to register any event listeners, routes, or any other piece of functionality within the `register` method.
 
 The Artisan CLI can generate a new provider via the `make:provider` command.
 
@@ -39,8 +39,8 @@ Let's take a look at a basic service provider. Within any of your service provid
 namespace App\Providers;
 
 use App\Services\Riak\Connection;
-use LaravelHyperf\Foundation\Contracts\Application;
-use LaravelHyperf\Support\ServiceProvider;
+use Hypervel\Foundation\Contracts\Application;
+use Hypervel\Support\ServiceProvider;
 
 class RiakServiceProvider extends ServiceProvider
 {
@@ -56,7 +56,7 @@ class RiakServiceProvider extends ServiceProvider
 }
 ```
 
-This service provider only defines a `register` method, and uses that method to define an implementation of `App\Services\Riak\Connection` in the service container. If you're not yet familiar with Laravel Hyperf's service container, check out [its documentation](/docs/container).
+This service provider only defines a `register` method, and uses that method to define an implementation of `App\Services\Riak\Connection` in the service container. If you're not yet familiar with Hypervel's service container, check out [its documentation](/docs/container).
 
 #### The `bindings` and `singletons` Properties
 
@@ -69,7 +69,7 @@ namespace App\Providers;
 
 use App\Contracts\ServerProvider;
 use App\Services\DigitalOceanServerProvider;
-use LaravelHyperf\Support\ServiceProvider;
+use Hypervel\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -95,9 +95,9 @@ So, what if we need to extend `Request` functions within our service provider? T
 
 namespace App\Providers;
 
-use LaravelHyperf\Http\Request;
-use LaravelHyperf\Foundation\Macros\RequestMacro;
-use LaravelHyperf\Support\ServiceProvider;
+use Hypervel\Http\Request;
+use Hypervel\Foundation\Macros\RequestMacro;
+use Hypervel\Support\ServiceProvider;
 
 class RequestServiceProvider extends ServiceProvider
 {
@@ -129,13 +129,13 @@ public function boot(ConnectionResolverInterface $resolver): void
 
 ## Registering Providers
 
-All service providers are registered in the `config/app.php` configuration file. This file contains a `providers` array where you can list the class names of your service providers. By default, a set of Laravel Hyperf core service providers are registered in this array. The default providers bootstrap the core Laravel Hyperf components.
+All service providers are registered in the `config/app.php` configuration file. This file contains a `providers` array where you can list the class names of your service providers. By default, a set of Hypervel core service providers are registered in this array. The default providers bootstrap the core Hypervel components.
 
 To register your provider, add it to the array:
 
 ```php
 'providers' => [
-    LaravelHyperf\Foundation\Providers\FoundationServiceProvider::class,
+    Hypervel\Foundation\Providers\FoundationServiceProvider::class,
     App\Providers\RouteServiceProvider::class,
     App\Providers\AppServiceProvider::class,
     App\Providers\EventServiceProvider::class,

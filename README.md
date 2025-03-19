@@ -1,11 +1,11 @@
-Laravel Hyperf Documentation
+Hypervel Documentation
 ===
 
-This repo is for [https://laravel-hyperf.com](https://laravel-hyperf.com)
+This repo is for [https://hypervel.org](https://hypervel.org)
 
 ## Contributing
 
-Contributions are always welcome; to keep things organized, bug reports and pull requests should be done on the [GitHub project](https://github.com/laravel-hyperf/components/issues).
+Contributions are always welcome; to keep things organized, bug reports and pull requests should be done on the [GitHub project](https://github.com/hypervel/components/issues).
 
 ## Credits
 

@@ -5,9 +5,9 @@
 
 Service container in Hyperf follows [PSR-11](https://www.php-fig.org/psr/psr-11/) and provides minimum abilities for managing service bindings. And it's designed for long-life applications and with AOP support.
 
-Based on Hyperf's container, Laravel Hyperf extends a bunch of features from Laravel's container such as alias and container events.
+Based on Hyperf's container, Hypervel extends a bunch of features from Laravel's container such as alias and container events.
 
-The Laravel Hyperf service container is a powerful tool for managing class dependencies and performing dependency injection. Dependency injection is a fancy phrase that essentially means this: class dependencies are "injected" into the class via the constructor or, in some cases, "setter" methods.
+The Hypervel service container is a powerful tool for managing class dependencies and performing dependency injection. Dependency injection is a fancy phrase that essentially means this: class dependencies are "injected" into the class via the constructor or, in some cases, "setter" methods.
 
 Let's look at a simple example:
 
@@ -42,7 +42,7 @@ class PodcastController extends Controller
 
 In this example, the `PodcastController` needs to retrieve podcasts from a data source such as Apple Music. So, we will **inject** a service that is able to retrieve podcasts. Since the service is injected, we are able to easily "mock", or create a dummy implementation of the `AppleMusic` service when testing our application.
 
-A deep understanding of the Laravel Hyperf service container is essential to building a powerful, large application, as well as for contributing to the Laravel core itself.
+A deep understanding of the Hypervel service container is essential to building a powerful, large application, as well as for contributing to the Laravel core itself.
 
 ### Differences between Laravel Container
 
@@ -55,7 +55,7 @@ To ensure compatibility with the Hyperf Container, there are some important diff
 * The `has` function in the Hyperf Container follows PSR-11 standards. It only determines if the target can be resolved. It will return true if the container can return an entry for the given identifier. `has($id)` returning true does not mean that `get($id)` will not throw an exception. It does, however, mean that `get($id)` will not throw a `NotFoundExceptionInterface`. You can use the `bound` method as an alternative for checking if an ID is bound to the container.
 
 ::: important
-Please read the above description carefully before using the container in Laravel Hyperf!
+Please read the above description carefully before using the container in Hypervel!
 :::
 
 ### Zero Configuration Resolution
@@ -77,24 +77,24 @@ Route::get('/', function (Service $service) {
 
 In this example, hitting your application's `/` route will automatically resolve the `Service` class and inject it into your route's handler. This is game changing. It means you can develop your application and take advantage of dependency injection without worrying about bloated configuration files.
 
-Thankfully, many of the classes you will be writing when building a Laravel Hyperf application automatically receive their dependencies via the container, including [controllers](/docs/controllers), [event listeners](/docs/events), [middleware](/docs/middleware), and more. Once you taste the power of automatic and zero configuration dependency injection it feels impossible to develop without it.
+Thankfully, many of the classes you will be writing when building a Hypervel application automatically receive their dependencies via the container, including [controllers](/docs/controllers), [event listeners](/docs/events), [middleware](/docs/middleware), and more. Once you taste the power of automatic and zero configuration dependency injection it feels impossible to develop without it.
 
 ### When to Utilize the Container
 
-Thanks to zero configuration resolution, you will often type-hint dependencies on routes, controllers, event listeners, and elsewhere without ever manually interacting with the container. For example, you might type-hint the `LaravelHyperf\Http\Request` object on your route definition so that you can easily access the current request. Even though we never have to interact with the container to write this code, it is managing the injection of these dependencies behind the scenes:
+Thanks to zero configuration resolution, you will often type-hint dependencies on routes, controllers, event listeners, and elsewhere without ever manually interacting with the container. For example, you might type-hint the `Hypervel\Http\Request` object on your route definition so that you can easily access the current request. Even though we never have to interact with the container to write this code, it is managing the injection of these dependencies behind the scenes:
 
 ```php
-use LaravelHyperf\Http\Request;
-use LaravelHyperf\Support\Facades\Route;
+use Hypervel\Http\Request;
+use Hypervel\Support\Facades\Route;
 
 Route::get('/', function (Request $request) {
     // ...
 });
 ```
 
-In many cases, thanks to automatic dependency injection and [facades](/docs/facades), you can build Laravel Hyperf applications without **ever** manually binding or resolving anything from the container. **So, when would you ever manually interact with the container?** Let's examine two situations.
+In many cases, thanks to automatic dependency injection and [facades](/docs/facades), you can build Hypervel applications without **ever** manually binding or resolving anything from the container. **So, when would you ever manually interact with the container?** Let's examine two situations.
 
-First, if you write a class that implements an interface and you wish to type-hint that interface on a route or class constructor, you must [tell the container how to resolve that interface](#binding-interfaces-to-implementations). Secondly, if you are [writing a Laravel Hyperf package](/docs/packages) that you plan to share with other Laravel Hyperf developers, you may need to bind your package's services into the container.
+First, if you write a class that implements an interface and you wish to type-hint that interface on a route or class constructor, you must [tell the container how to resolve that interface](#binding-interfaces-to-implementations). Secondly, if you are [writing a Hypervel package](/docs/packages) that you plan to share with other Hypervel developers, you may need to bind your package's services into the container.
 
 ## Binding
 
@@ -109,7 +109,7 @@ Within a service provider, you always have access to the container via the `$thi
 ```php
 use App\Services\Transistor;
 use App\Services\PodcastParser;
-use LaravelHyperf\Foundation\Contracts\Application;
+use Hypervel\Foundation\Contracts\Application;
 
 $this->app->bind(Transistor::class, function (Application $app) {
     return new Transistor($app->get(PodcastParser::class));
@@ -122,8 +122,8 @@ As mentioned, you will typically be interacting with the container within servic
 
 ```php
 use App\Services\Transistor;
-use LaravelHyperf\Foundation\Contracts\Application;
-use LaravelHyperf\Support\Facades\App;
+use Hypervel\Foundation\Contracts\Application;
+use Hypervel\Support\Facades\App;
 
 App::bind(Transistor::class, function (Application $app) {
     // ...
@@ -235,17 +235,17 @@ If you are outside of a service provider in a location of your code that does no
 
 ```php
 use App\Services\Transistor;
-use LaravelHyperf\Support\Facades\App;
+use Hypervel\Support\Facades\App;
 
 $transistor = App::make(Transistor::class);
 
 $transistor = app(Transistor::class);
 ```
 
-If you would like to have the Laravel Hyperf container instance itself injected into a class that is being resolved by the container, you may type-hint the `LaravelHyperf\Container\Contracts\Container` class on your class's constructor:
+If you would like to have the Hypervel container instance itself injected into a class that is being resolved by the container, you may type-hint the `Hypervel\Container\Contracts\Container` class on your class's constructor:
 
 ```php
-use LaravelHyperf\Container\Contracts\Container;
+use Hypervel\Container\Contracts\Container;
 
 /**
  * Create a new class instance.
@@ -262,10 +262,10 @@ You can get the container instance by this bindings:
 * `Psr\Container\ContainerInterface::class`
 * `Hyperf\Di\Container::class`
 * `Hyperf\Contract\ContainerInterface::class`
-* `LaravelHyperf\Container\Contracts\Container::class`
-* `LaravelHyperf\Container\Container::class`
-* `LaravelHyperf\Foundation\Contracts\Application::class`
-* `LaravelHyperf\Foundation\Application::class`
+* `Hypervel\Container\Contracts\Container::class`
+* `Hypervel\Container\Container::class`
+* `Hypervel\Foundation\Contracts\Application::class`
+* `Hypervel\Foundation\Application::class`
 :::
 
 ### Automatic Injection
@@ -329,7 +329,7 @@ You may invoke the `generate` method via the container like so:
 
 ```php
 use App\PodcastStats;
-use LaravelHyperf\Support\Facades\App;
+use Hypervel\Support\Facades\App;
 
 $stats = App::call([new PodcastStats, 'generate']);
 ```
@@ -338,7 +338,7 @@ The `call` method accepts any PHP callable. The container's `call` method may ev
 
 ```php
 use App\Services\AppleMusic;
-use LaravelHyperf\Support\Facades\App;
+use Hypervel\Support\Facades\App;
 
 $result = App::call(function (AppleMusic $apple) {
     // ...
@@ -351,7 +351,7 @@ The service container fires an event each time it resolves an object. You may li
 
 ```php
 use App\Services\Transistor;
-use LaravelHyperf\Foundation\Contracts\Application;
+use Hypervel\Foundation\Contracts\Application;
 
 $this->app->resolving(Transistor::class, function (Transistor $transistor, Application $app) {
     // Called when container resolves objects of type "Transistor"...
@@ -366,7 +366,7 @@ As you can see, the object being resolved will be passed to the callback, allowi
 
 ## PSR-11
 
-Laravel Hyperf's service container implements the [PSR-11](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-11-container.md) interface. Therefore, you may type-hint the PSR-11 container interface to obtain an instance of the Laravel Hyperf container:
+Hypervel's service container implements the [PSR-11](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-11-container.md) interface. Therefore, you may type-hint the PSR-11 container interface to obtain an instance of the Hypervel container:
 
 ```php
 use App\Services\Transistor;

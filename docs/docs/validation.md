@@ -3,13 +3,13 @@
 
 ## Introduction
 
-Laravel Hyperf provides several different approaches to validate your application's incoming data. It is most common to use the `validate` method available on all incoming HTTP requests. However, we will discuss other approaches to validation as well.
+Hypervel provides several different approaches to validate your application's incoming data. It is most common to use the `validate` method available on all incoming HTTP requests. However, we will discuss other approaches to validation as well.
 
-Laravel Hyperf includes a wide variety of convenient validation rules that you may apply to data, even providing the ability to validate if values are unique in a given database table. We'll cover each of these validation rules in detail so that you are familiar with all of Laravel Hyperf's validation features.
+Hypervel includes a wide variety of convenient validation rules that you may apply to data, even providing the ability to validate if values are unique in a given database table. We'll cover each of these validation rules in detail so that you are familiar with all of Hypervel's validation features.
 
 ## Validation Quickstart
 
-To learn about Laravel Hyperf's powerful validation features, let's look at a complete example of validating a form and displaying the error messages back to the user. By reading this high-level overview, you'll be able to gain a good general understanding of how to validate incoming request data using Laravel Hyperf:
+To learn about Hypervel's powerful validation features, let's look at a complete example of validating a form and displaying the error messages back to the user. By reading this high-level overview, you'll be able to gain a good general understanding of how to validate incoming request data using Hypervel:
 
 ### Defining the Routes
 
@@ -33,7 +33,7 @@ Next, let's take a look at a simple controller that handles incoming requests to
 
 namespace App\Http\Controllers;
 
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 use Hyperf\ViewEngine\Contract\ViewInterface;
 
 class PostController extends Controller
@@ -62,7 +62,7 @@ class PostController extends Controller
 
 ### Writing the Validation Logic
 
-Now we are ready to fill in our `store` method with the logic to validate the new blog post. To do this, we will use the `validate` method provided by the `LaravelHyperf\Http\Request` object. If the validation rules pass, your code will keep executing normally; however, if validation fails, an `Hyperf\Validation\ValidationException` exception will be thrown and the proper error response will automatically be sent back to the user.
+Now we are ready to fill in our `store` method with the logic to validate the new blog post. To do this, we will use the `validate` method provided by the `Hypervel\Http\Request` object. If the validation rules pass, your code will keep executing normally; however, if validation fails, an `Hyperf\Validation\ValidationException` exception will be thrown and the proper error response will automatically be sent back to the user.
 
 You can catch the validation exception and handle it in your [error handler](/docs/errors).
 
@@ -130,7 +130,7 @@ $request->validate([
 
 ### Displaying the Validation Errors
 
-An `$errors` variable can be shared with all of your application's views by the `LaravelHyperf\View\Middleware\ValidationExceptionHandle` middleware. You can add it to the `web` middleware group. When this middleware is applied an `$errors` variable will always be available in your views, allowing you to conveniently assume the `$errors` variable is always defined and can be safely used. The `$errors` variable will be an instance of `Hyperf\ViewEngine\ViewErrorBag`. For more information on working with this object, [check out its documentation](#working-with-error-messages).
+An `$errors` variable can be shared with all of your application's views by the `Hypervel\View\Middleware\ValidationExceptionHandle` middleware. You can add it to the `web` middleware group. When this middleware is applied an `$errors` variable will always be available in your views, allowing you to conveniently assume the `$errors` variable is always defined and can be safely used. The `$errors` variable will be an instance of `Hyperf\ViewEngine\ViewErrorBag`. For more information on working with this object, [check out its documentation](#working-with-error-messages).
 
 So, in our example, the user will be redirected to our controller's `create` method when validation fails, allowing us to display the error messages in the view:
 
@@ -154,15 +154,15 @@ So, in our example, the user will be redirected to our controller's `create` met
 
 #### Customizing the Error Messages
 
-Laravel Hyperf's built-in validation rules each have an error message that is located in your application's `lang/en/validation.php` file. If your application does not have a `lang` directory, you may instruct Laravel Hyperf to create it using the `lang:publish` Artisan command.
+Hypervel's built-in validation rules each have an error message that is located in your application's `lang/en/validation.php` file. If your application does not have a `lang` directory, you may instruct Hypervel to create it using the `lang:publish` Artisan command.
 
 Within the `lang/en/validation.php` file, you will find a translation entry for each validation rule. You are free to change or modify these messages based on the needs of your application.
 
-In addition, you may copy this file to another language directory to translate the messages for your application's language. To learn more about Laravel Hyperf localization, check out the complete [localization documentation](/docs/localization).
+In addition, you may copy this file to another language directory to translate the messages for your application's language. To learn more about Hypervel localization, check out the complete [localization documentation](/docs/localization).
 
 #### XHR Requests and Validation
 
-In this example, we used a traditional form to send data to the application. However, many applications receive XHR requests from a JavaScript powered frontend. When using the `validate` method during an XHR request, Laravel Hyperf will generates a [JSON response containing all of the validation errors](#validation-error-response-format). This JSON response will be sent with a 422 HTTP status code.
+In this example, we used a traditional form to send data to the application. However, many applications receive XHR requests from a JavaScript powered frontend. When using the `validate` method during an XHR request, Hypervel will generates a [JSON response containing all of the validation errors](#validation-error-response-format). This JSON response will be sent with a 422 HTTP status code.
 
 #### The `@error` Directive
 
@@ -191,7 +191,7 @@ If you are using [named error bags](#named-error-bags), you may pass the name of
 
 ### A Note on Optional Fields
 
-By default, Laravel Hyperf includes the `TrimStrings` and `ConvertEmptyStringsToNull` middleware in your application's global middleware stack. These middleware are listed but disabled in the stack by the `App\Http\Kernel` class. If you enable these middleware, you will often need to mark your "optional" request fields as `nullable` if you do not want the validator to consider `null` values as invalid. For example:
+By default, Hypervel includes the `TrimStrings` and `ConvertEmptyStringsToNull` middleware in your application's global middleware stack. These middleware are listed but disabled in the stack by the `App\Http\Kernel` class. If you enable these middleware, you will often need to mark your "optional" request fields as `nullable` if you do not want the validator to consider `null` values as invalid. For example:
 
 ```php
 $request->validate([
@@ -205,7 +205,7 @@ In this example, we are specifying that the `publish_at` field may be either `nu
 
 ### Validation Error Response Format
 
-When your application throws a `Hyperf\Validation\ValidationException` exception and the incoming HTTP request is expecting a JSON response, Laravel Hyperf will automatically format the error messages for you and return a `422 Unprocessable Entity` HTTP response.
+When your application throws a `Hyperf\Validation\ValidationException` exception and the incoming HTTP request is expecting a JSON response, Hypervel will automatically format the error messages for you and return a `422 Unprocessable Entity` HTTP response.
 
 ::: note
 This behavior is handled by the `App\Exceptions\Handlers\ApiExceptionHandler` class.
@@ -246,7 +246,7 @@ For more complex validation scenarios, you may wish to create a "form request". 
 php artisan make:request StorePostRequest
 ```
 
-The generated form request class will be placed in the `app/Http/Requests` directory. If this directory does not exist, it will be created when you run the `make:request` command. Each form request generated by Laravel Hyperf has two methods: `authorize` and `rules`.
+The generated form request class will be placed in the `app/Http/Requests` directory. If this directory does not exist, it will be created when you run the `make:request` command. Each form request generated by Hypervel has two methods: `authorize` and `rules`.
 
 As you might have guessed, the `authorize` method is responsible for determining if the currently authenticated user can perform the action represented by the request, while the `rules` method returns the validation rules that should apply to the request's data:
 
@@ -386,7 +386,7 @@ public function messages(): array
 
 #### Customizing the Validation Attributes
 
-Many of Laravel Hyperf's built-in validation rule error messages contain an `:attribute` placeholder. If you would like the `:attribute` placeholder of your validation message to be replaced with a custom attribute name, you may specify the custom names by overriding the `attributes` method. This method should return an array of attribute / name pairs:
+Many of Hypervel's built-in validation rule error messages contain an `:attribute` placeholder. If you would like the `:attribute` placeholder of your validation message to be replaced with a custom attribute name, you may specify the custom names by overriding the `attributes` method. This method should return an array of attribute / name pairs:
 
 ```php
 /**
@@ -407,7 +407,7 @@ public function attributes(): array
 If you need to prepare or sanitize any data from the request before you apply your validation rules, you may use the `prepareForValidation` method:
 
 ```php
-use LaravelHyperf\Support\Str;
+use Hypervel\Support\Str;
 
 /**
  * Prepare the data for validation.
@@ -430,8 +430,8 @@ If you do not want to use the `validate` method on the request, you may create a
 namespace App\Http\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Http\Request;
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Http\Request;
+use Hypervel\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -463,7 +463,7 @@ The first argument passed to the `make` method is the data under validation. The
 
 ### Customizing the Error Messages
 
-If needed, you may provide custom error messages that a validator instance should use instead of the default error messages provided by Laravel Hyperf. There are several ways to specify custom messages. First, you may pass the custom messages as the third argument to the `Validator::make` method:
+If needed, you may provide custom error messages that a validator instance should use instead of the default error messages provided by Hypervel. There are several ways to specify custom messages. First, you may pass the custom messages as the third argument to the `Validator::make` method:
 
 ```php
 $validator = Validator::make($input, $rules, $messages = [
@@ -494,7 +494,7 @@ $messages = [
 
 #### Specifying Custom Attribute Values
 
-Many of Laravel Hyperf's built-in error messages include an `:attribute` placeholder that is replaced with the name of the field or attribute under validation. To customize the values used to replace these placeholders for specific fields, you may pass an array of custom attributes as the fourth argument to the `Validator::make` method:
+Many of Hypervel's built-in error messages include an `:attribute` placeholder that is replaced with the name of the field or attribute under validation. To customize the values used to replace these placeholders for specific fields, you may pass an array of custom attributes as the fourth argument to the `Validator::make` method:
 
 ```php
 $validator = Validator::make($input, $rules, $messages, [
@@ -507,7 +507,7 @@ $validator = Validator::make($input, $rules, $messages, [
 Sometimes you need to perform additional validation after your initial validation is complete. You can accomplish this using the validator's `after` method. The `after` method accepts a closure or an array of callables which will be invoked after validation is complete. The given callables will receive an `Hyperf\Validation\Validator` instance, allowing you to raise additional error messages if necessary:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 
 $validator = Validator::make(/* ... */);
 
@@ -603,11 +603,11 @@ if ($errors->has('email')) {
 
 ### Specifying Custom Messages in Language Files
 
-Laravel Hyperf's built-in validation rules each have an error message that is located in your application's `lang/en/validation.php` file.
+Hypervel's built-in validation rules each have an error message that is located in your application's `lang/en/validation.php` file.
 
 Within the `lang/en/validation.php` file, you will find a translation entry for each validation rule. You are free to change or modify these messages based on the needs of your application.
 
-In addition, you may copy this file to another language directory to translate the messages for your application's language. To learn more about Laravel Hyperf localization, check out the complete [localization documentation](/docs/localization).
+In addition, you may copy this file to another language directory to translate the messages for your application's language. To learn more about Hypervel localization, check out the complete [localization documentation](/docs/localization).
 
 #### Custom Messages for Specific Attributes
 
@@ -624,7 +624,7 @@ You may customize the error messages used for specified attribute and rule combi
 
 ### Specifying Attributes in Language Files
 
-Many of Laravel Hyperf's built-in error messages include an `:attribute` placeholder that is replaced with the name of the field or attribute under validation. If you would like the `:attribute` portion of your validation message to be replaced with a custom value, you may specify the custom attribute name in the `attributes` array of your `lang/xx/validation.php` language file:
+Many of Hypervel's built-in error messages include an `:attribute` placeholder that is replaced with the name of the field or attribute under validation. If you would like the `:attribute` portion of your validation message to be replaced with a custom value, you may specify the custom attribute name in the `attributes` array of your `lang/xx/validation.php` language file:
 
 ```php
 'attributes' => [
@@ -634,7 +634,7 @@ Many of Laravel Hyperf's built-in error messages include an `:attribute` placeho
 
 ### Specifying Values in Language Files
 
-Some of Laravel Hyperf's built-in validation rule error messages contain a `:value` placeholder that is replaced with the current value of the request attribute. However, you may occasionally need the `:value` portion of your validation message to be replaced with a custom representation of the value. For example, consider the following rule that specifies that a credit card number is required if the `payment_type` has a value of `cc`:
+Some of Hypervel's built-in validation rule error messages contain a `:value` placeholder that is replaced with the current value of the request attribute. However, you may occasionally need the `:value` portion of your validation message to be replaced with a custom representation of the value. For example, consider the following rule that specifies that a credit card number is required if the `payment_type` has a value of `cc`:
 
 ```php
 Validator::make($request->all(), [
@@ -858,7 +858,7 @@ The field under validation must be a PHP `array`.
 When additional values are provided to the `array` rule, each key in the input array must be present within the list of values provided to the rule. In the following example, the `admin` key in the input array is invalid since it is not contained in the list of values provided to the `array` rule:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 
 $input = [
     'user' => [
@@ -991,7 +991,7 @@ A _ratio_ constraint should be represented as width divided by height. This can 
 Since this rule requires several arguments, you may use the `Rule::dimensions` method to fluently construct the rule:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rule;
 
 Validator::make($data, [
@@ -1056,7 +1056,7 @@ The field under validation will be excluded from the request data returned by th
 If complex conditional exclusion logic is required, you may utilize the `Rule::excludeIf` method. This method accepts a boolean or a closure. When given a closure, the closure should return `true` or `false` to indicate if the field under validation should be excluded:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rule;
 
 Validator::make($request->all(), [
@@ -1120,7 +1120,7 @@ Instead of specifying the table name directly, you may specify the Eloquent mode
 If you would like to customize the query executed by the validation rule, you may use the `Rule` class to fluently define the rule. In this example, we'll also specify the validation rules as an array instead of using the `|` character to delimit them:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rule;
 
 Validator::make($data, [
@@ -1170,7 +1170,7 @@ The file under validation must be an image (jpg, jpeg, png, bmp, gif, svg, or we
 The field under validation must be included in the given list of values. Since this rule often requires you to `implode` an array, the `Rule::in` method may be used to fluently construct the rule:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rule;
 
 Validator::make($data, [
@@ -1184,7 +1184,7 @@ Validator::make($data, [
 When the `in` rule is combined with the `array` rule, each value in the input array must be present within the list of values provided to the `in` rule. In the following example, the `LAS` airport code in the input array is invalid since it is not contained in the list of airports provided to the `in` rule:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rule;
 
 $input = [
@@ -1426,7 +1426,7 @@ The field under validation must be missing or empty if the _anotherfield_ field 
 If complex conditional prohibition logic is required, you may utilize the `Rule::prohibitedIf` method. This method accepts a boolean or a closure. When given a closure, the closure should return `true` or `false` to indicate if the field under validation should be prohibited:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rule;
 
 Validator::make($request->all(), [
@@ -1499,7 +1499,7 @@ The field under validation must be present and not empty if the _anotherfield_ f
 If you would like to construct a more complex condition for the `required_if` rule, you may use the `Rule::requiredIf` method. This method accepts a boolean or a closure. When passed a closure, the closure should return `true` or `false` to indicate if the field under validation is required:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rule;
 
 Validator::make($request->all(), [
@@ -1624,7 +1624,7 @@ Sometimes, you may wish to ignore a given ID during unique validation. For examp
 To instruct the validator to ignore the user's ID, we'll use the `Rule` class to fluently define the rule. In this example, we'll also specify the validation rules as an array instead of using the `|` character to delimit the rules:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rule;
 
 Validator::make($data, [
@@ -1639,7 +1639,7 @@ Validator::make($data, [
 You should never pass any user controlled request input into the `ignore` method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.
 :::
 
-Instead of passing the model key's value to the `ignore` method, you may also pass the entire model instance. Laravel Hyperf will automatically extract the key from the model:
+Instead of passing the model key's value to the `ignore` method, you may also pass the entire model instance. Hypervel will automatically extract the key from the model:
 
 ```php
 Rule::unique('users')->ignore($user)
@@ -1696,7 +1696,7 @@ The field under validation must be a valid RFC 4122 (version 1, 3, 4, or 5) univ
 You may occasionally wish to not validate a given field if another field has a given value. You may accomplish this using the `exclude_if` validation rule. In this example, the `appointment_date` and `doctor_name` fields will not be validated if the `has_appointment` field has a value of `false`:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 
 $validator = Validator::make($data, [
     'has_appointment' => 'required|boolean',
@@ -1736,7 +1736,7 @@ If you are attempting to validate a field that should always be present but may 
 Sometimes you may wish to add validation rules based on more complex conditional logic. For example, you may wish to require a given field only if another field has a greater value than 100. Or, you may need two fields to have a given value only when another field is present. Adding these validation rules doesn't have to be a pain. First, create a `Validator` instance with your _static rules_ that never change:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 
 $validator = Validator::make($request->all(), [
     'email' => 'required|email',
@@ -1800,7 +1800,7 @@ Like the `$input` parameter passed to the closure, the `$item` parameter is an i
 As discussed in the [`array` validation rule documentation](#rule-array), the `array` rule accepts a list of allowed array keys. If any additional keys are present within the array, validation will fail:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 
 $input = [
     'user' => [
@@ -1822,7 +1822,7 @@ In general, you should always specify the array keys that are allowed to be pres
 Validating nested array based form input fields doesn't have to be a pain. You may use "dot notation" to validate attributes within an array. For example, if the incoming HTTP request contains a `photos[profile]` field, you may validate it like so:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 
 $validator = Validator::make($request->all(), [
     'photos.profile' => 'required|image',
@@ -1854,7 +1854,7 @@ Sometimes you may need to access the value for a given nested array element when
 
 ```php
 use App\Rules\HasPermission;
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rule;
 
 $validator = Validator::make($request->all(), [
@@ -1872,7 +1872,7 @@ $validator = Validator::make($request->all(), [
 When validating arrays, you may want to reference the index or position of a particular item that failed validation within the error message displayed by your application. To accomplish this, you may include the `:index` (starts from `0`) and `:position` (starts from `1`) placeholders within your [custom validation message](#manual-customizing-the-error-messages):
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 
 $input = [
     'photos' => [
@@ -1904,10 +1904,10 @@ If necessary, you may reference more deeply nested indexes and positions via `se
 
 ## Validating Files
 
-Laravel Hyperf provides a variety of validation rules that may be used to validate uploaded files, such as `mimes`, `image`, `min`, and `max`. While you are free to specify these rules individually when validating files, Laravel Hyperf also offers a fluent file validation rule builder that you may find convenient:
+Hypervel provides a variety of validation rules that may be used to validate uploaded files, such as `mimes`, `image`, `min`, and `max`. While you are free to specify these rules individually when validating files, Hypervel also offers a fluent file validation rule builder that you may find convenient:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rules\File;
 
 Validator::validate($input, [
@@ -1923,7 +1923,7 @@ Validator::validate($input, [
 If your application accepts images uploaded by your users, you may use the `File` rule's `image` constructor method to indicate that the uploaded file should be an image. In addition, the `dimensions` rule may be used to limit the dimensions of the image:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rule;
 use Hyperf\Validation\Rules\File;
 
@@ -1960,10 +1960,10 @@ Even though you only need to specify the extensions when invoking the `types` me
 
 ## Validating Passwords
 
-To ensure that passwords have an adequate level of complexity, you may use Laravel Hyperf's `Password` rule object:
+To ensure that passwords have an adequate level of complexity, you may use Hypervel's `Password` rule object:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Hyperf\Validation\Rules\Password;
 
 $validator = Validator::make($request->all(), [
@@ -2060,7 +2060,7 @@ Password::defaults(function () {
 
 ### Using Rule Objects
 
-Laravel Hyperf provides a variety of helpful validation rules; however, you may wish to specify some of your own. One method of registering custom validation rules is using rule objects. To generate a new rule object, you may use the `make:rule` Artisan command. Let's use this command to generate a rule that verifies a string is uppercase. Laravel Hyperf will place the new rule in the `app/Rules` directory. If this directory does not exist, Laravel Hyperf will create it when you execute the Artisan command to create your rule:
+Hypervel provides a variety of helpful validation rules; however, you may wish to specify some of your own. One method of registering custom validation rules is using rule objects. To generate a new rule object, you may use the `make:rule` Artisan command. Let's use this command to generate a rule that verifies a string is uppercase. Hypervel will place the new rule in the `app/Rules` directory. If this directory does not exist, Hypervel will create it when you execute the Artisan command to create your rule:
 
 ```shell
 php artisan make:rule Uppercase
@@ -2102,7 +2102,7 @@ $request->validate([
 
 #### Accessing Additional Data
 
-If your custom validation rule class needs to access all of the other data undergoing validation, your rule class may implement the `Hyperf\Validation\Contract\DataAwareRule` interface. This interface requires your class to define a `setData` method. This method will automatically be invoked by Laravel Hyperf (before validation proceeds) with all of the data under validation:
+If your custom validation rule class needs to access all of the other data undergoing validation, your rule class may implement the `Hyperf\Validation\Contract\DataAwareRule` interface. This interface requires your class to define a `setData` method. This method will automatically be invoked by Hypervel (before validation proceeds) with all of the data under validation:
 
 ```php
 <?php
@@ -2176,7 +2176,7 @@ class Uppercase implements ValidationRule, ValidatorAwareRule
 If you only need the functionality of a custom rule once throughout your application, you may use a closure instead of a rule object. The closure receives the attribute's name, the attribute's value, and a `$fail` callback that should be called if validation fails:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 use Closure;
 
 $validator = Validator::make($request->all(), [
@@ -2197,7 +2197,7 @@ $validator = Validator::make($request->all(), [
 By default, when an attribute being validated is not present or contains an empty string, normal validation rules, including custom rules, are not run. For example, the [`unique`](#rule-unique) rule will not be run against an empty string:
 
 ```php
-use LaravelHyperf\Support\Facades\Validator;
+use Hypervel\Support\Facades\Validator;
 
 $rules = ['name' => 'unique:users,name'];
 

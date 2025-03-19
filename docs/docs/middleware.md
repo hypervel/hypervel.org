@@ -3,30 +3,30 @@
 
 ## Introduction
 
-Middleware provide a convenient mechanism for inspecting and filtering HTTP requests entering your application. For example, Laravel Hyperf includes a middleware that verifies the user of your application is authenticated. If the user is not authenticated, the middleware will throw `LaravelHyperf\Auth\AuthenticationException`. However, if the user is authenticated, the middleware will allow the request to proceed further into the application.
+Middleware provide a convenient mechanism for inspecting and filtering HTTP requests entering your application. For example, Hypervel includes a middleware that verifies the user of your application is authenticated. If the user is not authenticated, the middleware will throw `Hypervel\Auth\AuthenticationException`. However, if the user is authenticated, the middleware will allow the request to proceed further into the application.
 
 Additional middleware can be written to perform a variety of tasks besides authentication. For example, a logging middleware might log all incoming requests to your application. You can place your middleware in the `app/Http/Middleware` directory.
 
 ## Middleware Support
 
-Laravel Hyperf supports [PSR-15](https://www.php-fig.org/psr/psr-15/) based middleware by default. This standard provides a common interface for HTTP server-side middleware, ensuring interoperability between different frameworks and libraries.
+Hypervel supports [PSR-15](https://www.php-fig.org/psr/psr-15/) based middleware by default. This standard provides a common interface for HTTP server-side middleware, ensuring interoperability between different frameworks and libraries.
 
 However, middleware in Laravel doesn't follow this standard. Laravel uses its own middleware implementation, which has a different structure and method signatures compared to PSR-15 middleware.
 
-To ensure backward compatibility with Hyperf and support Laravel-style middleware, Laravel Hyperf allows you to use both types of middleware together. This means you can:
+To ensure backward compatibility with Hyperf and support Laravel-style middleware, Hypervel allows you to use both types of middleware together. This means you can:
 
 1. Use PSR-15 compliant middleware for maximum interoperability with other PHP libraries and frameworks.
 2. Continue using Laravel-style middleware if you're migrating an existing Laravel application or prefer the Laravel middleware syntax.
 
-This flexibility allows developers to choose the middleware style that best suits their needs or gradually migrate from Laravel-style to PSR-15 middleware as needed. When defining middleware in your application, you can mix and match these two types without conflict. Laravel Hyperf will handle the appropriate execution of each middleware type internally.
+This flexibility allows developers to choose the middleware style that best suits their needs or gradually migrate from Laravel-style to PSR-15 middleware as needed. When defining middleware in your application, you can mix and match these two types without conflict. Hypervel will handle the appropriate execution of each middleware type internally.
 
 ::: tip
-For compatibility with middleware in Hyperf, the `request` you get in the middleware is a `Psr\Http\Message\ServerRequestInterface` object, which only implements basic PSR-7 methods. If you want to use `LaravelHyperf\Http\Request` within the middleware, you can get it by fetching `LaravelHyperf\Http\Request` from the container, using `LaravelHyperf\Support\Facades\Request` facade or calling `request()` global helper function.
+For compatibility with middleware in Hyperf, the `request` you get in the middleware is a `Psr\Http\Message\ServerRequestInterface` object, which only implements basic PSR-7 methods. If you want to use `Hypervel\Http\Request` within the middleware, you can get it by fetching `Hypervel\Http\Request` from the container, using `Hypervel\Support\Facades\Request` facade or calling `request()` global helper function.
 
-`LaravelHyperf\Http\Request` implements `Psr\Http\Message\ServerRequestInterface` and provides many other useful functions like in Laravel. For more details, you can see: [requests](/docs/requests).
+`Hypervel\Http\Request` implements `Psr\Http\Message\ServerRequestInterface` and provides many other useful functions like in Laravel. For more details, you can see: [requests](/docs/requests).
 :::
 
-## Defining Laravel Hyperf Middleware
+## Defining Hypervel Middleware
 
 ```php
 <?php
@@ -35,7 +35,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use LaravelHyperf\Context\Context;
+use Hypervel\Context\Context;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -62,7 +62,7 @@ class CorsMiddleware implements MiddlewareInterface
 }
 ```
 
-`Request` and `Response` objects in Laravel Hyperf follow the [PSR-7](https://www.php-fig.org/psr/psr-7/) standard and are therefore `immutable`. This immutability has important implications for how you work with these objects:
+`Request` and `Response` objects in Hypervel follow the [PSR-7](https://www.php-fig.org/psr/psr-7/) standard and are therefore `immutable`. This immutability has important implications for how you work with these objects:
 
 When you call methods like `$response->with***()`, you're not modifying the original `$response` object. Instead, you're creating a new object through cloning. For example:
 
@@ -73,8 +73,8 @@ $response = $response->withHeader('X-Header', 'Value');
 In this case, `$response` is now a new object, not a modification of the original one. However, Hyperf provides a way to override these objects using context. This allows you to maintain the PSR-7 compliance while still providing a way to modify the request and response objects when necessary.
 
 ```php
-use LaravelHyperf\Context\RequestContext;
-use LaravelHyperf\Context\ResponseContext;
+use Hypervel\Context\RequestContext;
+use Hypervel\Context\ResponseContext;
 
 // $request and $response are the modified objects
 $request = RequestContext::set($request);
@@ -95,8 +95,8 @@ You can also define a Laravel-style middleware like this:
 namespace App\Http\Middleware;
 
 use Closure;
-use LaravelHyperf\Auth\AuthenticationException;
-use LaravelHyperf\Http\Request;
+use Hypervel\Auth\AuthenticationException;
+use Hypervel\Http\Request;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -187,7 +187,7 @@ class AfterMiddleware
 ```
 
 ::: note
-There's no `terminate` function in middleware class because in Laravel Hyperf you can use `defer` for executing closure functions in the end of the request.
+There's no `terminate` function in middleware class because in Hypervel you can use `defer` for executing closure functions in the end of the request.
 :::
 
 ## Registering Middleware
@@ -216,14 +216,14 @@ Route::get('/', function () {
 }, ['middleware' => [First::class, Second::class]);
 ```
 
-For convenience, you may assign aliases to middleware in your application's `app/Http/Kernel.php` file. By default, the `$middlewareAliases` property of this class contains entries for the middleware included with Laravel Hyperf. You may add your own middleware to this list and assign it an alias of your choosing:
+For convenience, you may assign aliases to middleware in your application's `app/Http/Kernel.php` file. By default, the `$middlewareAliases` property of this class contains entries for the middleware included with Hypervel. You may add your own middleware to this list and assign it an alias of your choosing:
 
 ```php
 // Within App\Http\Kernel class...
 
 protected array $middlewareAliases = [
-    'throttle' => \LaravelHyperf\Router\Middleware\ThrottleRequests::class,
-    'bindings' => \LaravelHyperf\Router\Middleware\SubstituteBindings::class,
+    'throttle' => \Hypervel\Router\Middleware\ThrottleRequests::class,
+    'bindings' => \Hypervel\Router\Middleware\SubstituteBindings::class,
 ];
 ```
 
@@ -261,7 +261,7 @@ Route::group('/', function () {
 
 Sometimes you may want to group several middleware under a single key to make them easier to assign to routes. You may accomplish this using the `$middlewareGroups` property of your HTTP kernel.
 
-Laravel Hyperf includes predefined `web` and `api` middleware groups that contain common middleware you may want to apply to your web and API routes. Remember, these middleware groups are automatically applied by your application's `App\Providers\RouteServiceProvider` service provider to routes within your corresponding `web` and `api` route files:
+Hypervel includes predefined `web` and `api` middleware groups that contain common middleware you may want to apply to your web and API routes. Remember, these middleware groups are automatically applied by your application's `App\Providers\RouteServiceProvider` service provider to routes within your corresponding `web` and `api` route files:
 
 ```php
 /**
@@ -271,22 +271,22 @@ Laravel Hyperf includes predefined `web` and `api` middleware groups that contai
  */
 protected array $middlewareGroups = [
     'web' => [
-        // \LaravelHyperf\Router\Middleware\SubstituteBindings::class,
-        // \LaravelHyperf\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        // \LaravelHyperf\Session\Middleware\StartSession::class,
-        // \LaravelHyperf\View\Middleware\ShareErrorsFromSession::class,
+        // \Hypervel\Router\Middleware\SubstituteBindings::class,
+        // \Hypervel\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        // \Hypervel\Session\Middleware\StartSession::class,
+        // \Hypervel\View\Middleware\ShareErrorsFromSession::class,
         // \App\Http\Middleware\VerifyCsrfToken::class,
     ],
 
     'api' => [
         // 'throttle:60,1,api',
-        // \LaravelHyperf\Router\Middleware\SubstituteBindings::class,
+        // \Hypervel\Router\Middleware\SubstituteBindings::class,
     ],
 ];
 ```
 
 ::: note
-Middleware in `middlewareGroups` are disabled in Laravel Hyperf by default. You can enable them according to your needs.
+Middleware in `middlewareGroups` are disabled in Hypervel by default. You can enable them according to your needs.
 :::
 
 Middleware groups may be assigned to routes and controller actions using the same syntax as individual middleware. Again, middleware groups make it more convenient to assign many middleware to a route at once:
@@ -318,10 +318,10 @@ Rarely, you may need your middleware to execute in a specific order but not have
  * @var string[]
  */
 protected array $middlewarePriority = [
-    // \LaravelHyperf\Router\Middleware\ThrottleRequests::class,
-    // \LaravelHyperf\Router\Middleware\SubstituteBindings::class,
-    // \LaravelHyperf\Session\Middleware\StartSession::class,
-    // \LaravelHyperf\View\Middleware\ShareErrorsFromSession::class,
+    // \Hypervel\Router\Middleware\ThrottleRequests::class,
+    // \Hypervel\Router\Middleware\SubstituteBindings::class,
+    // \Hypervel\Session\Middleware\StartSession::class,
+    // \Hypervel\View\Middleware\ShareErrorsFromSession::class,
     // \App\Http\Middleware\VerifyCsrfToken::class,
 ];
 ```

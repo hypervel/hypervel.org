@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Almost every modern web application interacts with a database. Laravel Hyperf makes interacting with databases extremely simple across a variety of supported databases using raw SQL, a [fluent query builder](/docs/queries), and the [Eloquent ORM](/docs/eloquent). Currently, Laravel Hyperf provides first-party support for five databases:
+Almost every modern web application interacts with a database. Hypervel makes interacting with databases extremely simple across a variety of supported databases using raw SQL, a [fluent query builder](/docs/queries), and the [Eloquent ORM](/docs/eloquent). Currently, Hypervel provides first-party support for five databases:
 
 <div class="content-list" markdown="1">
 
@@ -16,16 +16,16 @@ Almost every modern web application interacts with a database. Laravel Hyperf ma
 </div>
 
 ::: info
-By default Laravel Hyperf Hyperf doesn't include drivers for PostgresSQL and SQL Server. You can install these drivers with `hyperf/database-pgsql` and `hyperf/database-sqlserver-incubator` manually.
+By default Hypervel Hyperf doesn't include drivers for PostgresSQL and SQL Server. You can install these drivers with `hyperf/database-pgsql` and `hyperf/database-sqlserver-incubator` manually.
 :::
 
 ::: warning
-Because MongoDB extension doesn't support coroutine feature, there's no mongo driver in Laravel Hyperf Hyperf at this moment.
+Because MongoDB extension doesn't support coroutine feature, there's no mongo driver in Hypervel Hyperf at this moment.
 :::
 
 ### Configuration
 
-The configuration for Laravel Hyperf Hyperf's database services is located in your application's `config/database.php` configuration file. In this file, you may define all of your database connections, as well as specify which connection should be used by default. Most of the configuration options within this file are driven by the values of your application's environment variables. Examples for most of Laravel Hyperf Hyperf's supported database systems are provided in this file.
+The configuration for Hypervel Hyperf's database services is located in your application's `config/database.php` configuration file. In this file, you may define all of your database connections, as well as specify which connection should be used by default. Most of the configuration options within this file are driven by the values of your application's environment variables. Examples for most of Hypervel Hyperf's supported database systems are provided in this file.
 
 #### SQLite Configuration
 
@@ -43,12 +43,12 @@ DB_FOREIGN_KEYS=false
 ```
 
 ::: note
-Laravel Hyperf Hyperf will automatically create a `database/database.sqlite` file and run the default [database migrations](/docs/migrations) for you when you install from composer.
+Hypervel Hyperf will automatically create a `database/database.sqlite` file and run the default [database migrations](/docs/migrations) for you when you install from composer.
 :::
 
 ### Read and Write Connections
 
-Sometimes you may wish to use one database connection for SELECT statements, and another for INSERT, UPDATE, and DELETE statements. Laravel Hyperf makes this a breeze, and the proper connections will always be used whether you are using raw queries, the query builder, or the Eloquent ORM.
+Sometimes you may wish to use one database connection for SELECT statements, and another for INSERT, UPDATE, and DELETE statements. Hypervel makes this a breeze, and the proper connections will always be used whether you are using raw queries, the query builder, or the Eloquent ORM.
 
 To see how read / write connections should be configured, let's look at this example:
 
@@ -90,7 +90,7 @@ The `sticky` option is an *optional* value that can be used to allow the immedia
 
 ### Connection Pooling
 
-Laravel Hyperf implements database connection pooling to efficiently manage and reuse database connections across coroutines. Connection pooling helps improve performance by reducing the overhead of establishing new database connections for each request.
+Hypervel implements database connection pooling to efficiently manage and reuse database connections across coroutines. Connection pooling helps improve performance by reducing the overhead of establishing new database connections for each request.
 
 ```php
 'mysql' => [
@@ -137,7 +137,7 @@ To run a basic SELECT query, you may use the `select` method on the `DB` facade:
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 use Hyperf\ViewEngine\Contract\ViewInterface;
 
 class UserController extends Controller
@@ -159,7 +159,7 @@ The first argument passed to the `select` method is the SQL query, while the sec
 The `select` method will always return an `array` of results. Each result within the array will be a PHP `stdClass` object representing a record from the database:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 $users = DB::select('select * from users');
 
@@ -170,7 +170,7 @@ foreach ($users as $user) {
 
 #### Selecting Scalar Values
 
-Sometimes your database query may result in a single, scalar value. Instead of being required to retrieve the query's scalar result from a record object, Laravel Hyperf allows you to retrieve this value directly using the `scalar` method:
+Sometimes your database query may result in a single, scalar value. Instead of being required to retrieve the query's scalar result from a record object, Hypervel allows you to retrieve this value directly using the `scalar` method:
 
 ```php
 $burgers = DB::scalar(
@@ -191,7 +191,7 @@ $results = DB::select('select * from users where id = :id', ['id' => 1]);
 To execute an `insert` statement, you may use the `insert` method on the `DB` facade. Like `select`, this method accepts the SQL query as its first argument and bindings as its second argument:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 DB::insert('insert into users (id, name) values (?, ?)', [1, 'Marc']);
 ```
@@ -201,7 +201,7 @@ DB::insert('insert into users (id, name) values (?, ?)', [1, 'Marc']);
 The `update` method should be used to update existing records in the database. The number of rows affected by the statement is returned by the method:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 $affected = DB::update(
     'update users set votes = 100 where name = ?',
@@ -214,7 +214,7 @@ $affected = DB::update(
 The `delete` method should be used to delete records from the database. Like `update`, the number of rows affected will be returned by the method:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 $deleted = DB::delete('delete from users');
 ```
@@ -241,7 +241,7 @@ Since unprepared statements do not bind parameters, they may be vulnerable to SQ
 
 #### Implicit Commits
 
-When using the `DB` facade's `statement` and `unprepared` methods within transactions you must be careful to avoid statements that cause [implicit commits](https://dev.mysql.com/doc/refman/8.0/en/implicit-commit.html). These statements will cause the database engine to indirectly commit the entire transaction, leaving Laravel Hyperf unaware of the database's transaction level. An example of such a statement is creating a database table:
+When using the `DB` facade's `statement` and `unprepared` methods within transactions you must be careful to avoid statements that cause [implicit commits](https://dev.mysql.com/doc/refman/8.0/en/implicit-commit.html). These statements will cause the database engine to indirectly commit the entire transaction, leaving Hypervel unaware of the database's transaction level. An example of such a statement is creating a database table:
 
 ```php
 DB::unprepared('create table a (col varchar(1) null)');
@@ -254,7 +254,7 @@ Please refer to the MySQL manual for [a list of all statements](https://dev.mysq
 If your application defines multiple connections in your `config/database.php` configuration file, you may access each connection via the `connection` method provided by the `DB` facade. The connection name passed to the `connection` method should correspond to one of the connections listed in your `config/database.php` configuration file or configured at runtime using the `config` helper:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 $users = DB::connection('sqlite')->select(/* ... */);
 ```
@@ -275,8 +275,8 @@ If you would like to specify a closure that is invoked for each SQL query execut
 namespace App\Providers;
 
 use Hyperf\Database\Events\QueryExecuted;
-use LaravelHyperf\Support\Facades\DB;
-use LaravelHyperf\Support\ServiceProvider;
+use Hypervel\Support\Facades\DB;
+use Hypervel\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -307,7 +307,7 @@ class AppServiceProvider extends ServiceProvider
 You may use the `transaction` method provided by the `DB` facade to run a set of operations within a database transaction. If an exception is thrown within the transaction closure, the transaction will automatically be rolled back and the exception is re-thrown. If the closure executes successfully, the transaction will automatically be committed. You don't need to worry about manually rolling back or committing while using the `transaction` method:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 DB::transaction(function () {
     DB::update('update users set votes = 1');
@@ -321,7 +321,7 @@ DB::transaction(function () {
 The `transaction` method accepts an optional second argument which defines the number of times a transaction should be retried when a deadlock occurs. Once these attempts have been exhausted, an exception will be thrown:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 DB::transaction(function () {
     DB::update('update users set votes = 1');
@@ -335,7 +335,7 @@ DB::transaction(function () {
 If you would like to begin a transaction manually and have complete control over rollbacks and commits, you may use the `beginTransaction` method provided by the `DB` facade:
 
 ```php
-use LaravelHyperf\Support\Facades\DB;
+use Hypervel\Support\Facades\DB;
 
 DB::beginTransaction();
 ```

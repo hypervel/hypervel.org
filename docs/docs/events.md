@@ -1,16 +1,16 @@
 ## Introduction
 
-Laravel Hyperf's events provide a simple observer pattern implementation, allowing you to subscribe and listen for various events that occur within your application. Event classes are typically stored in the `app/Events` directory, while their listeners are stored in `app/Listeners`. Don't worry if you don't see these directories in your application as they will be created for you as you generate events and listeners using Artisan console commands.
+Hypervel's events provide a simple observer pattern implementation, allowing you to subscribe and listen for various events that occur within your application. Event classes are typically stored in the `app/Events` directory, while their listeners are stored in `app/Listeners`. Don't worry if you don't see these directories in your application as they will be created for you as you generate events and listeners using Artisan console commands.
 
 Events serve as a great way to decouple various aspects of your application, since a single event can have multiple listeners that do not depend on each other. For example, you may wish to send a Slack notification to your user each time an order has shipped. Instead of coupling your order processing code to your Slack notification code, you can raise an `App\Events\OrderShipped` event which a listener can receive and use to dispatch a Slack notification.
 
 ::: note
-Laravel Hyperf's events provide similar functionality to Laravel's events. To keep compatibility with Hyperf's events, events in Laravel Hyperf is built on Hyperf's event component.
+Hypervel's events provide similar functionality to Laravel's events. To keep compatibility with Hyperf's events, events in Hypervel is built on Hyperf's event component.
 :::
 
 ## Registering Events and Listeners
 
-The `App\Providers\EventServiceProvider` included with your Laravel Hyperf application provides a convenient place to register all of your application's event listeners. The `listen` property contains an array of all events (keys) and their listeners (values). You may add as many events to this array as your application requires. For example, let's add an `OrderShipped` event:
+The `App\Providers\EventServiceProvider` included with your Hypervel application provides a convenient place to register all of your application's event listeners. The `listen` property contains an array of all events (keys) and their listeners (values). You may add as many events to this array as your application requires. For example, let's add an `OrderShipped` event:
 
 ```php
 use App\Events\OrderShipped;
@@ -49,7 +49,7 @@ Typically, events should be registered via the `EventServiceProvider` `$listen` 
 ```php
 use App\Events\PodcastProcessed;
 use App\Listeners\SendPodcastNotification;
-use LaravelHyperf\Support\Facades\Event;
+use Hypervel\Support\Facades\Event;
 
 /**
  * Register any other events for your application.
@@ -69,12 +69,12 @@ public function boot(): void
 
 #### Queueable Anonymous Event Listeners
 
-When registering closure based event listeners manually, you may wrap the listener closure within the `LaravelHyperf\Event\queueable` function to instruct Laravel Hyperf to execute the listener using the [queue](/docs/queues):
+When registering closure based event listeners manually, you may wrap the listener closure within the `Hypervel\Event\queueable` function to instruct Hypervel to execute the listener using the [queue](/docs/queues):
 
 ```php
 use App\Events\PodcastProcessed;
-use function LaravelHyperf\Events\queueable;
-use LaravelHyperf\Support\Facades\Event;
+use function Hypervel\Events\queueable;
+use Hypervel\Support\Facades\Event;
 
 /**
  * Register any other events for your application.
@@ -99,8 +99,8 @@ If you would like to handle anonymous queued listener failures, you may provide 
 
 ```php
 use App\Events\PodcastProcessed;
-use function LaravelHyperf\Events\queueable;
-use LaravelHyperf\Support\Facades\Event;
+use function Hypervel\Events\queueable;
+use Hypervel\Support\Facades\Event;
 use Throwable;
 
 Event::listen(queueable(function (PodcastProcessed $event) {
@@ -130,7 +130,7 @@ An event class is essentially a data container which holds the information relat
 namespace App\Events;
 
 use App\Models\Order;
-use LaravelHyperf\Bus\Dispatchable;
+use Hypervel\Bus\Dispatchable;
 
 class OrderShipped
 {
@@ -179,7 +179,7 @@ class SendShipmentNotification
 ```
 
 ::: note
-Your event listeners may also type-hint any dependencies they need on their constructors. All event listeners are resolved via the Laravel Hyperf [service container](/docs/container), so dependencies will be injected automatically.
+Your event listeners may also type-hint any dependencies they need on their constructors. All event listeners are resolved via the Hypervel [service container](/docs/container), so dependencies will be injected automatically.
 :::
 
 #### Stopping The Propagation Of An Event
@@ -198,7 +198,7 @@ To specify that a listener should be queued, add the `ShouldQueue` interface to 
 namespace App\Listeners;
 
 use App\Events\OrderShipped;
-use LaravelHyperf\Queue\Contracts\ShouldQueue;
+use Hypervel\Queue\Contracts\ShouldQueue;
 
 class SendShipmentNotification implements ShouldQueue
 {
@@ -206,7 +206,7 @@ class SendShipmentNotification implements ShouldQueue
 }
 ```
 
-That's it! Now, when an event handled by this listener is dispatched, the listener will automatically be queued by the event dispatcher using Laravel Hyperf's [queue system](/docs/queues). If no exceptions are thrown when the listener is executed by the queue, the queued job will automatically be deleted after it has finished processing.
+That's it! Now, when an event handled by this listener is dispatched, the listener will automatically be queued by the event dispatcher using Hypervel's [queue system](/docs/queues). If no exceptions are thrown when the listener is executed by the queue, the queued job will automatically be deleted after it has finished processing.
 
 #### Customizing The Queue Connection, Name, & Delay
 
@@ -218,7 +218,7 @@ If you would like to customize the queue connection, queue name, or queue delay 
 namespace App\Listeners;
 
 use App\Events\OrderShipped;
-use LaravelHyperf\Queue\Contracts\ShouldQueue;
+use Hypervel\Queue\Contracts\ShouldQueue;
 
 class SendShipmentNotification implements ShouldQueue
 {
@@ -277,7 +277,7 @@ Sometimes, you may need to determine whether a listener should be queued based o
 namespace App\Listeners;
 
 use App\Events\OrderCreated;
-use LaravelHyperf\Queue\Contracts\ShouldQueue;
+use Hypervel\Queue\Contracts\ShouldQueue;
 
 class RewardGiftCard implements ShouldQueue
 {
@@ -301,7 +301,7 @@ class RewardGiftCard implements ShouldQueue
 
 ## Dispatching Events
 
-To dispatch an event, you may call the static `dispatch` method on the event. This method is made available on the event by the `LaravelHyperf\Bus\Dispatchable` trait. Any arguments passed to the `dispatch` method will be passed to the event's constructor:
+To dispatch an event, you may call the static `dispatch` method on the event. This method is made available on the event by the `Hypervel\Bus\Dispatchable` trait. Any arguments passed to the `dispatch` method will be passed to the event's constructor:
 
 ```php
 <?php
@@ -312,7 +312,7 @@ use App\Events\OrderShipped;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Psr\Http\Message\ResponseInterface;
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 
 class OrderShipmentController extends Controller
 {
@@ -341,14 +341,14 @@ OrderShipped::dispatchUnless($condition, $order);
 ```
 
 ::: note
-When testing, it can be helpful to assert that certain events were dispatched without actually triggering their listeners. Laravel Hyperf's [built-in testing helpers](#testing) make it a cinch.
+When testing, it can be helpful to assert that certain events were dispatched without actually triggering their listeners. Hypervel's [built-in testing helpers](#testing) make it a cinch.
 :::
 
 ### Dispatching Events After Database Transactions
 
-Sometimes, you may want to instruct Laravel Hyperf to only dispatch an event after the active database transaction has committed. To do so, you may implement the `ShouldDispatchAfterCommit` interface on the event class.
+Sometimes, you may want to instruct Hypervel to only dispatch an event after the active database transaction has committed. To do so, you may implement the `ShouldDispatchAfterCommit` interface on the event class.
 
-This interface instructs Laravel Hyperf to not dispatch the event until the current database transaction is committed. If the transaction fails, the event will be discarded. If no database transaction is in progress when the event is dispatched, the event will be dispatched immediately:
+This interface instructs Hypervel to not dispatch the event until the current database transaction is committed. If the transaction fails, the event will be discarded. If no database transaction is in progress when the event is dispatched, the event will be dispatched immediately:
 
 ```php
 <?php
@@ -356,10 +356,10 @@ This interface instructs Laravel Hyperf to not dispatch the event until the curr
 namespace App\Events;
 
 use App\Models\Order;
-use LaravelHyperf\Broadcasting\InteractsWithSockets;
-use LaravelHyperf\Events\Contracts\ShouldDispatchAfterCommit;
-use LaravelHyperf\Bus\Dispatchable;
-use LaravelHyperf\Queue\SerializesModels;
+use Hypervel\Broadcasting\InteractsWithSockets;
+use Hypervel\Events\Contracts\ShouldDispatchAfterCommit;
+use Hypervel\Bus\Dispatchable;
+use Hypervel\Queue\SerializesModels;
 
 class OrderShipped implements ShouldDispatchAfterCommit
 {
@@ -387,7 +387,7 @@ namespace App\Listeners;
 
 use App\Events\Auth\Login;
 use App\Events\Auth\Logout;
-use LaravelHyperf\Events\EventDispatcher;
+use Hypervel\Events\EventDispatcher;
 
 class UserEventSubscriber
 {
@@ -419,7 +419,7 @@ class UserEventSubscriber
 }
 ```
 
-If your event listener methods are defined within the subscriber itself, you may find it more convenient to return an array of events and method names from the subscriber's `subscribe` method. Laravel Hyperf will automatically determine the subscriber's class name when registering the event listeners:
+If your event listener methods are defined within the subscriber itself, you may find it more convenient to return an array of events and method names from the subscriber's `subscribe` method. Hypervel will automatically determine the subscriber's class name when registering the event listeners:
 
 ```php
 <?php
@@ -428,7 +428,7 @@ namespace App\Listeners;
 
 use App\Events\Auth\Login;
 use App\Events\Auth\Logout;
-use LaravelHyperf\Events\EventDispatcher;
+use Hypervel\Events\EventDispatcher;
 
 class UserEventSubscriber
 {
@@ -467,7 +467,7 @@ After writing the subscriber, you are ready to register it with the event dispat
 namespace App\Providers;
 
 use App\Listeners\UserEventSubscriber;
-use LaravelHyperf\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Hypervel\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -489,7 +489,7 @@ class EventServiceProvider extends ServiceProvider
 
 ## Testing
 
-When testing code that dispatches events, you may wish to instruct Laravel Hyperf to not actually execute the event's listeners, since the listener's code can be tested directly and separately of the code that dispatches the corresponding event. Of course, to test the listener itself, you may instantiate a listener instance and invoke the `handle` method directly in your test.
+When testing code that dispatches events, you may wish to instruct Hypervel to not actually execute the event's listeners, since the listener's code can be tested directly and separately of the code that dispatches the corresponding event. Of course, to test the listener itself, you may instantiate a listener instance and invoke the `handle` method directly in your test.
 
 Using the `Event` facade's `fake` method, you may prevent listeners from executing, execute the code under test, and then assert which events were dispatched by your application using the `assertDispatched`, `assertNotDispatched`, and `assertNothingDispatched` methods:
 
@@ -500,7 +500,7 @@ namespace Tests\Feature;
 
 use App\Events\OrderFailedToShip;
 use App\Events\OrderShipped;
-use LaravelHyperf\Support\Facades\Event;
+use Hypervel\Support\Facades\Event;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -592,7 +592,7 @@ namespace Tests\Feature;
 
 use App\Events\OrderCreated;
 use App\Models\Order;
-use LaravelHyperf\Support\Facades\Event;
+use Hypervel\Support\Facades\Event;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase

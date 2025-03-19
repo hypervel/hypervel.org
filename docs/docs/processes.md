@@ -3,21 +3,21 @@
 
 ## Introduction
 
-Laravel Hyperf provides an expressive, minimal API around the [Symfony Process component](https://symfony.com/doc/current/components/process.html), allowing you to conveniently invoke external processes from your Laravel Hyperf application. Laravel Hyperf's process features are focused on the most common use cases and a wonderful developer experience.
+Hypervel provides an expressive, minimal API around the [Symfony Process component](https://symfony.com/doc/current/components/process.html), allowing you to conveniently invoke external processes from your Hypervel application. Hypervel's process features are focused on the most common use cases and a wonderful developer experience.
 
 ## Invoking Processes
 
 To invoke a process, you may use the `run` and `start` methods offered by the `Process` facade. The `run` method will invoke a process and wait for the process to finish executing, while the `start` method is used for asynchronous process execution. We'll examine both approaches within this documentation. First, let's examine how to invoke a basic, synchronous process and inspect its result:
 
 ```php
-use LaravelHyperf\Support\Facades\Process;
+use Hypervel\Support\Facades\Process;
 
 $result = Process::run('ls -la');
 
 return $result->output();
 ```
 
-Of course, the `LaravelHyperf\Process\Contracts\ProcessResult` instance returned by the `run` method offers a variety of helpful methods that may be used to inspect the process result:
+Of course, the `Hypervel\Process\Contracts\ProcessResult` instance returned by the `run` method offers a variety of helpful methods that may be used to inspect the process result:
 
 ```php
 $result = Process::run('ls -la');
@@ -31,7 +31,7 @@ $result->errorOutput();
 
 #### Throwing Exceptions
 
-If you have a process result and would like to throw an instance of `LaravelHyperf\Process\Exceptions\ProcessFailedException` if the exit code is greater than zero (thus indicating failure), you may use the `throw` and `throwIf` methods. If the process did not fail, the process result instance will be returned:
+If you have a process result and would like to throw an instance of `Hypervel\Process\Exceptions\ProcessFailedException` if the exit code is greater than zero (thus indicating failure), you may use the `throw` and `throwIf` methods. If the process did not fail, the process result instance will be returned:
 
 ```php
 $result = Process::run('ls -la')->throw();
@@ -41,7 +41,7 @@ $result = Process::run('ls -la')->throwIf($condition);
 
 ### Process Options
 
-Of course, you may need to customize the behavior of a process before invoking it. Thankfully, Laravel Hyperf allows you to tweak a variety of process features, such as the working directory, timeout, and environment variables.
+Of course, you may need to customize the behavior of a process before invoking it. Thankfully, Hypervel allows you to tweak a variety of process features, such as the working directory, timeout, and environment variables.
 
 #### Working Directory Path
 
@@ -61,7 +61,7 @@ $result = Process::input('Hello World')->run('cat');
 
 #### Timeouts
 
-By default, processes will throw an instance of `LaravelHyperf\Process\Exceptions\ProcessTimedOutException` after executing for more than 60 seconds. However, you can customize this behavior via the `timeout` method:
+By default, processes will throw an instance of `Hypervel\Process\Exceptions\ProcessTimedOutException` after executing for more than 60 seconds. However, you can customize this behavior via the `timeout` method:
 
 ```php
 $result = Process::timeout(120)->run('bash import.sh');
@@ -110,7 +110,7 @@ Process::forever()->tty()->run('vim');
 As previously discussed, process output may be accessed using the `output` (stdout) and `errorOutput` (stderr) methods on a process result:
 
 ```php
-use LaravelHyperf\Support\Facades\Process;
+use Hypervel\Support\Facades\Process;
 
 $result = Process::run('ls -la');
 
@@ -126,10 +126,10 @@ $result = Process::run('ls -la', function (string $type, string $output) {
 });
 ```
 
-Laravel Hyperf also offers the `seeInOutput` and `seeInErrorOutput` methods, which provide a convenient way to determine if a given string was contained in the process' output:
+Hypervel also offers the `seeInOutput` and `seeInErrorOutput` methods, which provide a convenient way to determine if a given string was contained in the process' output:
 
 ```php
-if (Process::run('ls -la')->seeInOutput('laravel hyperf')) {
+if (Process::run('ls -la')->seeInOutput('Hypervel')) {
     // ...
 }
 ```
@@ -139,7 +139,7 @@ if (Process::run('ls -la')->seeInOutput('laravel hyperf')) {
 If your process is writing a significant amount of output that you are not interested in, you can conserve memory by disabling output retrieval entirely. To accomplish this, invoke the `quietly` method while building the process:
 
 ```php
-use LaravelHyperf\Support\Facades\Process;
+use Hypervel\Support\Facades\Process;
 
 $result = Process::quietly()->run('bash import.sh');
 ```
@@ -149,8 +149,8 @@ $result = Process::quietly()->run('bash import.sh');
 Sometimes you may want to make the output of one process the input of another process. This is often referred to as "piping" the output of a process into another. The `pipe` method provided by the `Process` facades makes this easy to accomplish. The `pipe` method will execute the piped processes synchronously and return the process result for the last process in the pipeline:
 
 ```php
-use LaravelHyperf\Process\Pipe;
-use LaravelHyperf\Support\Facades\Process;
+use Hypervel\Process\Pipe;
+use Hypervel\Support\Facades\Process;
 
 $result = Process::pipe(function (Pipe $pipe) {
     $pipe->command('cat example.txt');
@@ -176,13 +176,13 @@ The process output may be gathered in real-time by passing a closure as the seco
 ```php
 $result = Process::pipe(function (Pipe $pipe) {
     $pipe->command('cat example.txt');
-    $pipe->command('grep -i "laravel hyperf"');
+    $pipe->command('grep -i "Hypervel"');
 }, function (string $type, string $output) {
     echo $output;
 });
 ```
 
-Laravel Hyperf also allows you to assign string keys to each process within a pipeline via the `as` method. This key will also be passed to the output closure provided to the `pipe` method, allowing you to determine which process the output belongs to:
+Hypervel also allows you to assign string keys to each process within a pipeline via the `as` method. This key will also be passed to the output closure provided to the `pipe` method, allowing you to determine which process the output belongs to:
 
 ```php
 $result = Process::pipe(function (Pipe $pipe) {
@@ -260,13 +260,13 @@ $result = $process->wait();
 
 ## Concurrent Processes
 
-Laravel Hyperf also makes it a breeze to manage a pool of concurrent, asynchronous processes, allowing you to easily execute many tasks simultaneously. To get started, invoke the `pool` method, which accepts a closure that receives an instance of `LaravelHyperf\Process\Pool`.
+Hypervel also makes it a breeze to manage a pool of concurrent, asynchronous processes, allowing you to easily execute many tasks simultaneously. To get started, invoke the `pool` method, which accepts a closure that receives an instance of `Hypervel\Process\Pool`.
 
 Within this closure, you may define the processes that belong to the pool. Once a process pool is started via the `start` method, you may access the [collection](/docs/collections) of running processes via the `running` method:
 
 ```php
-use LaravelHyperf\Process\Pool;
-use LaravelHyperf\Support\Facades\Process;
+use Hypervel\Process\Pool;
+use Hypervel\Support\Facades\Process;
 
 $pool = Process::pool(function (Pool $pool) {
     $pool->path(__DIR__)->command('bash import-1.sh');
@@ -305,7 +305,7 @@ echo $first->output();
 
 ### Naming Pool Processes
 
-Accessing process pool results via a numeric key is not very expressive; therefore, Laravel Hyperf allows you to assign string keys to each process within a pool via the `as` method. This key will also be passed to the closure provided to the `start` method, allowing you to determine which process the output belongs to:
+Accessing process pool results via a numeric key is not very expressive; therefore, Hypervel allows you to assign string keys to each process within a pool via the `as` method. This key will also be passed to the closure provided to the `start` method, allowing you to determine which process the output belongs to:
 
 ```php
 $pool = Process::pool(function (Pool $pool) {
@@ -337,15 +337,15 @@ $pool->signal(SIGUSR2);
 
 ## Testing
 
-Many Laravel Hyperf services provide functionality to help you easily and expressively write tests, and Laravel Hyperf's process service is no exception. The `Process` facade's `fake` method allows you to instruct Laravel Hyperf to return stubbed / dummy results when processes are invoked.
+Many Hypervel services provide functionality to help you easily and expressively write tests, and Hypervel's process service is no exception. The `Process` facade's `fake` method allows you to instruct Hypervel to return stubbed / dummy results when processes are invoked.
 
 ### Faking Processes
 
-To explore Laravel Hyperf's ability to fake processes, let's imagine a route that invokes a process:
+To explore Hypervel's ability to fake processes, let's imagine a route that invokes a process:
 
 ```php
-use LaravelHyperf\Support\Facades\Process;
-use LaravelHyperf\Support\Facades\Route;
+use Hypervel\Support\Facades\Process;
+use Hypervel\Support\Facades\Route;
 
 Route::get('/import', function () {
     Process::run('bash import.sh');
@@ -354,16 +354,16 @@ Route::get('/import', function () {
 });
 ```
 
-When testing this route, we can instruct Laravel Hyperf to return a fake, successful process result for every invoked process by calling the `fake` method on the `Process` facade with no arguments. In addition, we can even [assert](#available-assertions) that a given process was "run":
+When testing this route, we can instruct Hypervel to return a fake, successful process result for every invoked process by calling the `fake` method on the `Process` facade with no arguments. In addition, we can even [assert](#available-assertions) that a given process was "run":
 
 ```php
 <?php
 
 namespace Tests\Feature;
 
-use LaravelHyperf\Process\PendingProcess;
-use LaravelHyperf\Process\Contracts\ProcessResult;
-use LaravelHyperf\Support\Facades\Process;
+use Hypervel\Process\PendingProcess;
+use Hypervel\Process\Contracts\ProcessResult;
+use Hypervel\Support\Facades\Process;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -386,7 +386,7 @@ class ExampleTest extends TestCase
 }
 ```
 
-As discussed, invoking the `fake` method on the `Process` facade will instruct Laravel Hyperf to always return a successful process result with no output. However, you may easily specify the output and exit code for faked processes using the `Process` facade's `result` method:
+As discussed, invoking the `fake` method on the `Process` facade will instruct Hypervel to always return a successful process result with no output. However, you may easily specify the output and exit code for faked processes using the `Process` facade's `result` method:
 
 ```php
 Process::fake([
@@ -443,8 +443,8 @@ Thus far, we have primarily discussed faking processes which are invoked synchro
 For example, let's imagine the following route which interacts with an asynchronous process:
 
 ```php
-use LaravelHyperf\Support\Facades\Log;
-use LaravelHyperf\Support\Facades\Route;
+use Hypervel\Support\Facades\Log;
+use Hypervel\Support\Facades\Route;
 
 Route::get('/import', function () {
     $process = Process::start('bash import.sh');
@@ -475,14 +475,14 @@ Let's dig into the example above. Using the `output` and `errorOutput` methods, 
 
 ### Available Assertions
 
-As [previously discussed](#faking-processes), Laravel Hyperf provides several process assertions for your feature tests. We'll discuss each of these assertions below.
+As [previously discussed](#faking-processes), Hypervel provides several process assertions for your feature tests. We'll discuss each of these assertions below.
 
 #### assertRan
 
 Assert that a given process was invoked:
 
 ```php
-use LaravelHyperf\Support\Facades\Process;
+use Hypervel\Support\Facades\Process;
 
 Process::assertRan('ls -la');
 ```
@@ -497,14 +497,14 @@ Process::assertRan(fn ($process, $result) =>
 );
 ```
 
-The `$process` passed to the `assertRan` closure is an instance of `LaravelHyperf\Process\PendingProcess`, while the `$result` is an instance of `LaravelHyperf\Process\Contracts\ProcessResult`.
+The `$process` passed to the `assertRan` closure is an instance of `Hypervel\Process\PendingProcess`, while the `$result` is an instance of `Hypervel\Process\Contracts\ProcessResult`.
 
 #### assertDidntRun
 
 Assert that a given process was not invoked:
 
 ```php
-use LaravelHyperf\Support\Facades\Process;
+use Hypervel\Support\Facades\Process;
 
 Process::assertDidntRun('ls -la');
 ```
@@ -522,7 +522,7 @@ Process::assertDidntRun(fn (PendingProcess $process, ProcessResult $result) =>
 Assert that a given process was invoked a given number of times:
 
 ```php
-use LaravelHyperf\Support\Facades\Process;
+use Hypervel\Support\Facades\Process;
 
 Process::assertRanTimes('ls -la', times: 3);
 ```
@@ -540,7 +540,7 @@ Process::assertRanTimes(function (PendingProcess $process, ProcessResult $result
 If you would like to ensure that all invoked processes have been faked throughout your individual test or complete test suite, you can call the `preventStrayProcesses` method. After calling this method, any processes that do not have a corresponding fake result will throw an exception rather than starting an actual process:
 
 ```php
-use LaravelHyperf\Support\Facades\Process;
+use Hypervel\Support\Facades\Process;
 
 Process::preventStrayProcesses();
 

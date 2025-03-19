@@ -5,40 +5,40 @@
 
 Some of the data retrieval or processing tasks performed by your application could be CPU intensive or take several seconds to complete. When this is the case, it is common to cache the retrieved data for a time so it can be retrieved quickly on subsequent requests for the same data. The cached data is usually stored in a very fast data store such as [Redis](https://redis.io).
 
-Thankfully, Laravel Hyperf provides an expressive, unified API for various cache backends, allowing you to take advantage of their blazing fast data retrieval and speed up your web application.
+Thankfully, Hypervel provides an expressive, unified API for various cache backends, allowing you to take advantage of their blazing fast data retrieval and speed up your web application.
 
 ::: tip
-Because Laravel Hyperf implements the same cache protocol as Laravel, you can share the cache and locks between the frameworks
+Because Hypervel implements the same cache protocol as Laravel, you can share the cache and locks between the frameworks
 :::
 
 ## Configuration
 
-Your application's cache configuration file is located at `config/cache.php`. In this file, you may specify which cache driver you would like to be used by default throughout your application. Laravel Hyperf supports popular caching backends like [Redis](https://redis.io) and Swoole Table out of the box. In addition, a file based cache driver is available, while `array` and "null" cache drivers provide convenient cache backends for your automated tests.
+Your application's cache configuration file is located at `config/cache.php`. In this file, you may specify which cache driver you would like to be used by default throughout your application. Hypervel supports popular caching backends like [Redis](https://redis.io) and Swoole Table out of the box. In addition, a file based cache driver is available, while `array` and "null" cache drivers provide convenient cache backends for your automated tests.
 
 ::: note
-Laravel Hyperf does not support the `database` cache driver at this time. We don't encourage using database as a cache driver either because of the poor performance.
+Hypervel does not support the `database` cache driver at this time. We don't encourage using database as a cache driver either because of the poor performance.
 :::
 
-The cache configuration file also contains various other options, which are documented within the file, so make sure to read over these options. By default, Laravel Hyperf is configured to use the `redis` cache driver, which stores the serialized, cached objects on the redis server. For larger applications, it is recommended that you keep using Redis. You may even configure multiple cache configurations for the same driver.
+The cache configuration file also contains various other options, which are documented within the file, so make sure to read over these options. By default, Hypervel is configured to use the `redis` cache driver, which stores the serialized, cached objects on the redis server. For larger applications, it is recommended that you keep using Redis. You may even configure multiple cache configurations for the same driver.
 
 ### Driver Prerequisites
 
 #### Redis
 
-Before using a Redis cache with Laravel Hyperf, you will need to either install the PhpRedis PHP extension via PECL.
+Before using a Redis cache with Hypervel, you will need to either install the PhpRedis PHP extension via PECL.
 
 ## Cache Usage
 
 ### Obtaining a Cache Instance
 
-To obtain a cache store instance, you may use the `Cache` facade, which is what we will use throughout this documentation. The `Cache` facade provides convenient, terse access to the underlying implementations of the Laravel Hyperf cache contracts:
+To obtain a cache store instance, you may use the `Cache` facade, which is what we will use throughout this documentation. The `Cache` facade provides convenient, terse access to the underlying implementations of the Hypervel cache contracts:
 
 ```php
 <?php
 
 namespace App\Http\Controllers;
 
-use LaravelHyperf\Support\Facades\Cache;
+use Hypervel\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -201,7 +201,7 @@ Flushing the cache does not respect your configured cache "prefix" and will remo
 
 ### Building Cache Stacks
 
-Laravel Hyperf provides multi-layer caching architecture. The `stack` driver allows you to combine multiple cache layers for ultra performance. To illustrate how to use cache stacks, let's take a look at an example configuration that you might see in a production application:
+Hypervel provides multi-layer caching architecture. The `stack` driver allows you to combine multiple cache layers for ultra performance. To illustrate how to use cache stacks, let's take a look at an example configuration that you might see in a production application:
 
 ```php
 'stack' => [
@@ -235,7 +235,7 @@ cache(['key' => 'value'], $seconds);
 cache(['key' => 'value'], now()->addMinutes(10));
 ```
 
-When the `cache` function is called without any arguments, it returns an instance of the `LaravelHyperf\Cache\Contracts\Factory` implementation, allowing you to call other caching methods:
+When the `cache` function is called without any arguments, it returns an instance of the `Hypervel\Cache\Contracts\Factory` implementation, allowing you to call other caching methods:
 
 ```php
 cache()->remember('users', $seconds, function () {
@@ -258,7 +258,7 @@ To utilize this feature, your application must be using the `redis`, `file`, or 
 Atomic locks allow for the manipulation of distributed locks without worrying about race conditions. You may create and manage locks using the `Cache::lock` method:
 
 ```php
-use LaravelHyperf\Support\Facades\Cache;
+use Hypervel\Support\Facades\Cache;
 
 $lock = Cache::lock('foo', 10);
 
@@ -269,7 +269,7 @@ if ($lock->get()) {
 }
 ```
 
-The `get` method also accepts a closure. After the closure is executed, Laravel Hyperf will automatically release the lock:
+The `get` method also accepts a closure. After the closure is executed, Hypervel will automatically release the lock:
 
 ```php
 Cache::lock('foo', 10)->get(function () {
@@ -277,10 +277,10 @@ Cache::lock('foo', 10)->get(function () {
 });
 ```
 
-If the lock is not available at the moment you request it, you may instruct Laravel Hyperf to wait for a specified number of seconds. If the lock can not be acquired within the specified time limit, an `LaravelHyperf\Cache\Exceptions\LockTimeoutException` will be thrown:
+If the lock is not available at the moment you request it, you may instruct Hypervel to wait for a specified number of seconds. If the lock can not be acquired within the specified time limit, an `Hypervel\Cache\Exceptions\LockTimeoutException` will be thrown:
 
 ```php
-use LaravelHyperf\Cache\Exceptions\LockTimeoutException;
+use Hypervel\Cache\Exceptions\LockTimeoutException;
 
 $lock = Cache::lock('foo', 10);
 
@@ -295,7 +295,7 @@ try {
 }
 ```
 
-The example above may be simplified by passing a closure to the `block` method. When a closure is passed to this method, Laravel Hyperf will attempt to acquire the lock for the specified number of seconds and will automatically release the lock once the closure has been executed:
+The example above may be simplified by passing a closure to the `block` method. When a closure is passed to this method, Hypervel will attempt to acquire the lock for the specified number of seconds and will automatically release the lock once the closure has been executed:
 
 ```php
 Cache::lock('foo', 10)->block(5, function () {
@@ -349,14 +349,14 @@ Cache::lock('processing')->forceRelease();
 
 ### Writing the Driver
 
-To create our custom cache driver, we first need to implement the `LaravelHyperf\Cache\Contracts\Store` [contract](/docs/contracts). So, a MongoDB cache implementation might look something like this:
+To create our custom cache driver, we first need to implement the `Hypervel\Cache\Contracts\Store` [contract](/docs/contracts). So, a MongoDB cache implementation might look something like this:
 
 ```php
 <?php
 
 namespace App\Extensions;
 
-use LaravelHyperf\Cache\Contracts\Store;
+use Hypervel\Cache\Contracts\Store;
 
 class MongoStore implements Store
 {
@@ -373,7 +373,7 @@ class MongoStore implements Store
 }
 ```
 
-We just need to implement each of these methods using a MongoDB connection. For an example of how to implement each of these methods, take a look at the `LaravelHyperf\Cache\RedisStore` in the [Laravel Hyperf framework source code](https://github.com/laravel-hyperf/components/blob/master/src/cache/src/RedisStore.php). Once our implementation is complete, we can finish our custom driver registration by calling the `Cache` facade's `extend` method:
+We just need to implement each of these methods using a MongoDB connection. For an example of how to implement each of these methods, take a look at the `Hypervel\Cache\RedisStore` in the [Hypervel framework source code](https://github.com/hypervel/components/blob/master/src/cache/src/RedisStore.php). Once our implementation is complete, we can finish our custom driver registration by calling the `Cache` facade's `extend` method:
 
 ```php
 Cache::extend('mongo', function (Application $app) {
@@ -382,12 +382,12 @@ Cache::extend('mongo', function (Application $app) {
 ```
 
 ::: note
-If you're wondering where to put your custom cache driver code, you could create an `Extensions` namespace within your `app` directory. However, keep in mind that Laravel Hyperf does not have a rigid application structure and you are free to organize your application according to your preferences.
+If you're wondering where to put your custom cache driver code, you could create an `Extensions` namespace within your `app` directory. However, keep in mind that Hypervel does not have a rigid application structure and you are free to organize your application according to your preferences.
 :::
 
 ### Registering the Driver
 
-To register the custom cache driver with Laravel Hyperf, we will use the `extend` method on the `Cache` facade. Since other service providers may attempt to read cached values within their `boot` method, we will register our custom driver within a `booting` callback. By using the `booting` callback, we can ensure that the custom driver is registered just before the `boot` method is called on our application's service providers but after the `register` method is called on all of the service providers. We will register our `booting` callback within the `register` method of our application's `App\Providers\AppServiceProvider` class:
+To register the custom cache driver with Hypervel, we will use the `extend` method on the `Cache` facade. Since other service providers may attempt to read cached values within their `boot` method, we will register our custom driver within a `booting` callback. By using the `booting` callback, we can ensure that the custom driver is registered just before the `boot` method is called on our application's service providers but after the `register` method is called on all of the service providers. We will register our `booting` callback within the `register` method of our application's `App\Providers\AppServiceProvider` class:
 
 ```php
 <?php
@@ -395,9 +395,9 @@ To register the custom cache driver with Laravel Hyperf, we will use the `extend
 namespace App\Providers;
 
 use App\Extensions\MongoStore;
-use LaravelHyperf\Foundation\Contracts\Application;
-use LaravelHyperf\Support\Facades\Cache;
-use LaravelHyperf\Support\ServiceProvider;
+use Hypervel\Foundation\Contracts\Application;
+use Hypervel\Support\Facades\Cache;
+use Hypervel\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -423,7 +423,7 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-The first argument passed to the `extend` method is the name of the driver. This will correspond to your `driver` option in the `config/cache.php` configuration file. The second argument is a closure that should return an `LaravelHyperf\Cache\Repository` instance. The closure will be passed an `$app` instance, which is an instance of the [service container](/docs/container).
+The first argument passed to the `extend` method is the name of the driver. This will correspond to your `driver` option in the `config/cache.php` configuration file. The second argument is a closure that should return an `Hypervel\Cache\Repository` instance. The closure will be passed an `$app` instance, which is an instance of the [service container](/docs/container).
 
 Once your extension is registered, update your `config/cache.php` configuration file's `driver` option to the name of your extension.
 
@@ -436,10 +436,10 @@ use App\Listeners\LogCacheHit;
 use App\Listeners\LogCacheMissed;
 use App\Listeners\LogKeyForgotten;
 use App\Listeners\LogKeyWritten;
-use LaravelHyperf\Cache\Events\CacheHit;
-use LaravelHyperf\Cache\Events\CacheMissed;
-use LaravelHyperf\Cache\Events\KeyForgotten;
-use LaravelHyperf\Cache\Events\KeyWritten;
+use Hypervel\Cache\Events\CacheHit;
+use Hypervel\Cache\Events\CacheMissed;
+use Hypervel\Cache\Events\KeyForgotten;
+use Hypervel\Cache\Events\KeyWritten;
 
 /**
  * The event listener mappings for the application.

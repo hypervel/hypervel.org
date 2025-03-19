@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Laravel Hyperf provides several helpers to assist you in generating URLs for your application. These helpers are primarily helpful when building links in your templates and API responses, or when generating redirect responses to another part of your application.
+Hypervel provides several helpers to assist you in generating URLs for your application. These helpers are primarily helpful when building links in your templates and API responses, or when generating redirect responses to another part of your application.
 
 ## The Basics
 
@@ -21,7 +21,7 @@ echo url("/posts/{$post->id}");
 
 ### Accessing the Current URL
 
-If no path is provided to the `url` helper, an `LaravelHyperf\Router\UrlGenerator` instance is returned, allowing you to access information about the current URL:
+If no path is provided to the `url` helper, an `Hypervel\Router\UrlGenerator` instance is returned, allowing you to access information about the current URL:
 
 ```php
 // Get the current URL without the query string...
@@ -37,7 +37,7 @@ echo url()->previous();
 Each of these methods may also be accessed via the `URL` [facade](/docs/facades):
 
 ```php
-use LaravelHyperf\Support\Facades\URL;
+use Hypervel\Support\Facades\URL;
 
 echo URL::current();
 ```
@@ -82,12 +82,12 @@ echo route('post.show', ['post' => 1, 'search' => 'rocket']);
 
 ### Signed URLs
 
-Laravel Hyperf allows you to easily create "signed" URLs to named routes. These URLs have a "signature" hash appended to the query string which allows Laravel to verify that the URL has not been modified since it was created. Signed URLs are especially useful for routes that are publicly accessible yet need a layer of protection against URL manipulation.
+Hypervel allows you to easily create "signed" URLs to named routes. These URLs have a "signature" hash appended to the query string which allows Laravel to verify that the URL has not been modified since it was created. Signed URLs are especially useful for routes that are publicly accessible yet need a layer of protection against URL manipulation.
 
 For example, you might use signed URLs to implement a public "unsubscribe" link that is emailed to your customers. To create a signed URL to a named route, use the `signedRoute` method of the `URL` facade:
 
 ```php
-use LaravelHyperf\Support\Facades\URL;
+use Hypervel\Support\Facades\URL;
 
 return URL::signedRoute('unsubscribe', ['user' => 1]);
 ```
@@ -101,7 +101,7 @@ return URL::signedRoute('unsubscribe', ['user' => 1], absolute: false);
 If you would like to generate a temporary signed route URL that expires after a specified amount of time, you may use the `temporarySignedRoute` method. When Laravel validates a temporary signed route URL, it will ensure that the expiration timestamp that is encoded into the signed URL has not elapsed:
 
 ```php
-use LaravelHyperf\Support\Facades\URL;
+use Hypervel\Support\Facades\URL;
 
 return URL::temporarySignedRoute(
     'unsubscribe', now()->addMinutes(30), ['user' => 1]
@@ -110,10 +110,10 @@ return URL::temporarySignedRoute(
 
 #### Validating Signed Route Requests
 
-To verify that an incoming request has a valid signature, you should call the `hasValidSignature` method on the incoming `LaravelHyperf\Http\Request` instance:
+To verify that an incoming request has a valid signature, you should call the `hasValidSignature` method on the incoming `Hypervel\Http\Request` instance:
 
 ```php
-use LaravelHyperf\Http\Request;
+use Hypervel\Http\Request;
 
 Route::get('/unsubscribe/{user}', function (Request $request) {
     if (! $request->hasValidSignature()) {
@@ -132,7 +132,7 @@ if (! $request->hasValidSignatureWhileIgnoring(['page', 'order'])) {
 }
 ```
 
-Instead of validating signed URLs using the incoming request instance, you may assign the `LaravelHyperf\Router\Middleware\ValidateSignature` [middleware](/docs/middleware) to the route. If it is not already present, you may assign this middleware an alias in your HTTP kernel's `$middlewareAliases` array:
+Instead of validating signed URLs using the incoming request instance, you may assign the `Hypervel\Router\Middleware\ValidateSignature` [middleware](/docs/middleware) to the route. If it is not already present, you may assign this middleware an alias in your HTTP kernel's `$middlewareAliases` array:
 
 ```php
 /**
@@ -143,7 +143,7 @@ Instead of validating signed URLs using the incoming request instance, you may a
  * @var array<string, class-string|string>
  */
 protected $middlewareAliases = [
-    'signed' => \LaravelHyperf\Router\Middleware\ValidateSignature::class,
+    'signed' => \Hypervel\Router\Middleware\ValidateSignature::class,
 ];
 ```
 
@@ -168,7 +168,7 @@ Route::post('/unsubscribe/{user}', function (Request $request) {
 When someone visits a signed URL that has expired, they will receive a generic error page for the `403` HTTP status code. However, you can customize this behavior by defining a custom "renderable" closure for the `InvalidSignatureException` exception in your exception handler. This closure should return an HTTP response:
 
 ```php
-use LaravelHyperf\Router\Exceptions\InvalidSignatureException;
+use Hypervel\Router\Exceptions\InvalidSignatureException;
 
 /**
  * Register the exception handling callbacks for the application.

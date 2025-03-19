@@ -3,15 +3,15 @@
 
 ## Introduction
 
-Laravel Hyperf provides a very fluent API for making HTTP requests to your application and examining the output. For example, take a look at the feature test defined below:
+Hypervel provides a very fluent API for making HTTP requests to your application and examining the output. For example, take a look at the feature test defined below:
 
 ```php
 <?php
 
 namespace Tests\Feature;
 
-use LaravelHyperf\Foundation\Testing\RefreshDatabase;
-use LaravelHyperf\Foundation\Testing\WithoutMiddleware;
+use Hypervel\Foundation\Testing\RefreshDatabase;
+use Hypervel\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -31,7 +31,7 @@ class ExampleTest extends TestCase
 }
 ```
 
-The `get` method makes a `GET` request into the application, while the `assertStatus` method asserts that the returned response should have the given HTTP status code. In addition to this simple assertion, Laravel Hyperf also contains a variety of assertions for inspecting the response headers, content, JSON structure, and more.
+The `get` method makes a `GET` request into the application, while the `assertStatus` method asserts that the returned response should have the given HTTP status code. In addition to this simple assertion, Hypervel also contains a variety of assertions for inspecting the response headers, content, JSON structure, and more.
 
 ### Customizing Request Headers
 
@@ -96,8 +96,8 @@ After making a test request to your application, the `dump`, `dumpHeaders`, and 
 
 namespace Tests\Feature;
 
-use LaravelHyperf\Foundation\Testing\RefreshDatabase;
-use LaravelHyperf\Foundation\Testing\WithoutMiddleware;
+use Hypervel\Foundation\Testing\RefreshDatabase;
+use Hypervel\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -122,7 +122,7 @@ class ExampleTest extends TestCase
 
 ## Session / Authentication
 
-Laravel Hyperf provides several helpers for working with the session during HTTP testing. First, you may set the session data to a given array using the `withSession` method. This is useful for loading the session with data before issuing a request to your application:
+Hypervel provides several helpers for working with the session during HTTP testing. First, you may set the session data to a given array using the `withSession` method. This is useful for loading the session with data before issuing a request to your application:
 
 ```php
 <?php
@@ -165,7 +165,7 @@ $this->actingAs($user, 'api')
 
 ## Testing JSON APIs
 
-Laravel Hyperf also provides several helpers for testing JSON APIs and their responses. For example, the `json`, `getJson`, `postJson`, `putJson`, `patchJson`, `deleteJson`, and `optionsJson` methods may be used to issue JSON requests with various HTTP verbs. You may also easily pass data and headers to these methods. To get started, let's write a test to make a `POST` request to `/user` and assert that the expected data was returned:
+Hypervel also provides several helpers for testing JSON APIs and their responses. For example, the `json`, `getJson`, `postJson`, `putJson`, `patchJson`, `deleteJson`, and `optionsJson` methods may be used to issue JSON requests with various HTTP verbs. You may also easily pass data and headers to these methods. To get started, let's write a test to make a `POST` request to `/user` and assert that the expected data was returned:
 
 ```php
 <?php
@@ -254,17 +254,17 @@ class ExampleTest extends TestCase
 
 ## Testing File Uploads
 
-The `LaravelHyperf\Http\UploadedFile` class provides a `fake` method which may be used to generate dummy files or images for testing. This, combined with the `Storage` facade's `fake` method greatly simplifies the testing of file uploads. For example, you may combine these two features to easily test an avatar upload form:
+The `Hypervel\Http\UploadedFile` class provides a `fake` method which may be used to generate dummy files or images for testing. This, combined with the `Storage` facade's `fake` method greatly simplifies the testing of file uploads. For example, you may combine these two features to easily test an avatar upload form:
 
 ```php
 <?php
 
 namespace Tests\Feature;
 
-use LaravelHyperf\Foundation\Testing\RefreshDatabase;
-use LaravelHyperf\Foundation\Testing\WithoutMiddleware;
-use LaravelHyperf\Http\UploadedFile;
-use LaravelHyperf\Support\Facades\Storage;
+use Hypervel\Foundation\Testing\RefreshDatabase;
+use Hypervel\Foundation\Testing\WithoutMiddleware;
+use Hypervel\Http\UploadedFile;
+use Hypervel\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -312,7 +312,7 @@ UploadedFile::fake()->create('document.pdf', $sizeInKilobytes, 'application/pdf'
 
 ### Response Assertions
 
-Laravel Hyperf provides a variety of custom assertion methods for your [PHPUnit](https://phpunit.de/) feature tests. These assertions may be accessed on the response that is returned from the `json`, `get`, `post`, `put`, and `delete` test methods:
+Hypervel provides a variety of custom assertion methods for your [PHPUnit](https://phpunit.de/) feature tests. These assertions may be accessed on the response that is returned from the `json`, `get`, `post`, `put`, and `delete` test methods:
 
 <style>
     .collection-method-list > p {
@@ -702,7 +702,7 @@ $response->assertUnauthorized();
 
 ### Authentication Assertions
 
-Laravel Hyperf also provides a variety of authentication related assertions for your [PHPUnit](https://phpunit.de/) feature tests:
+Hypervel also provides a variety of authentication related assertions for your [PHPUnit](https://phpunit.de/) feature tests:
 
 Method  | Description
 ------------- | -------------
