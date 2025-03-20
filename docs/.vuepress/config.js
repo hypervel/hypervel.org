@@ -41,8 +41,8 @@ export default defineUserConfig({
         },
     }),
     docsearchPlugin({
-      appId: 'A2UA6ZNU27',
-      apiKey: '03f51299803c8172f7b3008d88a12c86',
+      appId: 'VH8TNYFP5F',
+      apiKey: '434aa2025192c8d2fb19499cb78e5d48',
       indexName: 'hypervel'
     }),
   ],
