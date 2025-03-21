@@ -92,7 +92,7 @@ This table provides a quick reference to all of the Hypervel contracts and their
 | [Hypervel\Filesystem\Contracts\Factory](https://github.com/hypervel/components/blob/master/src/filesystem/src/Contracts/Factory.php)                           | `Storage`                    |
 | [Hypervel\Filesystem\Contracts\Filesystem](https://github.com/hypervel/components/blob/master/src/filesystem/src/Contracts/Filesystem.php)                           | `Storage::disk()`                    |
 | [Hypervel\Foundation\Contracts\Application](https://github.com/hypervel/components/blob/master/src/foundation/src/Contracts/Application.php)                           | `App`                    |
-| [Hypervel\Foundation\Console\Contracts\Application](https://github.com/hypervel/components/blob/master/src/foundation/src/Console/Contracts/Application.php)                           | &nbsp;                    |
+| [Hypervel\Console\Contracts\Application](https://github.com/hypervel/components/blob/master/src/foundation/src/Console/Contracts/Application.php)                           | &nbsp;                    |
 | [Hypervel\Foundation\Console\Contracts\Kernel](https://github.com/hypervel/components/blob/master/src/foundation/src/Console/Contracts/Kernel.php)                           | `Artisan`                    |
 | [Hypervel\Hashing\Contracts\Hasher](https://github.com/hypervel/components/blob/master/src/hashing/src/Contracts/Hasher.php)                           | `Hash`                    |
 | [Hypervel\Mail\Contracts\MailQueue](https://github.com/hypervel/components/blob/master/src/mail/src/Contracts/MailQueue.php)                           | `Mail::queue()`                    |
@@ -108,7 +108,6 @@ This table provides a quick reference to all of the Hypervel contracts and their
 | [Hypervel\Queue\Contracts\QueueableCollection](https://github.com/hypervel/components/blob/master/src/queue/src/Contracts/QueueableCollection.php)                           | &nbsp;                    |
 | [Hypervel\Queue\Contracts\QueueableEntity](https://github.com/hypervel/components/blob/master/src/queue/src/Contracts/QueueableEntity.php)                           | &nbsp;                    |
 | [Hypervel\Queue\Contracts\ShouldQueue](https://github.com/hypervel/components/blob/master/src/queue/src/Contracts/ShouldQueue.php)                           | &nbsp;                    |
-| [Hypervel\Foundation\Console\Contracts\Schedule](https://github.com/hypervel/components/blob/master/src/foundation/src/Console/Contracts/Schedule.php)                           | `Schedule`                    |
 | [Hypervel\Foundation\Exceptions\Contracts\ExceptionHandler](https://github.com/hypervel/components/blob/master/src/foundation/src/Exceptions/Contracts/ExceptionHandler.php)                           | &nbsp;                    |
 | [Hypervel\Foundation\Exceptions\Contracts\ExceptionRenderer](https://github.com/hypervel/components/blob/master/src/foundation/src/Exceptions/Contracts/ExceptionRenderer.php)                           | &nbsp;                    |
 | [Hypervel\Foundation\Http\Contracts\ExceptionRenderer](https://github.com/hypervel/components/blob/master/src/foundation/src/Http/Contracts/MiddlewareContract.php)                           | &nbsp;                    |

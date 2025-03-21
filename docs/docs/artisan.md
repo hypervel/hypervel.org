@@ -86,7 +86,7 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use App\Support\DripEmailer;
-use Hypervel\Foundation\Console\Command;
+use Hypervel\Console\Command;
 
 class SendEmails extends Command
 {
