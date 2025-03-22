@@ -19,14 +19,14 @@ export default defineUserConfig({
   plugins: [
     seoPlugin({
       hostname: 'https://hypervel.org',
-      fallBackImage: '/home.png',
+      fallBackImage: 'https://hypervel.org/home.png',
       ogp: (ogp, page) => ({
         ...ogp,
         'og:title': 'Hypervel - A Laravel-Style PHP Framework For Web Artisans',
         'og:description': "Hypervel is a Laravel-style framework with native coroutine support for ultra-high performance.",
         'twitter:title': 'Hypervel - A Laravel-Style PHP Framework For Web Artisans',
         'twitter:description': "Hypervel is a Laravel-style framework with native coroutine support for ultra-high performance.",
-        'twitter:image': '/home.png',
+        'twitter:image': 'https://hypervel.org/home.png',
         'twitter:card': 'summary_large_image',
       }),
     }),
