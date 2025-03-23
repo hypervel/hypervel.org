@@ -603,7 +603,7 @@ public function create(Request $request): ResponseInterface
 
 ### Via Middleware
 
-Hypervel includes a middleware that can authorize actions before the incoming request even reaches your routes or controllers. By default, the `Illuminate\Auth\Middleware\Authorize` middleware may be attached to a route using the `can` [middleware alias](/docs/middleware#middleware-aliases), which is automatically registered by Laravel. Let's explore an example of using the `can` middleware to authorize that a user can update a post:
+Hypervel includes a middleware that can authorize actions before the incoming request even reaches your routes or controllers. By default, the `Hypervel\Auth\Middleware\Authorize` middleware may be attached to a route using the `can` [middleware alias](/docs/middleware#middleware-aliases), which is automatically registered by Laravel. Let's explore an example of using the `can` middleware to authorize that a user can update a post:
 
 ```php
 use App\Models\Post;

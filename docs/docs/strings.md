@@ -1504,10 +1504,10 @@ return (string) Str::ulid();
 // 01gd6r360bp37zj17nxb55yv40
 ```
 
-If you would like to retrieve a `Illuminate\Support\Carbon` date instance representing the date and time that a given ULID was created, you may use the `createFromId` method provided by Laravel's Carbon integration:
+If you would like to retrieve a `Hypervel\Support\Carbon` date instance representing the date and time that a given ULID was created, you may use the `createFromId` method provided by Laravel's Carbon integration:
 
 ```php
-use Illuminate\Support\Carbon;
+use Hypervel\Support\Carbon;
 use Hypervel\Support\Str;
 
 $date = Carbon::createFromId((string) Str::ulid());

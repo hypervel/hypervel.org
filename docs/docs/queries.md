@@ -367,7 +367,7 @@ $sizes = DB::table('sizes')
 
 #### Advanced Join Clauses
 
-You may also specify more advanced join clauses. To get started, pass a closure as the second argument to the `join` method. The closure will receive a `Illuminate\Database\Query\JoinClause` instance which allows you to specify constraints on the "join" clause:
+You may also specify more advanced join clauses. To get started, pass a closure as the second argument to the `join` method. The closure will receive a `Hyperf\Database\Query\JoinClause` instance which allows you to specify constraints on the "join" clause:
 
 ```php
 DB::table('users')

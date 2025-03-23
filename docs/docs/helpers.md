@@ -1628,7 +1628,7 @@ The `url` function generates a fully qualified URL to the given path:
 
     $url = url('user/profile', [1]);
 
-If no path is provided, an `Illuminate\Routing\UrlGenerator` instance is returned:
+If no path is provided, an `Hypervel\Router\UrlGenerator` instance is returned:
 
     $current = url()->current();
 
@@ -1647,7 +1647,7 @@ $url = url('user/profile');
 $url = url('user/profile', [1]);
 ```
 
-If no path is provided, an `Illuminate\Routing\UrlGenerator` instance is returned:
+If no path is provided, an `Hypervel\Router\UrlGenerator` instance is returned:
 
 ```php
 $current = url()->current();
@@ -1970,7 +1970,7 @@ The `method_field` function generates an HTML `hidden` input field containing th
 <a name="method-now"></a>
 #### `now()`
 
-The `now` function creates a new `Illuminate\Support\Carbon` instance for the current time:
+The `now` function creates a new `Hypervel\Support\Carbon` instance for the current time:
 
 ```php
 $now = now();
@@ -2208,7 +2208,7 @@ $user = tap($user)->update([
 ]);
 ```
 
-To add a `tap` method to a class, you may add the `Illuminate\Support\Traits\Tappable` trait to the class. The `tap` method of this trait accepts a Closure as its only argument. The object instance itself will be passed to the Closure and then be returned by the `tap` method:
+To add a `tap` method to a class, you may add the `Hypervel\Support\Traits\Tappable` trait to the class. The `tap` method of this trait accepts a Closure as its only argument. The object instance itself will be passed to the Closure and then be returned by the `tap` method:
 
 ```php
 return $user->tap(function (User $user) {
@@ -2249,7 +2249,7 @@ throw_unless(
 <a name="method-today"></a>
 #### `today()`
 
-The `today` function creates a new `Illuminate\Support\Carbon` instance for the current date:
+The `today` function creates a new `Hypervel\Support\Carbon` instance for the current date:
 
 ```php
 $today = today();
@@ -2261,7 +2261,7 @@ $today = today();
 The `trait_uses_recursive` function returns all traits used by a trait:
 
 ```php
-$traits = trait_uses_recursive(\Illuminate\Notifications\Notifiable::class);
+$traits = trait_uses_recursive(\Hypervel\Notifications\Notifiable::class);
 ```
 
 <a name="method-transform"></a>

@@ -218,7 +218,7 @@ When the paginator displays pagination links, the current page number is display
 
 ### Converting Results to JSON
 
-The Hypervel paginator classes implement the `Illuminate\Contracts\Support\Jsonable` Interface contract and expose the `toJson` method, so it's very easy to convert your pagination results to JSON. You may also convert a paginator instance to JSON by returning it from a route or controller action:
+The Hypervel paginator classes implement the `Hyperf\Contract\Jsonable` Interface contract and expose the `toJson` method, so it's very easy to convert your pagination results to JSON. You may also convert a paginator instance to JSON by returning it from a route or controller action:
 
 ```php
 use App\Models\User;

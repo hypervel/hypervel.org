@@ -278,7 +278,7 @@ First, let's setup a channel listener using the `subscribe` method. We'll place 
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use Hypervel\Console\Command;
 use Hypervel\Support\Facades\Redis;
 
 class RedisSubscribe extends Command

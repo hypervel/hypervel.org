@@ -815,7 +815,7 @@ If you would like to prevent some public methods or properties from being expose
 
 namespace App\View\Components;
 
-use Illuminate\View\Component;
+use Hyperf\ViewEngine\Component\Component;
 
 class Alert extends Component
 {

@@ -259,7 +259,7 @@ namespace Tests\Feature;
 use App\Notifications\OrderShipped;
 use Hypervel\Foundation\Testing\RefreshDatabase;
 use Hypervel\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Notifications\AnonymousNotifiable;
+use Hypervel\Notifications\AnonymousNotifiable;
 use Hypervel\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -380,7 +380,7 @@ namespace Tests\Feature;
 
 use Hypervel\Foundation\Testing\RefreshDatabase;
 use Hypervel\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Http\UploadedFile;
+use Hypervel\Http\UploadedFile;
 use Hypervel\Support\Facades\Storage;
 use Tests\TestCase;
 

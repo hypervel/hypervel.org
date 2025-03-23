@@ -339,7 +339,7 @@ If you would like to disable the wrapping of the outermost resource, you may use
 namespace App\Providers;
 
 use Hypervel\Http\Resources\Json\Resource;
-use Illuminate\Support\ServiceProvider;
+use Hypervel\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

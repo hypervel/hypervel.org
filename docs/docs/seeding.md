@@ -88,34 +88,6 @@ public function run(): void
 }
 ```
 
-### Muting Model Events
-
-While running seeds, you may want to prevent models from dispatching events. You may achieve this using the `WithoutModelEvents` trait. When used, the `WithoutModelEvents` trait ensures no model events are dispatched, even if additional seed classes are executed via the `call` method:
-
-```php
-<?php
-
-namespace Database\Seeders;
-
-use Hyperf\Database\Seeders\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
-class DatabaseSeeder extends Seeder
-{
-    use WithoutModelEvents;
-
-    /**
-     * Run the database seeders.
-     */
-    public function run(): void
-    {
-        $this->call([
-            UserSeeder::class,
-        ]);
-    }
-}
-```
-
 ## Running Seeders
 
 You may execute the `db:seed` Artisan command to seed your database. By default, the `db:seed` command runs the `Database\Seeders\DatabaseSeeder` class, which may in turn invoke other seed classes. However, you may use the `--class` option to specify a specific seeder class to run individually:
