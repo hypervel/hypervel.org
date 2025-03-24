@@ -383,7 +383,8 @@ php artisan schedule:run --concurrency=100
 For CPU-bound queue jobs, coroutines offer limited performance benefits. You can run these tasks using system commands using `exec`, then the task will be executed in a new background process:
 
 ```php
-$schedule->exec('php artisan calculate-command');
+$schedule->exec('php artisan calculate-command')
+    ->runInBackground();
 ```
 
 ### Sub-Minute Scheduled Tasks
