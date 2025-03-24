@@ -27,7 +27,7 @@ The session `driver` configuration option defines where session data will be sto
 Before using session, you need to enable the `Hypervel\Session\Middleware\StartSession` middleware in `Kernel.php`.
 :::
 
-::: tips
+::: tip
 The array driver is primarily used during [testing](/docs/testing) and prevents the data stored in the session from being persisted.
 ```
 
@@ -126,7 +126,7 @@ Route::get('/home', function () {
 });
 ```
 
-::: tips
+::: tip
 There is little practical difference between using the session via an HTTP request instance versus using the global `session` helper. Both methods are [testable](/docs/testing) via the `assertSessionHas` method which is available in all of your test cases.
 :::
 

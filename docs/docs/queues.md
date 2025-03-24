@@ -1609,7 +1609,7 @@ To assign multiple workers to a queue and process jobs concurrently, you should 
 
 #### Concurrent Processing in Single Queue Worker
 
-Unlike in Laravel, queue workers in Hypervel support concurrent processing using coroutines. For I/O-bound queue jobs, you can simply utilize the concurrency option to execute multiple jobs simultaneously within a single worker.
+Queue workers in Hypervel support concurrent processing using coroutines. For I/O-bound queue jobs, you can simply utilize the concurrency option to execute multiple jobs simultaneously within a single worker.
 
 ```shell:no-line-numbers
 php artisan queue:work --concurrency=10

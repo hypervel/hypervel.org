@@ -110,7 +110,7 @@ class SendEmails extends Command
 }
 ```
 
-::: tips
+::: tip
 For greater code reuse, it is good practice to keep your console commands light and let them defer to application services to accomplish their tasks. In the example above, note that we inject a service class to do the "heavy lifting" of sending the e-mails.
 :::
 

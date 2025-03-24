@@ -243,7 +243,7 @@ cache()->remember('users', $seconds, function () {
 });
 ```
 
-::: tips
+::: tip
 When testing call to the global `cache` function, you may use the `Cache::shouldReceive` method just as if you were [testing the facade](/docs/mocking#mocking-facades).
 :::
 

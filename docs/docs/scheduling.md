@@ -370,6 +370,22 @@ If you prefer to run the scheduler in traditional system's scheduler, you can al
 * * * * * cd /path-to-your-project && php artisan schedule:run --once >> /dev/null 2>&1
 ```
 
+#### Concurrent Processing in the Scheduler
+
+Different from Laravel, all the background processes will be executed in coroutines instead of processes. The majority of background processing is I/O bound scenario. Running in tasks in coroutines is much more efficient than processes.
+
+By default the concurrency number for coroutines is set to `60`, which means you can have 60 running coroutines at the same time. You can configure this number when you run the scheduling command:
+
+```shell:no-line-numbers
+php artisan schedule:run --concurrency=100
+```
+
+For CPU-bound queue jobs, coroutines offer limited performance benefits. You can run these tasks using system commands using `exec`, then the task will be executed in a new background process:
+
+```php
+$schedule->exec('php artisan calculate-command');
+```
+
 ### Sub-Minute Scheduled Tasks
 
 On most operating systems, cron jobs are limited to running a maximum of once per minute. However, Hypervel's scheduler allows you to schedule tasks to run at more frequent intervals, even as often as once per second:
@@ -380,7 +396,7 @@ $schedule->call(function () {
 })->everySecond();
 ```
 
-#### Stopping Tasks
+### Stopping Tasks
 
 As the `schedule:run` command runs constantly for handling upcoming tasks, you may sometimes need to stop the command when deploying your application.
 
