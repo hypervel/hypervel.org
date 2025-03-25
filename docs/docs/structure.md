@@ -107,13 +107,10 @@ The `storage/app/public` directory may be used to store user-generated files, su
 
 ### The Tests Directory
 
-The `tests` directory contains your automated tests. Example [Pest](https://pestphp.com) or [PHPUnit](https://phpunit.de/) unit tests and feature tests are provided out of the box. Each test class should be suffixed with the word `Test`. You may run your tests using the `/vendor/bin/pest` or `/vendor/bin/phpunit` commands.
+The `tests` directory contains your automated tests. Example [PHPUnit](https://phpunit.de/) unit tests and feature tests are provided out of the box. Each test class should be suffixed with the word `Test`. You may run your tests using the `/vendor/bin/phpunit` commands.
 
 ::: note
-Pest package is not installed by default. You can install it by running:
-```shell:no-line-numbers
-composer require pestphp/pest --dev
-```
+Pest package is not supported yet.
 :::
 
 ## The App Directory
