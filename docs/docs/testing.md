@@ -184,7 +184,6 @@ Or you can use `invokeSetupInCoroutine` and `invokeTearDownInCoroutine` function
 
 ```php
 use PHPUnit\Framework\TestCase;
-
 use Hypervel\Foundation\Testing\Concerns\RunTestsInCoroutine;
 
 class UnitTest extends TestCase
