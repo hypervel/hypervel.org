@@ -19,10 +19,6 @@ Hypervel will use the name of the migration to attempt to guess the name of the 
 
 If you would like to specify a custom path for the generated migration, you may use the `--path` option when executing the `make:migration` command. The given path should be relative to your application's base path.
 
-::: note
-Migration stubs may be customized using [stub publishing](/docs/artisan#stub-customization).
-:::
-
 ## Migration Structure
 
 A migration class contains two methods: `up` and `down`. The `up` method is used to add new tables, columns, or indexes to your database, while the `down` method should reverse the operations performed by the `up` method.

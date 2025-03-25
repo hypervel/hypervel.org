@@ -120,10 +120,6 @@ php artisan make:job ProcessPodcast
 
 The generated class will implement the `Hypervel\Queue\Contracts\ShouldQueue` interface, indicating to Hypervel that the job should be pushed onto the queue to run asynchronously.
 
-::: note
-Job stubs may be customized using [stub publishing](/docs/artisan#stub-customization).
-:::
-
 ### Class Structure
 
 Job classes are very simple, normally containing only a `handle` method that is invoked when the job is processed by the queue. To get started, let's take a look at an example job class. In this example, we'll pretend we manage a podcast publishing service and need to process the uploaded podcast files before they are published:
