@@ -149,9 +149,7 @@ The `Listeners` directory contains the classes that handle your [events](/docs/e
 
 ### The Mail Directory
 
-This directory does not exist by default. The `Mail` directory contains all of your [classes that represent emails](/docs/mail) sent by your application. Mail objects allow you to encapsulate all of the logic of building an email in a single, simple class that may be sent using the `Mail::send` method.
-
-> `make:mail` command is not supported yet.
+This directory does not exist by default, but will be created for you if you execute the `make:mail` Artisan command. The `Mail` directory contains all of your [classes that represent emails](/docs/mail) sent by your application. Mail objects allow you to encapsulate all of the logic of building an email in a single, simple class that may be sent using the `Mail::send` method.
 
 ### The Models Directory
 
@@ -159,15 +157,11 @@ The `Models` directory contains all of your [Eloquent model classes](/docs/eloqu
 
 ### The Notifications Directory
 
-This directory does not exist by default. The `Notifications` directory contains all of the "transactional" [notifications](/docs/notifications) that are sent by your application, such as simple notifications about events that happen within your application. Laravel's notification feature abstracts sending notifications over a variety of drivers such as email, Slack, SMS, or stored in a database.
-
-> `make:notification` command is not supported yet.
+This directory does not exist by default, but will be created for you if you execute the `make:notification` Artisan command. The `Notifications` directory contains all of the "transactional" [notifications](/docs/notifications) that are sent by your application, such as simple notifications about events that happen within your application. Laravel's notification feature abstracts sending notifications over a variety of drivers such as email, Slack, SMS, or stored in a database.
 
 ### The Policies Directory
 
-This directory does not exist by default. The `Policies` directory contains the [authorization policy classes](/docs/authorization) for your application. Policies are used to determine if a user can perform a given action against a resource.
-
-> `make:policy` command is not supported yet.
+This directory does not exist by default, but will be created for you if you execute the `make:policy` Artisan command. The `Policies` directory contains the [authorization policy classes](/docs/authorization) for your application. Policies are used to determine if a user can perform a given action against a resource.
 
 ### The Providers Directory
 
