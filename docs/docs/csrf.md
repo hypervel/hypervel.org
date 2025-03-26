@@ -23,7 +23,7 @@ Without CSRF protection, a malicious website could create an HTML form that poin
 
 ## Preventing CSRF Requests
 
-Hypervel automatically generates a CSRF "token" for each active [user session](/doc/session) managed by the application. This token is used to verify that the authenticated user is the person actually making the requests to the application. Since this token is stored in the user's session and changes each time the session is regenerated, a malicious application is unable to access it.
+Hypervel automatically generates a CSRF "token" for each active [user session](/docs/session) managed by the application. This token is used to verify that the authenticated user is the person actually making the requests to the application. Since this token is stored in the user's session and changes each time the session is regenerated, a malicious application is unable to access it.
 
 The current session's CSRF token can be accessed via the request's session or via the `csrf_token` helper function:
 
