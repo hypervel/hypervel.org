@@ -20,6 +20,9 @@ export default defineUserConfig({
     seoPlugin({
       hostname: 'https://hypervel.org',
       fallBackImage: 'https://hypervel.org/home.png',
+      customHead: (head) => {
+        head.push(['title', {}, 'Hypervel - A Laravel-Style PHP Framework for Web Artisans.']);
+      },
       ogp: (ogp, page) => ({
         ...ogp,
         'og:title': 'Hypervel - A Laravel-Style PHP Framework For Web Artisans',
