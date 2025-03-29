@@ -31,7 +31,7 @@ If you discover a security vulnerability within Hypervel, please send an email t
 
 Hypervel follows the [PSR-12](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-12-extended-coding-style-guide-meta.md) coding standard and the [PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md) autoloading standard.
 
-### PHPDoc
+### Strict Types
 
 Always use native types for type hinting, and declare strict types at the beginning of PHP files.
 
@@ -46,6 +46,8 @@ public function handle(AudioProcessor $processor): void
     //
 }
 ```
+
+### PHPDoc
 
 Below is an example of a valid Hypervel documentation block if you need to mark additional info for the type hinting. Note that the `@param` attribute is followed by two spaces, the argument type, two more spaces, and finally the variable name:
 
