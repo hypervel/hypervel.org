@@ -11,10 +11,6 @@ However, process-based concurrency has significant drawbacks. The overhead of co
 
 Unlike Laravel, Hypervel supports coroutine capabilities out of the box. All th I/O operations are non-blocking I/O throughout the framework. Hypervel achieves true concurrent request processing within each worker process. When a coroutine encounters an I/O operation, instead of blocking the entire worker process, it yields control to other coroutines, allowing the worker to continue processing additional requests efficiently.
 
-::: info
-For PHP developers who have never been exposed to the concept of Coroutines and have no experience with other related programming languages, I strongly recommend learning about Linux operating systems, asynchronous I/O, network communication protocols, concurrency, and other fundamental knowledge through [Mastering Swoole PHP](https://swoolebook.com/). This will help you gain a more comprehensive understanding of how Coroutines work behind the scenes when you use them in Hypervel.
-:::
-
 ## What is Coroutine?
 
 Coroutines are functions that can pause their execution and later resume from where they left off, maintaining their state between pauses. Think of them as functions with multiple entry and exit points.
@@ -24,6 +20,10 @@ The key mechanism behind coroutines is a concept called "cooperative multitaskin
 When a coroutine encounters an operation that would normally block (like waiting for network data), instead of blocking the entire program, it yields control back to a scheduler. The scheduler can then run other coroutines until the blocking operation completes.
 
 The cost for each coroutine is extremely lightweight compared to processes or threads, making them ideal for concurrent I/O operations.
+
+::: info
+For PHP developers who have never been exposed to the concept of Coroutines and have no experience with other related programming languages, I strongly recommend learning about Linux operating systems, asynchronous I/O, network communication protocols, concurrency, and other fundamental knowledge through [Mastering Swoole PHP](https://swoolebook.com/). This will help you gain a more comprehensive understanding of how Coroutines work behind the scenes when you use them in Hypervel.
+:::
 
 ### How Coroutines Work
 
