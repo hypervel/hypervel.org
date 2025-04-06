@@ -201,7 +201,7 @@ Flushing the cache does not respect your configured cache "prefix" and will remo
 
 ### Building Cache Stacks
 
-Hypervel provides multi-layer caching architecture. The `stack` driver allows you to combine multiple cache layers for ultra performance. To illustrate how to use cache stacks, let's take a look at an example configuration that you might see in a production application:
+Hypervel provides multi-tier caching architecture. The `stack` driver allows you to combine multiple cache layers for ultra performance. To illustrate how to use cache stacks, let's take a look at an example configuration that you might see in a production application:
 
 ```php
 'stack' => [

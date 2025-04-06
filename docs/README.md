@@ -323,7 +323,7 @@ Echo.private(`orders.${orderId}`)
 
 <div class="custom-container tip">
 <p><strong>Is Hypervel compatible with Laravel packages?</strong></p>
-<p>While Hypervel maintains the similar development experience like Laravel, you can't install Laravel packages on this framework due to the fundamental differences in architecture. However, many Laravel concepts and patterns can be easily adapted for use with Hypervel.</p>
+<p>No! While Hypervel maintains the similar development experience like Laravel, unfortunately, you can't install Laravel packages on this framework due to the fundamental differences in architecture. Developers need to migrate these Laravel packages on their own. We encourage developers to contribute to Hypervel's ecosystem together.</p>
 </div>
 
 <div class="custom-container tip">
@@ -337,6 +337,11 @@ Echo.private(`orders.${orderId}`)
 
 For I/O-intensive scenarios, even with Octane's improvements, your application's ability to handle concurrent requests is still limited by the duration of these I/O operations.
 </p>
+</div>
+
+<div class="custom-container tip">
+<p><strong>Should I migrate my current Laravel projects to Hypervel?</strong></p>
+<p>If you don't have performance issues in your current projects, I would suggest remaining in Laravel because of the mature community and rich ecosystem. There will be necessary refactors for the migration process. You can consider migrating only the APIs and modules with performance issues to Hypervel, and adopt architecture like API Gateway to allow Laravel and Hypervel projects to work simultaneously.</p>
 </div>
 
 <script>

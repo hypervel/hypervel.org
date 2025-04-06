@@ -27,6 +27,10 @@ export const sidebarConfig = ({
                             link: 'installation',
                         },
                         {
+                            text: 'Configuration',
+                            link: 'configuration',
+                        },
+                        {
                             text: 'Directory Structure',
                             link: 'structure',
                         },
