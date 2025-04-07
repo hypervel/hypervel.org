@@ -315,7 +315,11 @@ export const sidebarConfig = ({
                         {
                             text: 'Mocking',
                             link: 'mocking',
-                        }
+                        },
+                        {
+                            text: 'Packages Toolkit',
+                            link: 'testbench',
+                        },
                     ],
                 },
             ],
