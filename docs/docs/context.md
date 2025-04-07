@@ -8,7 +8,7 @@ Context is an important feature in Hypervel. It is used to store states within c
 If you're not familiar with the context management in coroutines, you can read [Isolating global variables with a coroutine context manager in Swoole](https://swoolelabs.com/blog/isolating-variables-with-coroutine-context) for more detailed information.
 
 ::: important
-Do not mutate static variables in coroutines unless you know what you're doing, because static variables are shared by all coroutines. It will cause states pollution and unpredictable bugs.
+Do not mutate static variables in coroutines unless you know what you're doing, because static variables are shared by all coroutines. It will cause states bleeding and unpredictable bugs.
 :::
 
 ## Interacting with Context
