@@ -22,7 +22,7 @@ When a coroutine encounters an operation that would normally block (like waiting
 The cost for each coroutine is extremely lightweight compared to processes or threads, making them ideal for concurrent I/O operations.
 
 ::: info
-For PHP developers who have never been exposed to the concept of Coroutines and have no experience with other related programming languages, I strongly recommend learning about Linux operating systems, asynchronous I/O, network communication protocols, concurrency, and other fundamental knowledge through [Mastering Swoole PHP](https://swoolebook.com/). This will help you gain a more comprehensive understanding of how Coroutines work behind the scenes when you use them in Hypervel.
+For PHP developers who have never been exposed to the concept of Coroutines and have no experience with other related programming languages, I strongly recommend learning about Linux operating systems, asynchronous I/O, coroutines, network communication protocols, concurrency, and other fundamental knowledge through [Mastering Swoole PHP](https://swoolebook.com/). This will help you gain a more comprehensive understanding of how Coroutines work behind the scenes when you use them in Hypervel.
 :::
 
 ### How Coroutines Work
