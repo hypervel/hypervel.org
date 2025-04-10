@@ -452,7 +452,6 @@ return $responses[0]->ok() &&
 As you can see, each response instance can be accessed based on the order it was added to the array. If you wish, you can name the requests using array key, which allows you to access the corresponding responses by name:
 
 ```php
-use Hypervel\HttpClient\Pool;
 use Hypervel\Support\Facades\Http;
 
 $responses = parallel([
