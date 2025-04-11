@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Hypervel provides an expressive, minimal API around the [Guzzle HTTP client](http://docs.guzzlephp.org/en/stable/), allowing you to quickly make outgoing HTTP requests to communicate with other web applications. Laravel  Hyperf's wrapper around Guzzle is focused on its most common use cases and a wonderful developer experience.
+Hypervel provides an expressive, minimal API around the [Guzzle HTTP client](http://docs.guzzlephp.org/en/stable/), allowing you to quickly make outgoing HTTP requests to communicate with other web applications. Hypervel's wrapper around Guzzle is focused on its most common use cases and a wonderful developer experience.
 
 Before getting started, you should ensure that you have installed the Guzzle package as a dependency of your application. By default, Hypervel automatically includes this dependency. However, if you have previously removed the package, you may install it again via Composer:
 
@@ -235,7 +235,7 @@ $response = Http::connectTimeout(3)->get(/* ... */);
 
 ### Retries
 
-If you would like the HTTP client to automatically retry the request if a client or server error occurs, you may use the `retry` method. The `retry` method accepts the maximum number of times the request should be attempted and the number of milliseconds that Laravel  Hyperf should wait in between attempts:
+If you would like the HTTP client to automatically retry the request if a client or server error occurs, you may use the `retry` method. The `retry` method accepts the maximum number of times the request should be attempted and the number of milliseconds that Hypervel should wait in between attempts:
 
 ```php
 $response = Http::retry(3, 100)->post(/* ... */);
@@ -298,7 +298,7 @@ If all of the requests fail because of a connection issue, a `Hypervel\HttpClien
 
 ### Error Handling
 
-Unlike Guzzle's default behavior, Laravel  Hyperf's HTTP client wrapper does not throw exceptions on client or server errors (`400` and `500` level responses from servers). You may determine if one of these errors was returned using the `successful`, `clientError`, or `serverError` methods:
+Unlike Guzzle's default behavior, Hypervel's HTTP client wrapper does not throw exceptions on client or server errors (`400` and `500` level responses from servers). You may determine if one of these errors was returned using the `successful`, `clientError`, or `serverError` methods:
 
 ```php
 // Determine if the status code is >= 200 and < 300...
@@ -371,7 +371,7 @@ return Http::post(/* ... */)->throw(function (Response $response, RequestExcepti
 
 ### Guzzle Middleware
 
-Since Laravel  Hyperf's HTTP client is powered by Guzzle, you may take advantage of [Guzzle Middleware](https://docs.guzzlephp.org/en/stable/handlers-and-middleware.html) to manipulate the outgoing request or inspect the incoming response. To manipulate the outgoing request, register a Guzzle middleware via the `withRequestMiddleware` method:
+Since Hypervel's HTTP client is powered by Guzzle, you may take advantage of [Guzzle Middleware](https://docs.guzzlephp.org/en/stable/handlers-and-middleware.html) to manipulate the outgoing request or inspect the incoming response. To manipulate the outgoing request, register a Guzzle middleware via the `withRequestMiddleware` method:
 
 ```php
 use Hypervel\Support\Facades\Http;
