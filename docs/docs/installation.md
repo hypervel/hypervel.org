@@ -111,7 +111,7 @@ docker run --name hypervel \
 -p 9501:9501 -it \
 --privileged -u root \
 --entrypoint /bin/sh \
-hyperf/hyperf:8.3-alpine-v3.19-swoole-v5
+hyperf/hyperf:8.3-alpine-v3.19-swoole-v6
 ```
 
 ::: note
