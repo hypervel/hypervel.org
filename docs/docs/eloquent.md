@@ -1115,7 +1115,7 @@ class User extends Model
     /**
      * The "booted" method of the model.
      */
-    protected static function booted(): void
+    public function booted(): void
     {
         static::addGlobalScope(new AncientScope);
     }
@@ -1145,7 +1145,7 @@ class User extends Model
     /**
      * The "booted" method of the model.
      */
-    protected static function booted(): void
+    public function booted(): void
     {
         static::addGlobalScope('ancient', function (Builder $builder) {
             $builder->where('created_at', '<', now()->subYears(2000));
@@ -1377,7 +1377,7 @@ class User extends Model
     /**
      * The "booted" method of the model.
      */
-    protected static function booted(): void
+    public function booted(): void
     {
         static::registerCallback('created', function (User $user) {
             // ...
