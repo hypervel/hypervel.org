@@ -7,7 +7,7 @@ All of the configuration files for the Hypervel framework are stored in the `con
 
 These configuration files allow you to configure things like your database connection information, your mail server information, as well as various other core configuration values such as your application URL and encryption key.
 
-#### The `about` Command
+### The `about` Command
 
 Hypervel can display an overview of your application's configuration, drivers, and environment via the `about` Artisan command.
 
@@ -25,6 +25,21 @@ Or, to explore a specific configuration file's values in detail, you may use the
 
 ```shell:no-line-numbers
 php artisan config:show database
+```
+
+## Unsupported Container Calling
+
+Since Hypervel initializes the Configuration service at a very early stage in the framework's underlying mechanism, which differs from Laravel, the related configs are loaded into the framework at an extremely early phase.
+
+At this point, the **App Container** is not yet fully prepared. This means you should not write any functions in your config files that would call the **App Container**, such as: using the config helper, using the app helper, using facade services, etc.
+
+For example, you will get errors with the following config declaration:
+
+```php
+return [
+    'foo' => config('bar.title'),
+    'is_production' => app()->isProduction(),
+];
 ```
 
 ## Environment Configuration
