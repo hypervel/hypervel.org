@@ -95,18 +95,6 @@ return [
 For languages that differ by territory, you should name the language directories according to the ISO 15897. For example, "en_GB" should be used for British English rather than "en-gb".
 :::
 
-### Using Translation Strings as Keys
-
-For applications with a large number of translatable strings, defining every string with a "short key" can become confusing when referencing the keys in your views and it is cumbersome to continually invent keys for every translation string supported by your application.
-
-For this reason, Hypervel also provides support for defining translation strings using the "default" translation of the string as the key. Language files that use translation strings as keys are stored as JSON files in the `lang` directory. For example, if your application has a Spanish translation, you should create a `lang/es.json` file:
-
-```json
-{
-    "I love programming.": "Me encanta programar."
-}
-```
-
 #### Key / File Conflicts
 
 You should not define translation string keys that conflict with other translation filenames. For example, translating `__('Action')` for the "NL" locale while a `nl/action.php` file exists but a `nl.json` file does not exist will result in the translator returning the entire contents of `nl/action.php`.
@@ -120,14 +108,6 @@ echo __('messages.welcome');
 ```
 
 If the specified translation string does not exist, the `__` function will return the translation string key. So, using the example above, the `__` function would return `messages.welcome` if the translation string does not exist.
-
- If you are using your [default translation strings as your translation keys](#using-translation-strings-as-keys), you should pass the default translation of your string to the `__` function;
-
-```php
-echo __('I love programming.');
-```
-
-Again, if the translation string does not exist, the `__` function will return the translation string key that it was given.
 
 If you are using the [Blade templating engine](/docs/blade), you may use the `{{ }}` echo syntax to display the translation string:
 
