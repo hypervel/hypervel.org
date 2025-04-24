@@ -15,7 +15,7 @@ The `debug` option in your `config/app.php` configuration file determines how mu
 
 During local development, you should set the `APP_DEBUG` environment variable to `true`. **In your production environment, this value should always be `false`. If the value is set to `true` in production, you risk exposing sensitive configuration values to your application's end users.**
 
-The `App\Exceptions\Handlers\ApiExceptionHandler` and `Hyperf\ExceptionHandler\Handler\WhoopsExceptionHandler` classes are the default exception handlers for `api` and `web requests respectively.
+The `App\Exceptions\Handlers\ApiExceptionHandler` and `Hypervel\Foundation\Exceptions\HtmlErrorRenderer` classes are the default exception handlers for `api` and `web requests respectively.
 
 You can configure the exception handlers by modifying the `config/exceptions.php` file. In most cases, you don't need to change the default exception handlers.
 
@@ -149,10 +149,8 @@ class Handler extends ExceptionHandler
 {
     /**
      * Indicates that an exception instance should only be reported once.
-     *
-     * @var bool
      */
-    protected $withoutDuplicates = true;
+    protected bool $withoutDuplicates = true;
 
     // ...
 }
@@ -192,7 +190,7 @@ use Psr\Log\LogLevel;
  *
  * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
  */
-protected $levels = [
+protected array $levels = [
     PDOException::class => LogLevel::CRITICAL,
 ];
 ```
@@ -209,7 +207,7 @@ use App\Exceptions\InvalidOrderException;
  *
  * @var array<int, class-string<\Throwable>>
  */
-protected $dontReport = [
+protected array $dontReport = [
     InvalidOrderException::class,
 ];
 ```
