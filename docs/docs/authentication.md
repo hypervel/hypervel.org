@@ -95,7 +95,7 @@ Route::get('/flights', function () {
 
 #### Handling Unauthenticated Users
 
-When the `auth` middleware detects an unauthenticated user, it will throw `Hypervel\Auth\AuthenticationException`. You may catch this exception and customize your next steps, such as redirecting user to another route.
+When the `auth` middleware detects an unauthenticated user, it will throw `Hypervel\Auth\AuthenticationException`. You may override `unauthenticated` function in your exception handler and customize your next steps, such as redirecting user to another route.
 
 #### Specifying a Guard
 
