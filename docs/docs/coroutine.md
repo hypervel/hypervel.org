@@ -198,7 +198,7 @@ try {
 The example above is wrong because it creates a new coroutine context inside the try block. This approach is problematic since any errors occurring within the coroutine won't be caught—the call to `go()` returns immediately and execution continues. Exceptions must be thrown and caught within the same coroutine, not across different ones.
 
 ::: info
-It's highly recommended to set `swoole.use_shortname` to `Off` in your `php.ini`. If you didn't turn off `swoole.use_shortname` and use global coroutine functions without the namespace., errors occurring in coroutines will not be reported by exception handler. Unhandled errors will be printed out to the console.
+It's highly recommended to set `swoole.use_shortname` to `Off` in your `php.ini`. If you didn't turn off `swoole.use_shortname` and use global coroutine functions without the namespace, errors occurring in coroutines will not be reported by exception handler. Unhandled errors will be printed out to the console.
 :::
 
 #### Right Way to Handle Throwables
