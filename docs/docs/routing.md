@@ -296,7 +296,73 @@ Route::get('/categories/{category}', function (Category $category) {
 });
 ```
 
-#### Throttling With Redis
+### Explicit Binding
+
+You are not required to use Hypervel's implicit, convention based model resolution in order to use model binding. You can also explicitly define how route parameters correspond to models. To register an explicit binding, use the router's `model` method to specify the class for a given parameter. You should define your explicit model bindings at the beginning of the `boot` method of your `AppServiceProvider` class:
+
+```php
+use App\Models\User;
+use Hypervel\Support\Facades\Route;
+
+/**
+ * Bootstrap any application services.
+ */
+public function boot(): void
+{
+    Route::model('user', User::class);
+}
+```
+
+Next, define a route that contains a `{user}` parameter:
+
+```php
+use App\Models\User;
+
+Route::get('/users/{user}', function (User $user) {
+    // ...
+});
+```
+
+Since we have bound all `{user}` parameters to the `App\Models\User` model, an instance of that class will be injected into the route. So, for example, a request to `users/1` will inject the `User` instance from the database which has an ID of `1`.
+
+If a matching model instance is not found in the database, a 404 HTTP response will be automatically generated.
+
+#### Customizing the Resolution Logic
+
+If you wish to define your own model binding resolution logic, you may use the `Route::bind` method. The closure you pass to the `bind` method will receive the value of the URI segment and should return the instance of the class that should be injected into the route. Again, this customization should take place in the `boot` method of your application's `AppServiceProvider`:
+
+```php
+use App\Models\User;
+use Hypervel\Support\Facades\Route;
+
+/**
+ * Bootstrap any application services.
+ */
+public function boot(): void
+{
+    Route::bind('user', function (string $value) {
+        return User::where('name', $value)->firstOrFail();
+    });
+}
+```
+
+Alternatively, you may override the `resolveRouteBinding` method on your Eloquent model. This method will receive the value of the URI segment and should return the instance of the class that should be injected into the route:
+
+```php
+/**
+ * Retrieve the model for a bound value.
+ *
+ * @param  mixed  $value
+ * @param  string|null  $field
+ * @return \Hypervel\Database\Eloquent\Model|null
+ */
+public function resolveRouteBinding($value, $field = null)
+{
+    return $this->where('name', $value)->firstOrFail();
+}
+```
+
+## Throttling With Redis
 
 Typically, the `throttle` middleware is mapped to the `Hypervel\Router\Middleware\ThrottleRequests` class. This mapping is defined in your application's HTTP kernel (`App\Http\Kernel`).
 

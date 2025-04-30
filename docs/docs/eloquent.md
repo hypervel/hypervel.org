@@ -138,10 +138,10 @@ Eloquent requires each model to have at least one uniquely identifying "ID" that
 
 Instead of using auto-incrementing integers as your Eloquent model's primary keys, you may choose to use UUIDs instead. UUIDs are universally unique alpha-numeric identifiers that are 36 characters long.
 
-If you would like a model to use a UUID key instead of an auto-incrementing integer key, you may use the `Hyperf\Database\Model\Concerns\HasUuids` trait on the model. Of course, you should ensure that the model has a [UUID equivalent primary key column](/docs/migrations#column-method-uuid):
+If you would like a model to use a UUID key instead of an auto-incrementing integer key, you may use the `Hypervel\Database\Eloquent\Concerns\HasUuids` trait on the model. Of course, you should ensure that the model has a [UUID equivalent primary key column](/docs/migrations#column-method-uuid):
 
 ```php
-use Hyperf\Database\Model\Concerns\HasUuids;
+use Hypervel\Database\Eloquent\Concerns\HasUuids;
 use Hypervel\Database\Eloquent\Model;
 
 class Article extends Model
@@ -182,10 +182,10 @@ public function uniqueIds(): array
 }
 ```
 
-If you wish, you may choose to utilize "ULIDs" instead of UUIDs. ULIDs are similar to UUIDs; however, they are only 26 characters in length. Like ordered UUIDs, ULIDs are lexicographically sortable for efficient database indexing. To utilize ULIDs, you should use the `Hyperf\Database\Model\Concerns\HasUlids` trait on your model. You should also ensure that the model has a [ULID equivalent primary key column](/docs/migrations#column-method-ulid):
+If you wish, you may choose to utilize "ULIDs" instead of UUIDs. ULIDs are similar to UUIDs; however, they are only 26 characters in length. Like ordered UUIDs, ULIDs are lexicographically sortable for efficient database indexing. To utilize ULIDs, you should use the `Hypervel\Database\Eloquent\Concerns\HasUlids` trait on your model. You should also ensure that the model has a [ULID equivalent primary key column](/docs/migrations#column-method-ulid):
 
 ```php
-use Hyperf\Database\Model\Concerns\HasUlids;
+use Hypervel\Database\Eloquent\Concerns\HasUlids;
 use Hypervel\Database\Eloquent\Model;
 
 class Article extends Model
@@ -199,6 +199,19 @@ $article = Article::create(['title' => 'Traveling to Asia']);
 
 $article->id; // "01gd4d3tgrrfqeda94gdbtdk5c"
 ```
+
+::: tip
+If you have `creating` hooks defined in the models, you need to call `creating` function from the parent class as well.
+
+```php
+public function creating(): void
+{
+    parent::creating();
+
+    // your hook logic...
+}
+```
+:::
 
 ### Timestamps
 
