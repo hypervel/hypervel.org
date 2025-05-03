@@ -404,7 +404,11 @@ Transfer/sec:     15.10MB
 
 ## Native Coroutine Support
 
-All components in Hypervel support coroutines out of the box. Even better, Hypervel can seamlessly transform PHP's built-in blocking I/O functions into coroutines, thanks to [Swoole's runtime hooks](https://wiki.swoole.com/en/#/runtime?id=runtime). Unlike other async libraries such as AMPHP or ReactPHP, you don't need to rewrite clients for databases, Redis, files, HTTP, WebSocket, sockets, etc.
+Unlike other async libraries such as AMPHP or ReactPHP, where developers must rewrite every blocking I/O client in their applications to avoid blocking the event loop, this means you can't utilize the current PHP ecosystem, such as Guzzle, PDO, Redis clients, or other native PHP functions.
+
+> See: [How can I use blocking functions?](https://github.com/reactphp/reactphp/wiki/FAQ#how-can-i-use-blocking-functions) in ReactPHP.
+
+All components in Hypervel support coroutines out of the box. Even better, Hypervel can seamlessly transform PHP's built-in blocking I/O functions into coroutines, thanks to [Swoole's runtime hooks](https://wiki.swoole.com/en/#/runtime?id=runtime).
 
 ```php
 use Hypervel\Coroutine\Coroutine;
