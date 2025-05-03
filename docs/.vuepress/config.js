@@ -11,7 +11,7 @@ import { seoPlugin } from '@vuepress/plugin-seo'
 export default defineUserConfig({
   lang: 'en-US',
   title: 'Hypervel',
-  description: 'A Laravel-Style PHP Framework for Web Artisans.',
+  description: 'A Coroutine PHP Framework for Laravel Artisans.',
 
   ignoreDeadLinks: true,
   bundler: viteBundler(),
@@ -21,13 +21,13 @@ export default defineUserConfig({
       hostname: 'https://hypervel.org',
       fallBackImage: 'https://hypervel.org/home.png',
       customHead: (head) => {
-        head.push(['title', {}, 'Hypervel - A Laravel-Style PHP Framework for Web Artisans.']);
+        head.push(['title', {}, 'Hypervel - A Coroutine PHP Framework for Laravel Artisans.']);
       },
       ogp: (ogp, page) => ({
         ...ogp,
-        'og:title': 'Hypervel - A Laravel-Style PHP Framework For Web Artisans',
+        'og:title': 'Hypervel - A Coroutine PHP Framework for Laravel Artisans',
         'og:description': "Hypervel is a Laravel-style framework with native coroutine support for ultra-high performance.",
-        'twitter:title': 'Hypervel - A Laravel-Style PHP Framework For Web Artisans',
+        'twitter:title': 'Hypervel - A Coroutine PHP Framework For Laravel Artisans',
         'twitter:description': "Hypervel is a Laravel-style framework with native coroutine support for ultra-high performance.",
         'twitter:image': 'https://hypervel.org/home.png',
         'twitter:card': 'summary_large_image',
