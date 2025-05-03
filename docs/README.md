@@ -413,7 +413,7 @@ use Hypervel\Support\Facades\Http;
 Coroutine::create(function () {
     // It won't block the main process
     $response = Http::get('https://hypervel.org');
-    // Event built-in blocking functions will become coroutines
+    // Even built-in blocking functions will become coroutines
     sleep(1);
     echo $response->body();
 });
