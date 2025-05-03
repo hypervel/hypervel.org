@@ -319,6 +319,111 @@ Echo.private(`orders.${orderId}`)
 </div>
 </div>
 
+## Blazingly Fast
+
+The concurrency capability of Hypervel is at least ten times better than traditional Laravel Octane and also offers lower response latency, which makes it an excellent choice for building web applications in high concurrency use cases.
+
+> For more detailed benchmark, please see [here](/docs/introduction#benchmark).
+
+* Laravel Octane
+```text:no-line-numbers
+Running 10s test @ http://127.0.0.1:8000/api
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    15.93ms   16.86ms 155.82ms   87.02%
+    Req/Sec     2.07k   420.46     3.10k    66.00%
+  82661 requests in 10.04s, 16.95MB read
+Requests/sec:   8230.97
+Transfer/sec:      1.69MB
+```
+
+* Hypervel
+
+```text:no-line-numbers
+Running 10s test @ http://127.0.0.1:9501/api
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     7.66ms   17.85ms 249.92ms   90.25%
+    Req/Sec    24.42k    10.47k   54.37k    68.53%
+  971692 requests in 10.06s, 151.98MB read
+Requests/sec:  96562.80
+Transfer/sec:     15.10MB
+```
+
+::: chart
+
+```json
+{
+  "type": "bar",
+  "data": {
+    "labels": ["Hello World API"],
+    "datasets": [
+      {
+        "label": "Laravel Octane",
+        "data": [8230.97],
+        "backgroundColor": "rgba(255, 182, 193, 0.8)",
+        "borderColor": "rgba(255, 182, 193, 1)",
+        "borderWidth": 1
+      },
+      {
+        "label": "Hypervel",
+        "data": [96562.80],
+        "backgroundColor": "rgba(173, 216, 230, 0.8)",
+        "borderColor": "rgba(173, 216, 230, 1)",
+        "borderWidth": 1
+      }
+    ]
+  },
+  "options": {
+    "responsive": true,
+    "scales": {
+      "x": {
+        "stacked": false
+      },
+      "y": {
+        "stacked": false,
+        "title": {
+          "display": true,
+          "text": "QPS"
+        }
+      }
+    },
+    "plugins": {
+      "title": {
+        "display": true,
+        "text": "Laravel Octane vs Hypervel"
+      },
+      "legend": {
+        "position": "top"
+      }
+    }
+  }
+}
+```
+:::
+
+## Native Coroutine Support
+
+All components in Hypervel support coroutines out of the box. Even better, Hypervel can seamlessly transform PHP's built-in blocking I/O functions into coroutines, thanks to [Swoole's runtime hooks](https://wiki.swoole.com/en/#/runtime?id=runtime). Unlike other async libraries such as AMPHP or ReactPHP, you don't need to rewrite clients for databases, Redis, files, HTTP, WebSocket, sockets, etc.
+
+```php
+use Hypervel\Coroutine\Coroutine;
+use Hypervel\Support\Facades\Http;
+
+Coroutine::create(function () {
+    // It won't block the main process
+    $response = Http::get('https://hypervel.org');
+    // Event built-in blocking functions will become coroutines
+    sleep(1);
+    echo $response->body();
+});
+
+// This line will be printed first
+echo 'Hello world!' . PHP_EOL;
+```
+
+> See [Coroutine](/docs/coroutine) for more detailed information.
+
 ## Frequently Asked Questions
 
 <div class="custom-container tip">
