@@ -185,6 +185,10 @@ export const sidebarConfig = ({
                             link: 'packages',
                         },
                         {
+                            text: 'Package Porting',
+                            link: 'packages-porting',
+                        },
+                        {
                             text: 'Processes',
                             link: 'processes',
                         },

@@ -28,7 +28,7 @@ Within both of these methods, you may use the Hypervel schema builder to express
 ```php
 <?php
 
-use Hyperf\Database\Migrations\Migration;
+use Hypervel\Database\Migrations\Migration;
 use Hyperf\Database\Schema\Blueprint;
 use Hypervel\Support\Facades\Schema;
 
@@ -1062,7 +1062,7 @@ The `default` modifier accepts a value or an `Hyperf\Database\Query\Expression` 
 use Hypervel\Support\Facades\Schema;
 use Hyperf\Database\Schema\Blueprint;
 use Hyperf\Database\Query\Expression;
-use Hyperf\Database\Migrations\Migration;
+use Hypervel\Database\Migrations\Migration;
 
 return new class extends Migration
 {
