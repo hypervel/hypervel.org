@@ -642,6 +642,8 @@ You will likely discover more incorrect type declarations during this process. F
 
 You may extend `Hypervel\Tests\TestCase::class` to leverage features such as assertion counting and automatic mockery closing.
 
+If you need a Hypervel environment for feature testing, you can [Packages Toolkit](/docs/testbench) for more details.
+
 #### Tests in Coroutines
 
 Sometimes you may want to explicitly test your classes in a coroutine environment. In that case, you must execute tests within a coroutine container.
