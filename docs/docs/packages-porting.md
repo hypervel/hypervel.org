@@ -430,7 +430,6 @@ To resolve this, you need a **Coroutine-Level Container** for isolating state be
 The code related to the `locale` property should be refactored as follows:
 
 ```php
-
 use Hypervel\Context\Context;
 
 class Translator extends NamespacedItemResolver implements TranslatorContract
@@ -529,7 +528,7 @@ class TranslationServiceProvider extends ServiceProvider implements DeferrablePr
     }
 }
 ```
-In `TranslationServiceProvider`, two bindings — `translation.loader` and `translator` — are registered via `singleton`. In Hypervel, *all* dependencies in the container are singleton by default, so there is no need for an explicit `singleton` method.
+In `TranslationServiceProvider`, two bindings — `translation.loader` and `translator` — are registered via `singleton`. In Hypervel, all dependencies in the container are singleton by default, so there is no need for an explicit `singleton` method.
 
 To implement these bindings in Hypervel's Config Provider, define them in the `dependencies` array within the `__invoke` function:
 
