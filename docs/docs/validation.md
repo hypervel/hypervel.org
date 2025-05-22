@@ -33,7 +33,8 @@ Next, let's take a look at a simple controller that handles incoming requests to
 
 namespace App\Http\Controllers;
 
-use Hypervel\Http\Request;
+use Psr\Http\Message\ResponseInterface;
+use Hyervel\Http\Request;
 use Hyperf\ViewEngine\Contract\ViewInterface;
 
 class PostController extends Controller
@@ -49,22 +50,20 @@ class PostController extends Controller
     /**
      * Store a new blog post.
      */
-    public function store(Request $request): ViewInterface
+    public function store(Request $request): ResponseInterface
     {
         // Validate and store the blog post...
 
         $post = /** ... */
 
-        return view('post.show', ['post' => $post->id]);
+        return to_route('post.show', ['post' => $post->id]);
     }
 }
 ```
 
 ### Writing the Validation Logic
 
-Now we are ready to fill in our `store` method with the logic to validate the new blog post. To do this, we will use the `validate` method provided by the `Hypervel\Http\Request` object. If the validation rules pass, your code will keep executing normally; however, if validation fails, an `Hyperf\Validation\ValidationException` exception will be thrown and the proper error response will automatically be sent back to the user.
-
-You can catch the validation exception and handle it in your [error handler](/docs/errors).
+Now we are ready to fill in our `store` method with the logic to validate the new blog post. To do this, we will use the `validate` method provided by the `Hyervel\Http\Request` object. If the validation rules pass, your code will keep executing normally; however, if validation fails, an `Hypervel\Validation\ValidationException` exception will be thrown and the proper error response will automatically be sent back to the user.
 
 To get a better understanding of the `validate` method, let's jump back into the `store` method:
 
@@ -72,7 +71,7 @@ To get a better understanding of the `validate` method, let's jump back into the
 /**
  * Store a new blog post.
  */
-public function store(Request $request)
+public function store(Request $request): ResponseInterface
 {
     $validated = $request->validate([
         'title' => 'required|unique:posts|max:255',
@@ -80,6 +79,8 @@ public function store(Request $request)
     ]);
 
     // The blog post is valid...
+
+    return redirect('/posts');
 }
 ```
 
@@ -89,6 +90,15 @@ Alternatively, validation rules may be specified as arrays of rules instead of a
 
 ```php
 $validatedData = $request->validate([
+    'title' => ['required', 'unique:posts', 'max:255'],
+    'body' => ['required'],
+]);
+```
+
+In addition, you may use the `validateWithBag` method to validate a request and store any error messages within a [named error bag](#named-error-bags):
+
+```php
+$validatedData = $request->validateWithBag('post', [
     'title' => ['required', 'unique:posts', 'max:255'],
     'body' => ['required'],
 ]);
@@ -130,11 +140,11 @@ $request->validate([
 
 ### Displaying the Validation Errors
 
-An `$errors` variable can be shared with all of your application's views by the `Hypervel\View\Middleware\ValidationExceptionHandle` middleware. You can add it to the `web` middleware group. When this middleware is applied an `$errors` variable will always be available in your views, allowing you to conveniently assume the `$errors` variable is always defined and can be safely used. The `$errors` variable will be an instance of `Hyperf\ViewEngine\ViewErrorBag`. For more information on working with this object, [check out its documentation](#working-with-error-messages).
+An `$errors` variable can be shared with all of your application's views by the `Hypervel\View\Middleware\ValidationExceptionHandle` middleware. You can add this middleware to the `web` middleware group manually. When this middleware is applied an `$errors` variable will always be available in your views, allowing you to conveniently assume the `$errors` variable is always defined and can be safely used. The `$errors` variable will be an instance of `Hyperf\Support\MessageBag`. For more information on working with this object, [check out its documentation](#working-with-error-messages).
 
 So, in our example, the user will be redirected to our controller's `create` method when validation fails, allowing us to display the error messages in the view:
 
-```html
+```blade
 <!-- /resources/views/post/create.blade.php -->
 
 <h1>Create Post</h1>
@@ -162,21 +172,23 @@ In addition, you may copy this file to another language directory to translate t
 
 #### XHR Requests and Validation
 
-In this example, we used a traditional form to send data to the application. However, many applications receive XHR requests from a JavaScript powered frontend. When using the `validate` method during an XHR request, Hypervel will generates a [JSON response containing all of the validation errors](#validation-error-response-format). This JSON response will be sent with a 422 HTTP status code.
+In this example, we used a traditional form to send data to the application. However, many applications receive XHR requests from a JavaScript powered frontend. When using the `validate` method during an XHR request, Hypervel will not generate a redirect response. Instead, Hypervel generates a [JSON response containing all of the validation errors](#validation-error-response-format). This JSON response will be sent with a 422 HTTP status code.
 
 #### The `@error` Directive
 
 You may use the `@error` [Blade](/docs/blade) directive to quickly determine if validation error messages exist for a given attribute. Within an `@error` directive, you may echo the `$message` variable to display the error message:
 
-```html
+```blade
 <!-- /resources/views/post/create.blade.php -->
 
 <label for="title">Post Title</label>
 
-<input id="title"
+<input
+    id="title"
     type="text"
     name="title"
-    class="@error('title') is-invalid @enderror">
+    class="@error('title') is-invalid @enderror"
+/>
 
 @error('title')
     <div class="alert alert-danger">{{ $message }}</div>
@@ -185,13 +197,13 @@ You may use the `@error` [Blade](/docs/blade) directive to quickly determine if 
 
 If you are using [named error bags](#named-error-bags), you may pass the name of the error bag as the second argument to the `@error` directive:
 
-```html
+```blade
 <input ... class="@error('title', 'post') is-invalid @enderror">
 ```
 
 ### A Note on Optional Fields
 
-By default, Hypervel includes the `TrimStrings` and `ConvertEmptyStringsToNull` middleware in your application's global middleware stack. These middleware are listed but disabled in the stack by the `App\Http\Kernel` class. If you enable these middleware, you will often need to mark your "optional" request fields as `nullable` if you do not want the validator to consider `null` values as invalid. For example:
+By default, Hypervel includes the `TrimStrings` and `ConvertEmptyStringsToNull` middleware in your application's global middleware stack. Because of this, you will often need to mark your "optional" request fields as `nullable` if you do not want the validator to consider `null` values as invalid. For example:
 
 ```php
 $request->validate([
@@ -205,18 +217,12 @@ In this example, we are specifying that the `publish_at` field may be either `nu
 
 ### Validation Error Response Format
 
-When your application throws a `Hyperf\Validation\ValidationException` exception and the incoming HTTP request is expecting a JSON response, Hypervel will automatically format the error messages for you and return a `422 Unprocessable Entity` HTTP response.
-
-::: note
-This behavior is handled by the `App\Exceptions\Handlers\ApiExceptionHandler` class.
-:::
+When your application throws a `Hypervel\Validation\ValidationException` exception and the incoming HTTP request is expecting a JSON response, Hypervel will automatically format the error messages for you and return a `422 Unprocessable Entity` HTTP response.
 
 Below, you can review an example of the JSON response format for validation errors. Note that nested error keys are flattened into "dot" notation format:
 
 ```json
 {
-    "code": 422,
-    "exception": "Hyperf\\Validation\\ValidationException",
     "message": "The team name must be a string. (and 4 more errors)",
     "errors": {
         "team_name": [
@@ -254,7 +260,7 @@ As you might have guessed, the `authorize` method is responsible for determining
 /**
  * Get the validation rules that apply to the request.
  *
- * @return array<string, \Hyperf\Validation\Contract\Rule|array|string>
+ * @return array<string, \Hypervel\Validation\Contracts\ValidationRule|array<mixed>|string>
  */
 public function rules(): array
 {
@@ -264,6 +270,10 @@ public function rules(): array
     ];
 }
 ```
+
+::: note
+You may type-hint any dependencies you require within the `rules` method's signature. They will automatically be resolved via the Hypervel [service container](/docs/container).
+:::
 
 So, how are the validation rules evaluated? All you need to do is type-hint the request on your controller method. The incoming form request is validated before the controller method is called, meaning you do not need to clutter your controller with any validation logic:
 
@@ -284,16 +294,17 @@ public function store(StorePostRequest $request): ResponseInterface
 }
 ```
 
-If validation fails, a redirect response will be generated to send the user back to their previous location. The errors will also be flashed to the session so they are available for display. If the request was an XHR request, an HTTP response with a 422 status code will be returned to the user including a [JSON representation of the validation errors](#validation-error-response-format).
+If validation fails, a redirect response will be generated to send the user back to their previous location if `Hypervel\View\Middleware\ValidationExceptionHandle` middleware is applied. The errors will also be flashed to the session so they are available for display. If the request was an XHR request, an HTTP response with a 422 status code will be returned to the user including a [JSON representation of the validation errors](#validation-error-response-format).
 
+<a name="performing-additional-validation-on-form-requests"></a>
 #### Performing Additional Validation
 
 Sometimes you need to perform additional validation after your initial validation is complete. You can accomplish this using the form request's `after` method.
 
-The `after` method should return an array of callables or closures which will be invoked after validation is complete. The given callables will receive an `Hyperf\Validation\Validator` instance, allowing you to raise additional error messages if necessary:
+The `after` method should return an array of callables or closures which will be invoked after validation is complete. The given callables will receive an `Hypervel\Validation\Validator` instance, allowing you to raise additional error messages if necessary:
 
 ```php
-use Hyperf\Validation\Validator;
+use Hypervel\Validation\Validator;
 
 /**
  * Get the "after" validation callables for the request.
@@ -313,12 +324,12 @@ public function after(): array
 }
 ```
 
-As noted, the array returned by the `after` method may also contain invokable classes. The `__invoke` method of these classes will receive an `Hyperf\Validation\Validator` instance:
+As noted, the array returned by the `after` method may also contain invokable classes. The `__invoke` method of these classes will receive an `Hypervel\Validation\Validator` instance:
 
 ```php
 use App\Validation\ValidateShippingTime;
 use App\Validation\ValidateUserStatus;
-use Hyperf\Validation\Validator;
+use Hypervel\Validation\Validator;
 
 /**
  * Get the "after" validation callables for the request.
@@ -335,6 +346,18 @@ public function after(): array
 }
 ```
 
+<a name="request-stopping-on-first-validation-rule-failure"></a>
+#### Stopping on the First Validation Failure
+
+By adding a `stopOnFirstFailure` property to your request class, you may inform the validator that it should stop validating all attributes once a single validation failure has occurred:
+
+```php
+/**
+ * Indicates if the validator should stop on the first rule failure.
+ */
+protected bool $stopOnFirstFailure = true;
+```
+
 ### Authorizing Form Requests
 
 The form request class also contains an `authorize` method. Within this method, you may determine if the authenticated user actually has the authority to update a given resource. For example, you may determine if a user actually owns a blog comment they are attempting to update. Most likely, you will interact with your [authorization gates and policies](/docs/authorization) within this method:
@@ -347,8 +370,22 @@ use App\Models\Comment;
  */
 public function authorize(): bool
 {
-    // authorization logic
+    $comment = Comment::find($this->route('comment'));
+
+    return $comment && $this->user()->can('update', $comment);
 }
+```
+
+Since all form requests extend the base Hypervel request class, we may use the `user` method to access the currently authenticated user. Also, note the call to the `route` method in the example above. This method grants you access to the URI parameters defined on the route being called, such as the `{comment}` parameter in the example below:
+
+```php
+Route::post('/comment/{comment}');
+```
+
+Therefore, if your application is taking advantage of [route model binding](/docs/routing#route-model-binding), your code may be made even more succinct by accessing the resolved model as a property of the request:
+
+```php
+return $this->user()->can('update', $this->comment);
 ```
 
 If the `authorize` method returns `false`, an HTTP response with a 403 status code will automatically be returned and your controller method will not execute.
@@ -364,6 +401,10 @@ public function authorize(): bool
     return true;
 }
 ```
+
+::: note
+You may type-hint any dependencies you need within the `authorize` method's signature. They will automatically be resolved via the Hypervel [service container](/docs/container).
+:::
 
 ### Customizing the Error Messages
 
@@ -420,6 +461,18 @@ protected function prepareForValidation(): void
 }
 ```
 
+Likewise, if you need to normalize any request data after validation is complete, you may use the `passedValidation` method:
+
+```php
+/**
+ * Handle a passed validation attempt.
+ */
+protected function passedValidation(): void
+{
+    $this->replace(['name' => 'Taylor']);
+}
+```
+
 ## Manually Creating Validators
 
 If you do not want to use the `validate` method on the request, you may create a validator instance manually using the `Validator` [facade](/docs/facades). The `make` method on the facade generates a new validator instance:
@@ -430,7 +483,7 @@ If you do not want to use the `validate` method on the request, you may create a
 namespace App\Http\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
-use Hypervel\Http\Request;
+use Hyervel\Http\Request;
 use Hypervel\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -461,6 +514,37 @@ class PostController extends Controller
 
 The first argument passed to the `make` method is the data under validation. The second argument is an array of the validation rules that should be applied to the data.
 
+#### Stopping on First Validation Failure
+
+The `stopOnFirstFailure` method will inform the validator that it should stop validating all attributes once a single validation failure has occurred:
+
+```php
+if ($validator->stopOnFirstFailure()->fails()) {
+    // ...
+}
+```
+
+### Automatic Redirection
+
+If you would like to create a validator instance manually but still take advantage of the automatic redirection offered by the HTTP request's `validate` method, you may call the `validate` method on an existing validator instance. If validation fails, the user will automatically be redirected or, in the case of an XHR request, a [JSON response will be returned](#validation-error-response-format):
+
+```php
+Validator::make($request->all(), [
+    'title' => 'required|unique:posts|max:255',
+    'body' => 'required',
+])->validate();
+```
+
+You may use the `validateWithBag` method to store the error messages in a [named error bag](#named-error-bags) if validation fails:
+
+```php
+Validator::make($request->all(), [
+    'title' => 'required|unique:posts|max:255',
+    'body' => 'required',
+])->validateWithBag('post');
+```
+
+<a name="manual-customizing-the-error-messages"></a>
 ### Customizing the Error Messages
 
 If needed, you may provide custom error messages that a validator instance should use instead of the default error messages provided by Hypervel. There are several ways to specify custom messages. First, you may pass the custom messages as the third argument to the `Validator::make` method:
@@ -504,7 +588,7 @@ $validator = Validator::make($input, $rules, $messages, [
 
 ### Performing Additional Validation
 
-Sometimes you need to perform additional validation after your initial validation is complete. You can accomplish this using the validator's `after` method. The `after` method accepts a closure or an array of callables which will be invoked after validation is complete. The given callables will receive an `Hyperf\Validation\Validator` instance, allowing you to raise additional error messages if necessary:
+Sometimes you need to perform additional validation after your initial validation is complete. You can accomplish this using the validator's `after` method. The `after` method accepts a closure or an array of callables which will be invoked after validation is complete. The given callables will receive an `Hypervel\Validation\Validator` instance, allowing you to raise additional error messages if necessary:
 
 ```php
 use Hypervel\Support\Facades\Validator;
@@ -524,7 +608,7 @@ if ($validator->fails()) {
 }
 ```
 
-As noted, the `after` method also accepts an array of callables, which is particularly convenient if your "after validation" logic is encapsulated in invokable classes, which will receive an `Hyperf\Validation\Validator` instance via their `__invoke` method:
+As noted, the `after` method also accepts an array of callables, which is particularly convenient if your "after validation" logic is encapsulated in invokable classes, which will receive an `Hypervel\Validation\Validator` instance via their `__invoke` method:
 
 ```php
 use App\Validation\ValidateShippingTime;
@@ -644,7 +728,7 @@ Validator::make($request->all(), [
 
 If this validation rule fails, it will produce the following error message:
 
-```none
+```text
 The credit card number field is required when payment type is cc.
 ```
 
@@ -653,14 +737,14 @@ Instead of displaying `cc` as the payment type value, you may specify a more use
 ```php
 'values' => [
     'payment_type' => [
-            'cc' => 'credit card'
-        ],
+        'cc' => 'credit card'
+    ],
 ],
 ```
 
 After defining this value, the validation rule will produce the following error message:
 
-```none
+```text
 The credit card number field is required when payment type is credit card.
 ```
 
@@ -681,76 +765,157 @@ Below is a list of all available validation rules and their function:
     }
 </style>
 
+#### Booleans
+
 <div class="collection-method-list" markdown="1">
 
 [Accepted](#rule-accepted)
 [Accepted If](#rule-accepted-if)
+[Boolean](#rule-boolean)
+[Declined](#rule-declined)
+[Declined If](#rule-declined-if)
+
+</div>
+
+#### Strings
+
+<div class="collection-method-list" markdown="1">
+
 [Active URL](#rule-active-url)
-[After (Date)](#rule-after)
-[After Or Equal (Date)](#rule-after-or-equal)
 [Alpha](#rule-alpha)
 [Alpha Dash](#rule-alpha-dash)
 [Alpha Numeric](#rule-alpha-num)
-[Array](#rule-array)
 [Ascii](#rule-ascii)
-[Bail](#rule-bail)
-[Before (Date)](#rule-before)
-[Before Or Equal (Date)](#rule-before-or-equal)
-[Between](#rule-between)
-[Boolean](#rule-boolean)
 [Confirmed](#rule-confirmed)
-[Date](#rule-date)
-[Date Equals](#rule-date-equals)
-[Date Format](#rule-date-format)
-[Decimal](#rule-decimal)
-[Declined](#rule-declined)
-[Declined If](#rule-declined-if)
+[Current Password](#rule-current-password)
 [Different](#rule-different)
-[Digits](#rule-digits)
-[Digits Between](#rule-digits-between)
-[Dimensions (Image Files)](#rule-dimensions)
-[Distinct](#rule-distinct)
 [Doesnt Start With](#rule-doesnt-start-with)
 [Doesnt End With](#rule-doesnt-end-with)
 [Email](#rule-email)
 [Ends With](#rule-ends-with)
+[Enum](#rule-enum)
+[Hex Color](#rule-hex-color)
+[In](#rule-in)
+[IP Address](#rule-ip)
+[JSON](#rule-json)
+[Lowercase](#rule-lowercase)
+[MAC Address](#rule-mac)
+[Max](#rule-max)
+[Min](#rule-min)
+[Not In](#rule-not-in)
+[Regular Expression](#rule-regex)
+[Not Regular Expression](#rule-not-regex)
+[Same](#rule-same)
+[Size](#rule-size)
+[Starts With](#rule-starts-with)
+[String](#rule-string)
+[Uppercase](#rule-uppercase)
+[URL](#rule-url)
+[ULID](#rule-ulid)
+[UUID](#rule-uuid)
+
+</div>
+
+#### Numbers
+
+<div class="collection-method-list" markdown="1">
+
+[Between](#rule-between)
+[Decimal](#rule-decimal)
+[Different](#rule-different)
+[Digits](#rule-digits)
+[Digits Between](#rule-digits-between)
+[Greater Than](#rule-gt)
+[Greater Than Or Equal](#rule-gte)
+[Integer](#rule-integer)
+[Less Than](#rule-lt)
+[Less Than Or Equal](#rule-lte)
+[Max](#rule-max)
+[Max Digits](#rule-max-digits)
+[Min](#rule-min)
+[Min Digits](#rule-min-digits)
+[Multiple Of](#rule-multiple-of)
+[Numeric](#rule-numeric)
+[Same](#rule-same)
+[Size](#rule-size)
+
+</div>
+
+#### Arrays
+
+<div class="collection-method-list" markdown="1">
+
+[Array](#rule-array)
+[Between](#rule-between)
+[Contains](#rule-contains)
+[Distinct](#rule-distinct)
+[In Array](#rule-in-array)
+[List](#rule-list)
+[Max](#rule-max)
+[Min](#rule-min)
+[Size](#rule-size)
+
+</div>
+
+#### Dates
+
+<div class="collection-method-list" markdown="1">
+
+[After](#rule-after)
+[After Or Equal](#rule-after-or-equal)
+[Before](#rule-before)
+[Before Or Equal](#rule-before-or-equal)
+[Date](#rule-date)
+[Date Equals](#rule-date-equals)
+[Date Format](#rule-date-format)
+[Different](#rule-different)
+[Timezone](#rule-timezone)
+
+</div>
+
+#### Files
+
+<div class="collection-method-list" markdown="1">
+
+[Between](#rule-between)
+[Dimensions](#rule-dimensions)
+[Extensions](#rule-extensions)
+[File](#rule-file)
+[Image](#rule-image)
+[Max](#rule-max)
+[MIME Types](#rule-mimetypes)
+[MIME Type By File Extension](#rule-mimes)
+[Size](#rule-size)
+
+</div>
+
+#### Database
+
+<div class="collection-method-list" markdown="1">
+
+[Exists](#rule-exists)
+[Unique](#rule-unique)
+
+</div>
+
+#### Utilities
+
+<div class="collection-method-list" markdown="1">
+
+[Any Of](#rule-anyof)
+[Bail](#rule-bail)
 [Exclude](#rule-exclude)
 [Exclude If](#rule-exclude-if)
 [Exclude Unless](#rule-exclude-unless)
 [Exclude With](#rule-exclude-with)
 [Exclude Without](#rule-exclude-without)
-[Exists (Database)](#rule-exists)
-[File](#rule-file)
 [Filled](#rule-filled)
-[Greater Than](#rule-gt)
-[Greater Than Or Equal](#rule-gte)
-[Hex Color](#rule-hex-color)
-[Image (File)](#rule-image)
-[In](#rule-in)
-[In Array](#rule-in-array)
-[Integer](#rule-integer)
-[IP Address](#rule-ip)
-[JSON](#rule-json)
-[Less Than](#rule-lt)
-[Less Than Or Equal](#rule-lte)
-[Lowercase](#rule-lowercase)
-[MAC Address](#rule-mac)
-[Max](#rule-max)
-[Max Digits](#rule-max-digits)
-[MIME Types](#rule-mimetypes)
-[MIME Type By File Extension](#rule-mimes)
-[Min](#rule-min)
-[Min Digits](#rule-min-digits)
 [Missing](#rule-missing)
 [Missing If](#rule-missing-if)
 [Missing Unless](#rule-missing-unless)
 [Missing With](#rule-missing-with)
 [Missing With All](#rule-missing-with-all)
-[Multiple Of](#rule-multiple-of)
-[Not In](#rule-not-in)
-[Not Regex](#rule-not-regex)
 [Nullable](#rule-nullable)
-[Numeric](#rule-numeric)
 [Present](#rule-present)
 [Present If](#rule-present-if)
 [Present Unless](#rule-present-unless)
@@ -758,27 +923,21 @@ Below is a list of all available validation rules and their function:
 [Present With All](#rule-present-with-all)
 [Prohibited](#rule-prohibited)
 [Prohibited If](#rule-prohibited-if)
+[Prohibited If Accepted](#rule-prohibited-if-accepted)
+[Prohibited If Declined](#rule-prohibited-if-declined)
 [Prohibited Unless](#rule-prohibited-unless)
 [Prohibits](#rule-prohibits)
-[Regular Expression](#rule-regex)
 [Required](#rule-required)
 [Required If](#rule-required-if)
+[Required If Accepted](#rule-required-if-accepted)
+[Required If Declined](#rule-required-if-declined)
 [Required Unless](#rule-required-unless)
 [Required With](#rule-required-with)
 [Required With All](#rule-required-with-all)
 [Required Without](#rule-required-without)
 [Required Without All](#rule-required-without-all)
 [Required Array Keys](#rule-required-array-keys)
-[Same](#rule-same)
-[Size](#rule-size)
 [Sometimes](#validating-when-present)
-[Starts With](#rule-starts-with)
-[String](#rule-string)
-[Timezone](#rule-timezone)
-[Unique (Database)](#rule-unique)
-[Uppercase](#rule-uppercase)
-[URL](#rule-url)
-[UUID](#rule-uuid)
 
 </div>
 
@@ -812,15 +971,63 @@ Instead of passing a date string to be evaluated by `strtotime`, you may specify
 'finish_date' => 'required|date|after:start_date'
 ```
 
+For convenience, date based rules may be constructed using the fluent `date` rule builder:
+
+```php
+use Hypervel\Validation\Rule;
+
+'start_date' => [
+    'required',
+    Rule::date()->after(today()->addDays(7)),
+],
+```
+
+The `afterToday` and `todayOrAfter` methods may be used to fluently express the date must be after today or or today or after, respectively:
+
+```php
+'start_date' => [
+    'required',
+    Rule::date()->afterToday(),
+],
+```
+
 <a name="rule-after-or-equal"></a>
 #### after\_or\_equal:_date_
 
 The field under validation must be a value after or equal to the given date. For more information, see the [after](#rule-after) rule.
 
+For convenience, date based rules may be constructed using the fluent `date` rule builder:
+
+```php
+use Hypervel\Validation\Rule;
+
+'start_date' => [
+    'required',
+    Rule::date()->afterOrEqual(today()->addDays(7)),
+],
+```
+
+<a name="rule-anyof"></a>
+#### anyOf
+
+The `Rule::anyOf` validation rule allows you to specify that the field under validation must satisfy any of the given validation rulesets. For example, the following rule will validate that the `username` field is either an email address or an alpha-numeric string (including dashes) that is at least 6 characters long:
+
+```php
+use Hypervel\Validation\Rule;
+
+'username' => [
+    'required',
+    Rule::anyOf([
+        ['string', 'email'],
+        ['string', 'alpha_dash', 'min:6'],
+    ]),
+],
+```
+
 <a name="rule-alpha"></a>
 #### alpha
 
-The field under validation must be entirely Unicode alphabetic characters contained in [`\p{L}`](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AL%3A%5D&g=&i=) and [`\p{M}`](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AM%3A%5D&g=&i=).
+The field under validation must be entirely Unicode alphabetic characters contained in [\p{L}](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AL%3A%5D&g=&i=) and [\p{M}](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AM%3A%5D&g=&i=).
 
 To restrict this validation rule to characters in the ASCII range (`a-z` and `A-Z`), you may provide the `ascii` option to the validation rule:
 
@@ -831,9 +1038,9 @@ To restrict this validation rule to characters in the ASCII range (`a-z` and `A-
 <a name="rule-alpha-dash"></a>
 #### alpha_dash
 
-The field under validation must be entirely Unicode alpha-numeric characters contained in [`\p{L}`](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AL%3A%5D&g=&i=), [`\p{M}`](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AM%3A%5D&g=&i=), [`\p{N}`](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AN%3A%5D&g=&i=), as well as ASCII dashes (`-`) and ASCII underscores (`_`).
+The field under validation must be entirely Unicode alpha-numeric characters contained in [\p{L}](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AL%3A%5D&g=&i=), [\p{M}](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AM%3A%5D&g=&i=), [\p{N}](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AN%3A%5D&g=&i=), as well as ASCII dashes (`-`) and ASCII underscores (`_`).
 
-To restrict this validation rule to characters in the ASCII range (`a-z` and `A-Z`), you may provide the `ascii` option to the validation rule:
+To restrict this validation rule to characters in the ASCII range (`a-z`, `A-Z`, and `0-9`), you may provide the `ascii` option to the validation rule:
 
 ```php
 'username' => 'alpha_dash:ascii',
@@ -842,9 +1049,9 @@ To restrict this validation rule to characters in the ASCII range (`a-z` and `A-
 <a name="rule-alpha-num"></a>
 #### alpha_num
 
-The field under validation must be entirely Unicode alpha-numeric characters contained in [`\p{L}`](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AL%3A%5D&g=&i=), [`\p{M}`](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AM%3A%5D&g=&i=), and [`\p{N}`](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AN%3A%5D&g=&i=).
+The field under validation must be entirely Unicode alpha-numeric characters contained in [\p{L}](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AL%3A%5D&g=&i=), [\p{M}](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AM%3A%5D&g=&i=), and [\p{N}](https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3AN%3A%5D&g=&i=).
 
-To restrict this validation rule to characters in the ASCII range (`a-z` and `A-Z`), you may provide the `ascii` option to the validation rule:
+To restrict this validation rule to characters in the ASCII range (`a-z`, `A-Z`, and `0-9`), you may provide the `ascii` option to the validation rule:
 
 ```php
 'username' => 'alpha_num:ascii',
@@ -888,25 +1095,56 @@ Stop running validation rules for the field after the first validation failure.
 While the `bail` rule will only stop validating a specific field when it encounters a validation failure, the `stopOnFirstFailure` method will inform the validator that it should stop validating all attributes once a single validation failure has occurred:
 
 ```php
-    if ($validator->stopOnFirstFailure()->fails()) {
-        // ...
-    }
+if ($validator->stopOnFirstFailure()->fails()) {
+    // ...
+}
 ```
 
 <a name="rule-before"></a>
 #### before:_date_
 
-The field under validation must be a value preceding the given date. The dates will be passed into the PHP `strtotime` function in order to be converted into a valid `DateTime` instance. In addition, like the [`after`](#rule-after) rule, the name of another field under validation may be supplied as the value of `date`.
+The field under validation must be a value preceding the given date. The dates will be passed into the PHP `strtotime` function in order to be converted into a valid `DateTime` instance. In addition, like the [after](#rule-after) rule, the name of another field under validation may be supplied as the value of `date`.
+
+For convenience, date based rules may also be constructed using the fluent `date` rule builder:
+
+```php
+use Hypervel\Validation\Rule;
+
+'start_date' => [
+    'required',
+    Rule::date()->before(today()->subDays(7)),
+],
+```
+
+The `beforeToday` and `todayOrBefore` methods may be used to fluently express the date must be before today or or today or before, respectively:
+
+```php
+'start_date' => [
+    'required',
+    Rule::date()->beforeToday(),
+],
+```
 
 <a name="rule-before-or-equal"></a>
 #### before\_or\_equal:_date_
 
-The field under validation must be a value preceding or equal to the given date. The dates will be passed into the PHP `strtotime` function in order to be converted into a valid `DateTime` instance. In addition, like the [`after`](#rule-after) rule, the name of another field under validation may be supplied as the value of `date`.
+The field under validation must be a value preceding or equal to the given date. The dates will be passed into the PHP `strtotime` function in order to be converted into a valid `DateTime` instance. In addition, like the [after](#rule-after) rule, the name of another field under validation may be supplied as the value of `date`.
+
+For convenience, date based rules may also be constructed using the fluent `date` rule builder:
+
+```php
+use Hypervel\Validation\Rule;
+
+'start_date' => [
+    'required',
+    Rule::date()->beforeOrEqual(today()->subDays(7)),
+],
+```
 
 <a name="rule-between"></a>
 #### between:_min_,_max_
 
-The field under validation must have a size between the given _min_ and _max_ (inclusive). Strings, numerics, arrays, and files are evaluated in the same fashion as the [`size`](#rule-size) rule.
+The field under validation must have a size between the given _min_ and _max_ (inclusive). Strings, numerics, arrays, and files are evaluated in the same fashion as the [size](#rule-size) rule.
 
 <a name="rule-boolean"></a>
 #### boolean
@@ -917,6 +1155,22 @@ The field under validation must be able to be cast as a boolean. Accepted input 
 #### confirmed
 
 The field under validation must have a matching field of `{field}_confirmation`. For example, if the field under validation is `password`, a matching `password_confirmation` field must be present in the input.
+
+You may also pass a custom confirmation field name. For example, `confirmed:repeat_username` will expect the field `repeat_username` to match the field under validation.
+
+<a name="rule-contains"></a>
+#### contains:_foo_,_bar_,...
+
+The field under validation must be an array that contains all of the given parameter values.
+
+<a name="rule-current-password"></a>
+#### current_password
+
+The field under validation must match the authenticated user's password. You may specify an [authentication guard](/docs/authentication) using the rule's first parameter:
+
+```php
+'password' => 'current_password:api'
+```
 
 <a name="rule-date"></a>
 #### date
@@ -932,6 +1186,17 @@ The field under validation must be equal to the given date. The dates will be pa
 #### date_format:_format_,...
 
 The field under validation must match one of the given _formats_. You should use **either** `date` or `date_format` when validating a field, not both. This validation rule supports all formats supported by PHP's [DateTime](https://www.php.net/manual/en/class.datetime.php) class.
+
+For convenience, date based rules may be constructed using the fluent `date` rule builder:
+
+```php
+use Hypervel\Validation\Rule;
+
+'start_date' => [
+    'required',
+    Rule::date()->format('Y-m-d'),
+],
+```
 
 <a name="rule-decimal"></a>
 #### decimal:_min_,_max_
@@ -988,16 +1253,19 @@ A _ratio_ constraint should be represented as width divided by height. This can 
 'avatar' => 'dimensions:ratio=3/2'
 ```
 
-Since this rule requires several arguments, you may use the `Rule::dimensions` method to fluently construct the rule:
+Since this rule requires several arguments, it is often more convenient to use the `Rule::dimensions` method to fluently construct the rule:
 
 ```php
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rule;
+use Hypervel\Validation\Rule;
 
 Validator::make($data, [
     'avatar' => [
         'required',
-        Rule::dimensions()->maxWidth(1000)->maxHeight(500)->ratio(3 / 2),
+        Rule::dimensions()
+            ->maxWidth(1000)
+            ->maxHeight(500)
+            ->ratio(3 / 2),
     ],
 ]);
 ```
@@ -1036,12 +1304,87 @@ The field under validation must not end with one of the given values.
 <a name="rule-email"></a>
 #### email
 
-The field under validation must be formatted as an email address.
+The field under validation must be formatted as an email address. This validation rule utilizes the [egulias/email-validator](https://github.com/egulias/EmailValidator) package for validating the email address. By default, the `RFCValidation` validator is applied, but you can apply other validation styles as well:
+
+```php
+'email' => 'email:rfc,dns'
+```
+
+The example above will apply the `RFCValidation` and `DNSCheckValidation` validations. Here's a full list of validation styles you can apply:
+
+<div class="content-list" markdown="1">
+
+- `rfc`: `RFCValidation` - Validate the email address according to [supported RFCs](https://github.com/egulias/EmailValidator?tab=readme-ov-file#supported-rfcs).
+- `strict`: `NoRFCWarningsValidation` - Validate the email according to [supported RFCs](https://github.com/egulias/EmailValidator?tab=readme-ov-file#supported-rfcs), failing when warnings are found (e.g. trailing periods and multiple consecutive periods).
+- `dns`: `DNSCheckValidation` - Ensure the email address's domain has a valid MX record.
+- `spoof`: `SpoofCheckValidation` - Ensure the email address does not contain homograph or deceptive Unicode characters.
+- `filter`: `FilterEmailValidation` - Ensure the email address is valid according to PHP's `filter_var` function.
+- `filter_unicode`: `FilterEmailValidation::unicode()` - Ensure the email address is valid according to PHP's `filter_var` function, allowing some Unicode characters.
+
+</div>
+
+For convenience, email validation rules may be built using the fluent rule builder:
+
+```php
+use Hypervel\Validation\Rule;
+
+$request->validate([
+    'email' => [
+        'required',
+        Rule::email()
+            ->rfcCompliant(strict: false)
+            ->validateMxRecord()
+            ->preventSpoofing()
+    ],
+]);
+```
+
+::: warning
+The `dns` and `spoof` validators require the PHP `intl` extension.
+:::
 
 <a name="rule-ends-with"></a>
 #### ends_with:_foo_,_bar_,...
 
 The field under validation must end with one of the given values.
+
+<a name="rule-enum"></a>
+#### enum
+
+The `Enum` rule is a class based rule that validates whether the field under validation contains a valid enum value. The `Enum` rule accepts the name of the enum as its only constructor argument. When validating primitive values, a backed Enum should be provided to the `Enum` rule:
+
+```php
+use App\Enums\ServerStatus;
+use Hypervel\Validation\Rule;
+
+$request->validate([
+    'status' => [Rule::enum(ServerStatus::class)],
+]);
+```
+
+The `Enum` rule's `only` and `except` methods may be used to limit which enum cases should be considered valid:
+
+```php
+Rule::enum(ServerStatus::class)
+    ->only([ServerStatus::Pending, ServerStatus::Active]);
+
+Rule::enum(ServerStatus::class)
+    ->except([ServerStatus::Pending, ServerStatus::Active]);
+```
+
+The `when` method may be used to conditionally modify the `Enum` rule:
+
+```php
+use Hypervel\Support\Facades\Auth;
+use Hypervel\Validation\Rule;
+
+Rule::enum(ServerStatus::class)
+    ->when(
+        Auth::user()->isAdmin(),
+        fn ($rule) => $rule->only(...),
+        fn ($rule) => $rule->only(...),
+    );
+```
 
 <a name="rule-exclude"></a>
 #### exclude
@@ -1057,7 +1400,7 @@ If complex conditional exclusion logic is required, you may utilize the `Rule::e
 
 ```php
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rule;
+use Hypervel\Validation\Rule;
 
 Validator::make($request->all(), [
     'role_id' => Rule::excludeIf($request->user()->is_admin),
@@ -1097,6 +1440,7 @@ The field under validation must exist in a given database table.
 
 If the `column` option is not specified, the field name will be used. So, in this case, the rule will validate that the `states` database table contains a record with a `state` column value matching the request's `state` attribute value.
 
+<a name="specifying-a-custom-column-name"></a>
 #### Specifying a Custom Column Name
 
 You may explicitly specify the database column name that should be used by the validation rule by placing it after the database table name:
@@ -1120,14 +1464,15 @@ Instead of specifying the table name directly, you may specify the Eloquent mode
 If you would like to customize the query executed by the validation rule, you may use the `Rule` class to fluently define the rule. In this example, we'll also specify the validation rules as an array instead of using the `|` character to delimit them:
 
 ```php
+use Hyperf\Database\Query\Builder;
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rule;
+use Hypervel\Validation\Rule;
 
 Validator::make($data, [
     'email' => [
         'required',
-        Rule::exists('staff')->where(function ($query) {
-            return $query->where('account_id', 1);
+        Rule::exists('staff')->where(function (Builder $query) {
+            $query->where('account_id', 1);
         }),
     ],
 ]);
@@ -1138,6 +1483,27 @@ You may explicitly specify the database column name that should be used by the `
 ```php
 'state' => Rule::exists('states', 'abbreviation'),
 ```
+
+Sometimes, you may wish to validate whether an array of values exists in the database. You can do so by adding both the `exists` and [array](#rule-array) rules to the field being validated:
+
+```php
+'states' => ['array', Rule::exists('states', 'abbreviation')],
+```
+
+When both of these rules are assigned to a field, Hypervel will automatically build a single query to determine if all of the given values exist in the specified table.
+
+<a name="rule-extensions"></a>
+#### extensions:_foo_,_bar_,...
+
+The file under validation must have a user-assigned extension corresponding to one of the listed extensions:
+
+```php
+'photo' => ['required', 'extensions:jpg,png'],
+```
+
+::: warning
+You should never rely on validating a file by its user-assigned extension alone. This rule should typically always be used in combination with the [mimes](#rule-mimes) or [mimetypes](#rule-mimetypes) rules.
+:::
 
 <a name="rule-file"></a>
 #### file
@@ -1152,17 +1518,26 @@ The field under validation must not be empty when it is present.
 <a name="rule-gt"></a>
 #### gt:_field_
 
-The field under validation must be greater than the given _field_ or _value_. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the [`size`](#rule-size) rule.
+The field under validation must be greater than the given _field_ or _value_. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the [size](#rule-size) rule.
 
 <a name="rule-gte"></a>
 #### gte:_field_
 
-The field under validation must be greater than or equal to the given _field_ or _value_. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the [`size`](#rule-size) rule.
+The field under validation must be greater than or equal to the given _field_ or _value_. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the [size](#rule-size) rule.
+
+<a name="rule-hex-color"></a>
+#### hex_color
+
+The field under validation must contain a valid color value in [hexadecimal](https://developer.mozilla.org/en-US/docs/Web/CSS/hex-color) format.
 
 <a name="rule-image"></a>
 #### image
 
-The file under validation must be an image (jpg, jpeg, png, bmp, gif, svg, or webp).
+The file under validation must be an image (jpg, jpeg, png, bmp, gif, or webp).
+
+::: warning
+By default, the image rule does not allow SVG files due to the possibility of XSS vulnerabilities. If you need to allow SVG files, you may provide the `allow_svg` directive to the `image` rule (`image:allow_svg`).
+:::
 
 <a name="rule-in"></a>
 #### in:_foo_,_bar_,...
@@ -1171,7 +1546,7 @@ The field under validation must be included in the given list of values. Since t
 
 ```php
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rule;
+use Hypervel\Validation\Rule;
 
 Validator::make($data, [
     'zones' => [
@@ -1185,7 +1560,7 @@ When the `in` rule is combined with the `array` rule, each value in the input ar
 
 ```php
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rule;
+use Hypervel\Validation\Rule;
 
 $input = [
     'airports' => ['NYC', 'LAS'],
@@ -1237,17 +1612,22 @@ The field under validation must be a valid JSON string.
 <a name="rule-lt"></a>
 #### lt:_field_
 
-The field under validation must be less than the given _field_. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the [`size`](#rule-size) rule.
+The field under validation must be less than the given _field_. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the [size](#rule-size) rule.
 
 <a name="rule-lte"></a>
 #### lte:_field_
 
-The field under validation must be less than or equal to the given _field_. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the [`size`](#rule-size) rule.
+The field under validation must be less than or equal to the given _field_. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the [size](#rule-size) rule.
 
 <a name="rule-lowercase"></a>
 #### lowercase
 
 The field under validation must be lowercase.
+
+<a name="rule-list"></a>
+#### list
+
+The field under validation must be an array that is a list. An array is considered a list if its keys consist of consecutive numbers from 0 to `count($array) - 1`.
 
 <a name="rule-mac"></a>
 #### mac_address
@@ -1257,7 +1637,7 @@ The field under validation must be a MAC address.
 <a name="rule-max"></a>
 #### max:_value_
 
-The field under validation must be less than or equal to a maximum _value_. Strings, numerics, arrays, and files are evaluated in the same fashion as the [`size`](#rule-size) rule.
+The field under validation must be less than or equal to a maximum _value_. Strings, numerics, arrays, and files are evaluated in the same fashion as the [size](#rule-size) rule.
 
 <a name="rule-max-digits"></a>
 #### max_digits:_value_
@@ -1288,15 +1668,14 @@ Even though you only need to specify the extensions, this rule actually validate
 
 [https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types](https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types)
 
-<a name="mime-types-and-extensions"></a>
 #### MIME Types and Extensions
 
-This validation rule does not verify agreement between the MIME type and the extension the user assigned to the file. For example, the `mimes:png` validation rule would consider a file containing valid PNG content to be a valid PNG image, even if the file is named `photo.txt`. If you would like to validate the user-assigned extension of the file, you may use the [`extensions`](#rule-extensions) rule.
+This validation rule does not verify agreement between the MIME type and the extension the user assigned to the file. For example, the `mimes:png` validation rule would consider a file containing valid PNG content to be a valid PNG image, even if the file is named `photo.txt`. If you would like to validate the user-assigned extension of the file, you may use the [extensions](#rule-extensions) rule.
 
 <a name="rule-min"></a>
 #### min:_value_
 
-The field under validation must have a minimum _value_. Strings, numerics, arrays, and files are evaluated in the same fashion as the [`size`](#rule-size) rule.
+The field under validation must have a minimum _value_. Strings, numerics, arrays, and files are evaluated in the same fashion as the [size](#rule-size) rule.
 
 <a name="rule-min-digits"></a>
 #### min_digits:_value_
@@ -1314,24 +1693,24 @@ The field under validation must be a multiple of _value_.
 The field under validation must not be present in the input data.
 
 <a name="rule-missing-if"></a>
- #### missing_if:_anotherfield_,_value_,...
+#### missing_if:_anotherfield_,_value_,...
 
- The field under validation must not be present if the _anotherfield_ field is equal to any _value_.
+The field under validation must not be present if the _anotherfield_ field is equal to any _value_.
 
 <a name="rule-missing-unless"></a>
- #### missing_unless:_anotherfield_,_value_
+#### missing_unless:_anotherfield_,_value_
 
 The field under validation must not be present unless the _anotherfield_ field is equal to any _value_.
 
 <a name="rule-missing-with"></a>
- #### missing_with:_foo_,_bar_,...
+#### missing_with:_foo_,_bar_,...
 
- The field under validation must not be present _only if_ any of the other specified fields are present.
+The field under validation must not be present _only if_ any of the other specified fields are present.
 
 <a name="rule-missing-with-all"></a>
- #### missing_with_all:_foo_,_bar_,...
+#### missing_with_all:_foo_,_bar_,...
 
- The field under validation must not be present _only if_ all of the other specified fields are present.
+The field under validation must not be present _only if_ all of the other specified fields are present.
 
 <a name="rule-not-in"></a>
 #### not_in:_foo_,_bar_,...
@@ -1339,7 +1718,7 @@ The field under validation must not be present unless the _anotherfield_ field i
 The field under validation must not be included in the given list of values. The `Rule::notIn` method may be used to fluently construct the rule:
 
 ```php
-use Hyperf\Validation\Rule;
+use Hypervel\Validation\Rule;
 
 Validator::make($data, [
     'toppings' => [
@@ -1427,7 +1806,7 @@ If complex conditional prohibition logic is required, you may utilize the `Rule:
 
 ```php
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rule;
+use Hypervel\Validation\Rule;
 
 Validator::make($request->all(), [
     'role_id' => Rule::prohibitedIf($request->user()->is_admin),
@@ -1437,6 +1816,15 @@ Validator::make($request->all(), [
     'role_id' => Rule::prohibitedIf(fn () => $request->user()->is_admin),
 ]);
 ```
+<a name="rule-prohibited-if-accepted"></a>
+#### prohibited_if_accepted:_anotherfield_,...
+
+The field under validation must be missing or empty if the _anotherfield_ field is equal to `"yes"`, `"on"`, `1`, `"1"`, `true`, or `"true"`.
+
+<a name="rule-prohibited-if-declined"></a>
+#### prohibited_if_declined:_anotherfield_,...
+
+The field under validation must be missing or empty if the _anotherfield_ field is equal to `"no"`, `"off"`, `0`, `"0"`, `false`, or `"false"`.
 
 <a name="rule-prohibited-unless"></a>
 #### prohibited_unless:_anotherfield_,_value_,...
@@ -1500,7 +1888,7 @@ If you would like to construct a more complex condition for the `required_if` ru
 
 ```php
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rule;
+use Hypervel\Validation\Rule;
 
 Validator::make($request->all(), [
     'role_id' => Rule::requiredIf($request->user()->is_admin),
@@ -1510,6 +1898,16 @@ Validator::make($request->all(), [
     'role_id' => Rule::requiredIf(fn () => $request->user()->is_admin),
 ]);
 ```
+
+<a name="rule-required-if-accepted"></a>
+#### required_if_accepted:_anotherfield_,...
+
+The field under validation must be present and not empty if the _anotherfield_ field is equal to `"yes"`, `"on"`, `1`, `"1"`, `true`, or `"true"`.
+
+<a name="rule-required-if-declined"></a>
+#### required_if_declined:_anotherfield_,...
+
+The field under validation must be present and not empty if the _anotherfield_ field is equal to `"no"`, `"off"`, `0`, `"0"`, `false`, or `"false"`.
 
 <a name="rule-required-unless"></a>
 #### required_unless:_anotherfield_,_value_,...
@@ -1625,7 +2023,7 @@ To instruct the validator to ignore the user's ID, we'll use the `Rule` class to
 
 ```php
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rule;
+use Hypervel\Validation\Rule;
 
 Validator::make($data, [
     'email' => [
@@ -1636,7 +2034,7 @@ Validator::make($data, [
 ```
 
 ::: warning
-You should never pass any user controlled request input into the `ignore` method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.
+> You should never pass any user controlled request input into the `ignore` method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.
 :::
 
 Instead of passing the model key's value to the `ignore` method, you may also pass the entire model instance. Hypervel will automatically extract the key from the model:
@@ -1662,8 +2060,21 @@ Rule::unique('users', 'email_address')->ignore($user->id)
 You may specify additional query conditions by customizing the query using the `where` method. For example, let's add a query condition that scopes the query to only search records that have an `account_id` column value of `1`:
 
 ```php
-'email' => Rule::unique('users')->where(fn (Builder $query) => $query->where('
-account_id', 1))
+'email' => Rule::unique('users')->where(fn (Builder $query) => $query->where('account_id', 1))
+```
+
+**Ignoring Soft Deleted Records in Unique Checks:**
+
+By default, the unique rule includes soft deleted records when determining uniqueness. To exclude soft deleted records from the uniqueness check, you may invoke the `withoutTrashed` method:
+
+```php
+Rule::unique('users')->withoutTrashed();
+```
+
+If your model uses a column name other than `deleted_at` for soft deleted records, you may provide the column name when invoking the `withoutTrashed` method:
+
+```php
+Rule::unique('users')->withoutTrashed('was_deleted_at');
 ```
 
 <a name="rule-uppercase"></a>
@@ -1684,13 +2095,26 @@ If you would like to specify the URL protocols that should be considered valid, 
 'game' => 'url:minecraft,steam',
 ```
 
+<a name="rule-ulid"></a>
+#### ulid
+
+The field under validation must be a valid [Universally Unique Lexicographically Sortable Identifier](https://github.com/ulid/spec) (ULID).
+
 <a name="rule-uuid"></a>
 #### uuid
 
-The field under validation must be a valid RFC 4122 (version 1, 3, 4, or 5) universally unique identifier (UUID).
+The field under validation must be a valid RFC 9562 (version 1, 3, 4, 5, 6, 7, or 8) universally unique identifier (UUID).
 
+You may also validate that the given UUID matches a UUID specification by version:
+
+```php
+'uuid' => 'uuid:4'
+```
+
+<a name="conditionally-adding-rules"></a>
 ## Conditionally Adding Rules
 
+<a name="skipping-validation-when-fields-have-certain-values"></a>
 #### Skipping Validation When Fields Have Certain Values
 
 You may occasionally wish to not validate a given field if another field has a given value. You may accomplish this using the `exclude_if` validation rule. In this example, the `appointment_date` and `doctor_name` fields will not be validated if the `has_appointment` field has a value of `false`:
@@ -1720,7 +2144,7 @@ $validator = Validator::make($data, [
 In some situations, you may wish to run validation checks against a field **only** if that field is present in the data being validated. To quickly accomplish this, add the `sometimes` rule to your rule list:
 
 ```php
-$v = Validator::make($data, [
+$validator = Validator::make($data, [
     'email' => 'sometimes|required|email',
 ]);
 ```
@@ -1740,14 +2164,14 @@ use Hypervel\Support\Facades\Validator;
 
 $validator = Validator::make($request->all(), [
     'email' => 'required|email',
-    'games' => 'required|numeric',
+    'games' => 'required|integer|min:0',
 ]);
 ```
 
 Let's assume our web application is for game collectors. If a game collector registers with our application and they own more than 100 games, we want them to explain why they own so many games. For example, perhaps they run a game resale shop, or maybe they just enjoy collecting games. To conditionally add this requirement, we can use the `sometimes` method on the `Validator` instance.
 
 ```php
-use Hyperf\Support\Fluent;
+use Hypervel\Support\Fluent;
 
 $validator->sometimes('reason', 'required|max:500', function (Fluent $input) {
     return $input->games >= 100;
@@ -1763,7 +2187,7 @@ $validator->sometimes(['reason', 'cost'], 'required', function (Fluent $input) {
 ```
 
 ::: note
-The `$input` parameter passed to your closure will be an instance of `Hyperf\Support\Fluent` and may be used to access your input and files under validation.
+The `$input` parameter passed to your closure will be an instance of `Hypervel\Support\Fluent` and may be used to access your input and files under validation.
 :::
 
 #### Complex Conditional Array Validation
@@ -1793,11 +2217,11 @@ $validator->sometimes('channels.*.address', 'url', function (Fluent $input, Flue
 });
 ```
 
-Like the `$input` parameter passed to the closure, the `$item` parameter is an instance of `Hyperf\Support\Fluent` when the attribute data is an array; otherwise, it is a string.
+Like the `$input` parameter passed to the closure, the `$item` parameter is an instance of `Hypervel\Support\Fluent` when the attribute data is an array; otherwise, it is a string.
 
 ## Validating Arrays
 
-As discussed in the [`array` validation rule documentation](#rule-array), the `array` rule accepts a list of allowed array keys. If any additional keys are present within the array, validation will fail:
+As discussed in the [array validation rule documentation](#rule-array), the `array` rule accepts a list of allowed array keys. If any additional keys are present within the array, validation will fail:
 
 ```php
 use Hypervel\Support\Facades\Validator;
@@ -1855,7 +2279,7 @@ Sometimes you may need to access the value for a given nested array element when
 ```php
 use App\Rules\HasPermission;
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rule;
+use Hypervel\Validation\Rule;
 
 $validator = Validator::make($request->all(), [
     'companies.*.id' => Rule::forEach(function (string|null $value, string $attribute) {
@@ -1908,7 +2332,7 @@ Hypervel provides a variety of validation rules that may be used to validate upl
 
 ```php
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rules\File;
+use Hypervel\Validation\Rules\File;
 
 Validator::validate($input, [
     'attachment' => [
@@ -1920,12 +2344,34 @@ Validator::validate($input, [
 ]);
 ```
 
-If your application accepts images uploaded by your users, you may use the `File` rule's `image` constructor method to indicate that the uploaded file should be an image. In addition, the `dimensions` rule may be used to limit the dimensions of the image:
+#### Validating File Types
+
+Even though you only need to specify the extensions when invoking the `types` method, this method actually validates the MIME type of the file by reading the file's contents and guessing its MIME type. A full listing of MIME types and their corresponding extensions may be found at the following location:
+
+[https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types](https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types)
+
+<a name="validating-files-file-sizes"></a>
+#### Validating File Sizes
+
+For convenience, minimum and maximum file sizes may be specified as a string with a suffix indicating the file size units. The `kb`, `mb`, `gb`, and `tb` suffixes are supported:
+
+```php
+File::types(['mp3', 'wav'])
+    ->min('1kb')
+    ->max('10mb');
+```
+
+<a name="validating-files-image-files"></a>
+#### Validating Image Files
+
+If your application accepts images uploaded by your users, you may use the `File` rule's `image` constructor method to ensure that the file under validation is an image (jpg, jpeg, png, bmp, gif, or webp).
+
+In addition, the `dimensions` rule may be used to limit the dimensions of the image:
 
 ```php
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rule;
-use Hyperf\Validation\Rules\File;
+use Hypervel\Validation\Rule;
+use Hypervel\Validation\Rules\File;
 
 Validator::validate($input, [
     'photo' => [
@@ -1942,21 +2388,29 @@ Validator::validate($input, [
 More information regarding validating image dimensions may be found in the [dimension rule documentation](#rule-dimensions).
 :::
 
-#### File Sizes
+::: warning
+By default, the `image` rule does not allow SVG files due to the possibility of XSS vulnerabilities. If you need to allow SVG files, you may pass `allowSvg: true` to the `image` rule: `File::image(allowSvg: true)`.
+:::
 
-For convenience, minimum and maximum file sizes may be specified as a string with a suffix indicating the file size units. The `kb`, `mb`, `gb`, and `tb` suffixes are supported:
+<a name="validating-files-image-dimensions"></a>
+#### Validating Image Dimensions
+
+You may also validate the dimensions of an image. For example, to validate that an uploaded image is at least 1000 pixels wide and 500 pixels tall, you may use the `dimensions` rule:
 
 ```php
-File::image()
-    ->min('1kb')
-    ->max('10mb')
+use Hypervel\Validation\Rule;
+use Hypervel\Validation\Rules\File;
+
+File::image()->dimensions(
+    Rule::dimensions()
+        ->maxWidth(1000)
+        ->maxHeight(500)
+)
 ```
 
-#### File Types
-
-Even though you only need to specify the extensions when invoking the `types` method, this method actually validates the MIME type of the file by reading the file's contents and guessing its MIME type. A full listing of MIME types and their corresponding extensions may be found at the following location:
-
-[https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types](https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types)
+::: note
+More information regarding validating image dimensions may be found in the [dimension rule documentation](#rule-dimensions).
+:::
 
 ## Validating Passwords
 
@@ -1964,7 +2418,7 @@ To ensure that passwords have an adequate level of complexity, you may use Hyper
 
 ```php
 use Hypervel\Support\Facades\Validator;
-use Hyperf\Validation\Rules\Password;
+use Hypervel\Validation\Rules\Password;
 
 $validator = Validator::make($request->all(), [
     'password' => ['required', 'confirmed', Password::min(8)],
@@ -2021,7 +2475,7 @@ Password::min(8)
 You may find it convenient to specify the default validation rules for passwords in a single location of your application. You can easily accomplish this using the `Password::defaults` method, which accepts a closure. The closure given to the `defaults` method should return the default configuration of the Password rule. Typically, the `defaults` rule should be called within the `boot` method of one of your application's service providers:
 
 ```php
-use Hyperf\Validation\Rules\Password;
+use Hypervel\Validation\Rules\Password;
 
 /**
  * Bootstrap any application services.
@@ -2032,8 +2486,8 @@ public function boot(): void
         $rule = Password::min(8);
 
         return $this->app->isProduction()
-                    ? $rule->mixedCase()->uncompromised()
-                    : $rule;
+            ? $rule->mixedCase()->uncompromised()
+            : $rule;
     });
 }
 ```
@@ -2074,7 +2528,7 @@ Once the rule has been created, we are ready to define its behavior. A rule obje
 namespace App\Rules;
 
 use Closure;
-use Hyperf\Validation\Contract\Rule;
+use Hypervel\Validation\Contracts\ValidationRule;
 
 class Uppercase implements ValidationRule
 {
@@ -2100,17 +2554,35 @@ $request->validate([
 ]);
 ```
 
+#### Translating Validation Messages
+
+Instead of providing a literal error message to the `$fail` closure, you may also provide a [translation string key](/docs/localization) and instruct Hypervel to translate the error message:
+
+```php
+if (strtoupper($value) !== $value) {
+    $fail('validation.uppercase')->translate();
+}
+```
+
+If necessary, you may provide placeholder replacements and the preferred language as the first and second arguments to the `translate` method:
+
+```php
+$fail('validation.location')->translate([
+    'value' => $this->value,
+], 'fr');
+```
+
 #### Accessing Additional Data
 
-If your custom validation rule class needs to access all of the other data undergoing validation, your rule class may implement the `Hyperf\Validation\Contract\DataAwareRule` interface. This interface requires your class to define a `setData` method. This method will automatically be invoked by Hypervel (before validation proceeds) with all of the data under validation:
+If your custom validation rule class needs to access all of the other data undergoing validation, your rule class may implement the `Hypervel\Validation\Contracts\DataAwareRule` interface. This interface requires your class to define a `setData` method. This method will automatically be invoked by Hypervel (before validation proceeds) with all of the data under validation:
 
 ```php
 <?php
 
 namespace App\Rules;
 
-use Hyperf\Validation\Contract\DataAwareRule;
-use Hyperf\Validation\Contract\Rule;
+use Hypervel\Validation\Contracts\DataAwareRule;
+use Hypervel\Validation\Contracts\ValidationRule;
 
 class Uppercase implements DataAwareRule, ValidationRule
 {
@@ -2119,7 +2591,7 @@ class Uppercase implements DataAwareRule, ValidationRule
      *
      * @var array<string, mixed>
      */
-    protected $data = [];
+    protected array $data = [];
 
     // ...
 
@@ -2144,18 +2616,16 @@ Or, if your validation rule requires access to the validator instance performing
 
 namespace App\Rules;
 
-use Hyperf\Validation\Contract\Rule;
-use Hyperf\Validation\Contract\ValidatorAwareRule;
-use Hyperf\Validation\Validator;
+use Hypervel\Validation\Contracts\ValidationRule;
+use Hypervel\Validation\Contracts\ValidatorAwareRule;
+use Hypervel\Validation\Contracts\Validator;
 
 class Uppercase implements ValidationRule, ValidatorAwareRule
 {
     /**
      * The validator instance.
-     *
-     * @var \Hyperf\Validation\Validator
      */
-    protected $validator;
+    protected Validator $validator;
 
     // ...
 
@@ -2194,7 +2664,7 @@ $validator = Validator::make($request->all(), [
 
 ### Implicit Rules
 
-By default, when an attribute being validated is not present or contains an empty string, normal validation rules, including custom rules, are not run. For example, the [`unique`](#rule-unique) rule will not be run against an empty string:
+By default, when an attribute being validated is not present or contains an empty string, normal validation rules, including custom rules, are not run. For example, the [unique](#rule-unique) rule will not be run against an empty string:
 
 ```php
 use Hypervel\Support\Facades\Validator;
@@ -2205,6 +2675,8 @@ $input = ['name' => ''];
 
 Validator::make($input, $rules)->passes(); // true
 ```
+
+For a custom rule to run even when an attribute is empty, the rule must imply that the attribute is required.
 
 ::: warning
 An "implicit" rule only _implies_ that the attribute is required. Whether it actually invalidates a missing or empty attribute is up to you.

@@ -195,7 +195,7 @@ File  |  Hypervel\Filesystem\Filesystem  |  `files`
 Gate  |  Hypervel\Auth\Contracts\Gate  |  &nbsp;
 Hash  |  Hypervel\Hashing\Contracts\Hasher  |  `hash`
 Http  |  Hypervel\HttpClient\Factory  |  &nbsp;
-Lang  |  Hyperf\Contract\TranslatorLoaderInterface  |  `translator`
+Lang  |  Hypervel\Translation\Contracts\Translator  |  `translator`
 Log  |  Psr\Log\LoggerInterface  |  `log`
 Mail  |  Hypervel\Mail\Contracts\Factory  |  `mailer`
 Notification  |  Hypervel\Notifications\Contracts\Dispatcher  |  &nbsp;
@@ -210,5 +210,5 @@ Schema  |  Hypervel\Database\Schema\SchemaProxy  |  `db.schema`
 Session  |  Hypervel\Session\Contracts\Session  |  `session`
 Storage  |  Hypervel\Filesystem\Contracts\Factory  |  `filesystem`
 URL  |  Hypervel\Router\UrlGenerator  |  `url`
-Validator  |  Hyperf\Validation\Contract\ValidatorFactoryInterface  |  `validator`
+Validator  |  Hypervel\Validation\Contracts\Factory  |  `validator`
 View  |  Hyperf\View\RenderInterface  |  `view`

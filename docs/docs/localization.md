@@ -29,6 +29,8 @@ We'll discuss each approach to managing translation strings within this document
 
 The default language for your application is stored in the `config/app.php` configuration file's `locale` configuration option. You are free to modify this value to suit the needs of your application.
 
+You may also configure a "fallback language", which will be used when the default language does not contain a given translation string. Like the default language, the fallback language is also configured in the `config/app.php` configuration file, and its value is typically set using the `APP_FALLBACK_LOCALE` environment variable.
+
 You may modify the default language for a single HTTP request at runtime using the `setLocale` method provided by the `App` facade:
 
 ```php
@@ -94,6 +96,18 @@ return [
 ::: warning
 For languages that differ by territory, you should name the language directories according to the ISO 15897. For example, "en_GB" should be used for British English rather than "en-gb".
 :::
+
+### Using Translation Strings as Keys
+
+For applications with a large number of translatable strings, defining every string with a "short key" can become confusing when referencing the keys in your views and it is cumbersome to continually invent keys for every translation string supported by your application.
+
+For this reason, Laravel also provides support for defining translation strings using the "default" translation of the string as the key. Language files that use translation strings as keys are stored as JSON files in the `lang` directory. For example, if your application has a Spanish translation, you should create a `lang/es.json` file:
+
+```json
+{
+    "I love programming.": "Me encanta programar."
+}
+```
 
 #### Key / File Conflicts
 

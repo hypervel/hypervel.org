@@ -15,20 +15,6 @@ The `debug` option in your `config/app.php` configuration file determines how mu
 
 During local development, you should set the `APP_DEBUG` environment variable to `true`. **In your production environment, this value should always be `false`. If the value is set to `true` in production, you risk exposing sensitive configuration values to your application's end users.**
 
-The `App\Exceptions\Handlers\ApiExceptionHandler` and `Hypervel\Foundation\Exceptions\HtmlErrorRenderer` classes are the default exception handlers for `api` and `web requests respectively.
-
-You can configure the exception handlers by modifying the `config/exceptions.php` file. In most cases, you don't need to change the default exception handlers.
-
-```php
-return [
-    'handler' => [
-        'http' => [
-            App\Exceptions\Handlers\Handler::class,
-        ],
-    ],
-];
-```
-
 ::: warning
 `report` feature replies on `report` method in `Hypervel\Foundation\Exceptions\Contracts\ExceptionHandler`, if you are using custom exception handler, you need to implement the `report` method by yourself.
 :::

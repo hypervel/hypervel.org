@@ -224,10 +224,10 @@ Apart from contracts, you will also need to replace other dependencies with thei
 | Illuminate\Support\Traits\ReflectsClosures | Hypervel\Support\Traits\ReflectsClosures |
 | Illuminate\Contracts\Translation\Loader | Hypervel\Translation\Contracts\Loader |
 | Illuminate\Contracts\Translation\Translator | Hypervel\Translation\Contracts\Translator |
-| Illuminate\Contracts\Validation\Factory | Hyperf\Validation\Contract\ValidatorFactoryInterface |
-| Illuminate\Contracts\Validation\ValidatesWhenResolved | Hyperf\Validation\Contract\ValidatesWhenResolved |
-| Illuminate\Contracts\Validation\ValidationRule | Hyperf\Validation\Contract\Rule |
-| Illuminate\Contracts\Validation\Validator | Hyperf\Validation\Contract\ValidatorFactoryInterface |
+| Illuminate\Contracts\Validation\Factory | Hypervel\Validation\Contracts\Factory |
+| Illuminate\Contracts\Validation\ValidatesWhenResolved | Hypervel\Validation\Contracts\ValidatesWhenResolved |
+| Illuminate\Contracts\Validation\ValidationRule | Hypervel\Validation\Contracts\Rule |
+| Illuminate\Contracts\Validation\Validator | Hypervel\Validation\Contracts\Validator |
 | Illuminate\Contracts\View\Engine | Hyperf\ViewEngine\Contract\EngineInterface |
 | Illuminate\Contracts\View\Factory | Hyperf\ViewEngine\Contract\FactoryInterface |
 | Illuminate\Contracts\View\View | Hyperf\ViewEngine\Contract\ViewInterface |
