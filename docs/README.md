@@ -325,6 +325,17 @@ The concurrency capability of Hypervel is at least ten times better than traditi
 
 > For more detailed benchmark, please see [here](/docs/introduction#benchmark).
 
+<div class="benchmark-tabs">
+<div class="benchmark-nav">
+<ul>
+<li class="benchmark-item active" data-benchmark="simple">Simple API Test</li>
+<li class="benchmark-item" data-benchmark="io-wait">Simulated I/O Wait Test</li>
+</ul>
+</div>
+
+<div class="benchmark-content">
+<div class="benchmark-block simple active">
+
 * Laravel Octane
 ```text:no-line-numbers
 Running 10s test @ http://127.0.0.1:8000/api
@@ -356,7 +367,7 @@ Transfer/sec:     15.10MB
 {
   "type": "bar",
   "data": {
-    "labels": ["Hello World API"],
+    "labels": ["Simple API Test"],
     "datasets": [
       {
         "label": "Laravel Octane",
@@ -391,7 +402,7 @@ Transfer/sec:     15.10MB
     "plugins": {
       "title": {
         "display": true,
-        "text": "Laravel Octane vs Hypervel"
+        "text": "Laravel Octane vs Hypervel - Simple API Test"
       },
       "legend": {
         "position": "top"
@@ -401,6 +412,92 @@ Transfer/sec:     15.10MB
 }
 ```
 :::
+
+</div>
+
+<div class="benchmark-block io-wait">
+
+* Laravel Octane
+```text:no-line-numbers
+Running 10s test @ http://127.0.0.1:8000/api
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.03s   184.92us   1.03s    87.50%
+    Req/Sec     1.52      1.29     5.00     54.84%
+  80 requests in 10.10s, 16.80KB read
+  Socket errors: connect 0, read 0, write 0, timeout 72
+Requests/sec:      7.92
+Transfer/sec:      1.66KB
+```
+
+* Hypervel
+```text:no-line-numbers
+Running 10s test @ http://10.10.4.12:9501/api
+  16 threads and 15000 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.02s    64.72ms   1.87s    93.62%
+    Req/Sec     1.16k     1.68k    9.15k    87.59%
+  109401 requests in 10.09s, 19.82MB read
+Requests/sec:  10842.71
+Transfer/sec:      1.96MB
+```
+
+::: chart
+
+```json
+{
+  "type": "bar",
+  "data": {
+    "labels": ["Simulated I/O Wait Test"],
+    "datasets": [
+      {
+        "label": "Laravel Octane",
+        "data": [7.92],
+        "backgroundColor": "rgba(255, 182, 193, 0.8)",
+        "borderColor": "rgba(255, 182, 193, 1)",
+        "borderWidth": 1
+      },
+      {
+        "label": "Hypervel",
+        "data": [10842.71],
+        "backgroundColor": "rgba(173, 216, 230, 0.8)",
+        "borderColor": "rgba(173, 216, 230, 1)",
+        "borderWidth": 1
+      }
+    ]
+  },
+  "options": {
+    "responsive": true,
+    "scales": {
+      "x": {
+        "stacked": false
+      },
+      "y": {
+        "stacked": false,
+        "title": {
+          "display": true,
+          "text": "QPS"
+        }
+      }
+    },
+    "plugins": {
+      "title": {
+        "display": true,
+        "text": "Laravel Octane vs Hypervel - Simulated I/O Wait Test"
+      },
+      "legend": {
+        "position": "top"
+      }
+    }
+  }
+}
+```
+:::
+
+</div>
+
+</div>
+</div>
 
 ## Native Coroutine Support
 
@@ -456,6 +553,7 @@ For I/O-intensive scenarios, even with Octane's improvements, your application's
 <script>
 export default {
   mounted() {
+    // Handle code examples tabs
     const categoryItems = document.querySelectorAll('.category-item');
     const codeBlocks = document.querySelectorAll('.code-block');
     let lastActiveItem = categoryItems[0];
@@ -489,6 +587,43 @@ export default {
         }
         item.classList.add('active');
         lastActiveItem = item;
+      });
+    });
+
+    // Handle benchmark tabs
+    const benchmarkItems = document.querySelectorAll('.benchmark-item');
+    const benchmarkBlocks = document.querySelectorAll('.benchmark-block');
+    let lastActiveBenchmarkItem = benchmarkItems[0];
+
+    // Show first benchmark block and tab by default
+    if (lastActiveBenchmarkItem) {
+      lastActiveBenchmarkItem.classList.add('active');
+      const firstBenchmarkBlock = benchmarkBlocks[0];
+      if (firstBenchmarkBlock) {
+        firstBenchmarkBlock.classList.add('active');
+      }
+    }
+
+    benchmarkItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const benchmark = item.getAttribute('data-benchmark');
+
+        // Update benchmark blocks
+        benchmarkBlocks.forEach(block => {
+          block.classList.remove('active');
+        });
+
+        const selectedBenchmarkBlock = document.querySelector(`.${benchmark}`);
+        if (selectedBenchmarkBlock) {
+          selectedBenchmarkBlock.classList.add('active');
+        }
+
+        // Update benchmark items
+        if (lastActiveBenchmarkItem) {
+          lastActiveBenchmarkItem.classList.remove('active');
+        }
+        item.classList.add('active');
+        lastActiveBenchmarkItem = item;
       });
     });
   }
