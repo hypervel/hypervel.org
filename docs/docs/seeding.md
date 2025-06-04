@@ -24,8 +24,6 @@ As an example, let's modify the default `DatabaseSeeder` class and add a databas
 ```php
 <?php
 
-namespace Database\Seeders;
-
 use Hyperf\Database\Seeders\Seeder;
 use Hypervel\Support\Facades\DB;
 use Hypervel\Support\Facades\Hash;
@@ -48,7 +46,7 @@ class DatabaseSeeder extends Seeder
 ```
 
 ::: note
-You may type-hint any dependencies you need within the `run` method's signature. They will automatically be resolved via the Hypervel [service container](/docs/container).
+Seeder classes don't support namespace yet, and will support in `v0.3.0`.
 :::
 
 ### Using Model Factories
@@ -70,40 +68,18 @@ public function run(): void
 }
 ```
 
-### Calling Additional Seeders
-
-Within the `DatabaseSeeder` class, you may use the `call` method to execute additional seed classes. Using the `call` method allows you to break up your database seeding into multiple files so that no single seeder class becomes too large. The `call` method accepts an array of seeder classes that should be executed:
-
-```php
-/**
- * Run the database seeders.
- */
-public function run(): void
-{
-    $this->call([
-        UserSeeder::class,
-        PostSeeder::class,
-        CommentSeeder::class,
-    ]);
-}
-```
-
 ## Running Seeders
 
-You may execute the `db:seed` Artisan command to seed your database. By default, the `db:seed` command runs the `Database\Seeders\DatabaseSeeder` class, which may in turn invoke other seed classes. However, you may use the `--class` option to specify a specific seeder class to run individually:
+You may execute the `db:seed` Artisan command to seed your database. By default, the `db:seed` command runs all the seeders in `database/seeders` directory.
 
 ```shell:no-line-numbers
 php artisan db:seed
-
-php artisan db:seed --class=UserSeeder
 ```
 
-You may also seed your database using the `migrate:fresh` command in combination with the `--seed` option, which will drop all tables and re-run all of your migrations. This command is useful for completely re-building your database. The `--seeder` option may be used to specify a specific seeder to run:
+You may also seed your database using the `migrate:fresh` command in combination with the `--seed` option, which will drop all tables and re-run all of your migrations. This command is useful for completely re-building your database.
 
 ```shell:no-line-numbers
 php artisan migrate:fresh --seed
-
-php artisan migrate:fresh --seed --seeder=UserSeeder
 ```
 
 #### Forcing Seeders to Run in Production
