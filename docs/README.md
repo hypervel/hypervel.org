@@ -319,7 +319,7 @@ Echo.private(`orders.${orderId}`)
 </div>
 </div>
 
-## Blazingly Fast
+## Blazing Fast
 
 The concurrency capability of Hypervel is at least ten times better than traditional Laravel Octane and also offers lower response latency, which makes it an excellent choice for building web applications in high concurrency use cases.
 
