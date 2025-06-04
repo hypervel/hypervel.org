@@ -3,7 +3,7 @@
 
 ## Introduction
 
-Hypervel includes the ability to seed your database with data using seed classes. All seed classes are stored in the `database/seeders` directory. By default, a `DatabaseSeeder` class is defined for you. From this class, you may use the `call` method to run other seed classes, allowing you to control the seeding order.
+Hypervel includes the ability to seed your database with data using seed classes. All seed classes are stored in the `database/seeders` directory. By default, the `db:seed` command runs all the seeders in `database/seeders` directory.
 
 ::: note
 [Mass assignment protection](/docs/eloquent#mass-assignment) is automatically disabled during database seeding.
