@@ -336,7 +336,7 @@ The concurrency capability of Hypervel is at least ten times better than traditi
 <div class="benchmark-content">
 <div class="benchmark-block simple active">
 
-* Laravel Octane
+* Laravel Octane (8 workers)
 ```text:no-line-numbers
 Running 10s test @ http://127.0.0.1:8000/api
   4 threads and 100 connections
@@ -348,7 +348,7 @@ Requests/sec:   8230.97
 Transfer/sec:      1.69MB
 ```
 
-* Hypervel
+* Hypervel (8 workers)
 
 ```text:no-line-numbers
 Running 10s test @ http://127.0.0.1:9501/api
@@ -417,7 +417,7 @@ Transfer/sec:     15.10MB
 
 <div class="benchmark-block io-wait">
 
-* Laravel Octane
+* Laravel Octane (8 workers)
 ```text:no-line-numbers
 Running 10s test @ http://127.0.0.1:8000/api
   4 threads and 100 connections
@@ -430,7 +430,7 @@ Requests/sec:      7.92
 Transfer/sec:      1.66KB
 ```
 
-* Hypervel
+* Hypervel (8 workers)
 ```text:no-line-numbers
 Running 10s test @ http://10.10.4.12:9501/api
   16 threads and 15000 connections

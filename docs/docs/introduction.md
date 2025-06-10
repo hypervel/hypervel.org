@@ -63,7 +63,7 @@ Test Environment Specifications:
 
 ### Simple API Test
 
-* Laravel Octane
+* Laravel Octane (8 workers)
 
 ```text:no-line-numbers
 Running 10s test @ http://127.0.0.1:8000/api
@@ -76,7 +76,7 @@ Requests/sec:   8230.97
 Transfer/sec:      1.69MB
 ```
 
-* Hypervel
+* Hypervel (8 workers)
 
 ```text:no-line-numbers
 Running 10s test @ http://127.0.0.1:9501/api
@@ -143,7 +143,7 @@ Transfer/sec:     15.10MB
 
 ### Simulated I/O Wait Test
 
-* Laravel Octane
+* Laravel Octane (8 workers)
 
 ```text:no-line-numbers
 Running 10s test @ http://127.0.0.1:8000/api
@@ -157,7 +157,7 @@ Requests/sec:      7.92
 Transfer/sec:      1.66KB
 ```
 
-* Hypervel
+* Hypervel (8 workers)
 
 ```text:no-line-numbers
 Running 10s test @ http://10.10.4.12:9501/api
