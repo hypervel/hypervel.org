@@ -13,15 +13,21 @@ Because Hypervel implements the same cache protocol as Laravel, you can share th
 
 ## Configuration
 
-Your application's cache configuration file is located at `config/cache.php`. In this file, you may specify which cache driver you would like to be used by default throughout your application. Hypervel supports popular caching backends like [Redis](https://redis.io) and Swoole Table out of the box. In addition, a file based cache driver is available, while `array` and "null" cache drivers provide convenient cache backends for your automated tests.
-
-::: note
-Hypervel does not support the `database` cache driver at this time. We don't encourage using database as a cache driver either because of the poor performance.
-:::
+Your application's cache configuration file is located at `config/cache.php`. In this file, you may specify which cache driver you would like to be used by default throughout your application. Hypervel supports popular caching backends like [Redis](https://redis.io), relational databases and Swoole Table out of the box. Swoole Table out of the box. In addition, a file based cache driver is available, while `array` and "null" cache drivers provide convenient cache backends for your automated tests.
 
 The cache configuration file also contains various other options, which are documented within the file, so make sure to read over these options. By default, Hypervel is configured to use the `redis` cache driver, which stores the serialized, cached objects on the redis server. For larger applications, it is recommended that you keep using Redis. You may even configure multiple cache configurations for the same driver.
 
 ### Driver Prerequisites
+
+#### Database
+
+When using the `database` cache driver, you will need a database table to contain the cache data. Before using database driver, you need to create `0001_01_01_000001_create_cache_table.php` [database migration](/docs/migrations) via `make:cache-table` Artisan command:
+
+```shell
+php artisan make:cache-table
+
+php artisan migrate
+```
 
 #### Redis
 
@@ -250,7 +256,7 @@ When testing call to the global `cache` function, you may use the `Cache::should
 ## Atomic Locks
 
 ::: warning
-To utilize this feature, your application must be using the `redis`, `file`, or `array` cache driver as your application's default cache driver. In addition, all servers must be communicating with the same central cache server.
+To utilize this feature, your application must be using the `redis`, `file`, `database` or `array` cache driver as your application's default cache driver. In addition, all servers must be communicating with the same central cache server.
 :::
 
 ### Managing Locks

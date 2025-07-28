@@ -326,6 +326,16 @@ export const sidebarConfig = ({
                         },
                     ],
                 },
+                {
+                    text: 'Packages',
+                    collapsible: true,
+                    children: [
+                        {
+                            text: 'Sanctum',
+                            link: 'sanctum',
+                        }
+                    ],
+                },
             ],
         }
     ],

@@ -539,9 +539,9 @@ Sometimes you may need to specify that a single URL should return a series of fa
 Http::fake([
     // Stub a series of responses for GitHub endpoints...
     'github.com/*' => Http::sequence()
-                            ->push('Hello World', 200)
-                            ->push(['foo' => 'bar'], 200)
-                            ->pushStatus(404),
+        ->push('Hello World', 200)
+        ->push(['foo' => 'bar'], 200)
+        ->pushStatus(404),
 ]);
 ```
 
@@ -551,9 +551,9 @@ When all the responses in a response sequence have been consumed, any further re
 Http::fake([
     // Stub a series of responses for GitHub endpoints...
     'github.com/*' => Http::sequence()
-                            ->push('Hello World', 200)
-                            ->push(['foo' => 'bar'], 200)
-                            ->whenEmpty(Http::response()),
+        ->push('Hello World', 200)
+        ->push(['foo' => 'bar'], 200)
+        ->whenEmpty(Http::response()),
 ]);
 ```
 
@@ -561,8 +561,8 @@ If you would like to fake a sequence of responses but do not need to specify a s
 
 ```php
 Http::fakeSequence()
-        ->push('Hello World', 200)
-        ->whenEmpty(Http::response());
+    ->push('Hello World', 200)
+    ->whenEmpty(Http::response());
 ```
 
 #### Fake Callback

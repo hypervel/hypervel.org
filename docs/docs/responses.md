@@ -199,9 +199,9 @@ The `stream` method may be used to stream a response to the client. This method 
 use Hypervel\Http\StreamOutput;
 
 return response()->stream(function (StreamOutput $output) {
-    $response->write('Hello World');
+    $output->write('Hello World');
     // ...
-    $response->write('Hypervel is awesome!');
+    $output->write('Hypervel is awesome!');
 }, $headers);
 ```
 

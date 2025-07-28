@@ -650,7 +650,7 @@ Sometimes you may want to explicitly test your classes in a coroutine environmen
 
 For instance, since you’ve refactored the `setLocale` function using `Context`, you need to test that each coroutine maintains its own locale. Run the test in a coroutine context to observe the state isolation:
 
-> See [Running Tests in Coroutines](/doc/testing#running-tests-in-coroutines) for more details.
+> See [Running Tests in Coroutines](/docs/testing#running-tests-in-coroutines) for more details.
 
 ```php
 use Hepervel\Coroutine\run;

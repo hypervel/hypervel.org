@@ -369,3 +369,19 @@ Typically, the `throttle` middleware is mapped to the `Hypervel\Router\Middlewar
 ```php
 'throttle' => \Hypervel\Router\Middleware\ThrottleRequests::class,
 ```
+
+## Cross-Origin Resource Sharing (CORS)
+
+Hypervel can automatically respond to CORS `OPTIONS` HTTP requests with values that you configure. The `OPTIONS` requests will automatically be handled by the `HandleCors` [middleware]((/docs/middleware)) that is automatically included in your application's global middleware stack.
+
+Sometimes, you may need to customize the CORS configuration values for your application. You may do so by publishing the `cors` configuration file using the `config:publish` Artisan command:
+
+```shell
+php artisan vendor:publish hypervel/http
+```
+
+This command will place a `cors.php` configuration file within your application's `config` directory.
+
+::: note
+For more information on CORS and CORS headers, please consult the [MDN web documentation on CORS.](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#The_HTTP_response_headers)
+:::
