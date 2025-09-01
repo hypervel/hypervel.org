@@ -470,7 +470,7 @@ use Hypervel\Sanctum\Sanctum;
 public function testTaskListCanBeRetrieved(): void
 {
     Sanctum::actingAs(
-        factory(User::class)->create(),
+        User::factory()->create(),
         ['view-tasks']
     );
 
@@ -484,7 +484,7 @@ If you would like to grant all abilities to the token, you should include `*` in
 
 ```php
 Sanctum::actingAs(
-    factory(User::class)->create(),
+    User::factory()->create(),
     ['*']
 );
 ```

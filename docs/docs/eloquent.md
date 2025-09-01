@@ -1500,3 +1500,37 @@ class UserObserver implements ShouldHandleEventsAfterCommit
     }
 }
 ```
+
+### Muting Events
+
+You may occasionally need to temporarily "mute" all events fired by a model. You may achieve this using the `withoutEvents` method. The `withoutEvents` method accepts a closure as its only argument. Any code executed within this closure will not dispatch model events, and any value returned by the closure will be returned by the `withoutEvents` method:
+
+```php
+use App\Models\User;
+
+$user = User::withoutEvents(function () {
+    User::findOrFail(1)->delete();
+
+    return User::find(2);
+});
+```
+
+#### Saving a Single Model Without Events
+
+Sometimes you may wish to "save" a given model without dispatching any events. You may accomplish this using the `saveQuietly` method:
+
+```php
+$user = User::findOrFail(1);
+
+$user->name = 'Victoria Faith';
+
+$user->saveQuietly();
+```
+
+You may also "update", "delete", "soft delete", "restore", and "replicate" a given model without dispatching any events:
+
+```php
+$user->deleteQuietly();
+$user->forceDeleteQuietly();
+$user->restoreQuietly();
+```

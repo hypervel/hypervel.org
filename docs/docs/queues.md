@@ -9,7 +9,7 @@ Hypervel queues provide a unified queueing API across a variety of different que
 
 Hypervel's queue configuration options are stored in your application's `config/queue.php` configuration file. In this file, you will find connection configurations for each of the queue drivers that are included with the framework, including the database, [Amazon SQS](https://aws.amazon.com/sqs/), [Redis](https://redis.io), and [Beanstalkd](https://beanstalkd.github.io/) drivers, as well as a synchronous driver that will execute jobs immediately (for use during local development). A `null` queue driver is also included which discards queued jobs.
 
-For those jobs you just want to make them executed asynchronously without promising storage persistency, you can use `defer` driver to run these jobs before the end of current coroutine's lifecycle. Please note defer itself is FILO, which is opposite to queue structure.
+For those jobs you just want to make them executed asynchronously without promising storage persistency, you can use `coroutine` or `defer` driver to run these jobs before the end of current coroutine's lifecycle. Please note defer itself is FILO, which is opposite to queue structure.
 
 ::: note
 Hypervel hasn't support horizon yet.

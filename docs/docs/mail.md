@@ -1081,7 +1081,7 @@ use App\Models\User;
 
 public function testMailableContent(): void
 {
-    $user = factory(User::class)->create();
+    $user = User::factory()->create();
 
     $mailable = new InvoicePaid($user);
 
