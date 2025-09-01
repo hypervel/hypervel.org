@@ -3,227 +3,594 @@
 
 ## Introduction
 
-When testing your application or seeding your database, you may need to insert a few records into your database. Instead of manually specifying the value of each column, Laravel allows you to define a set of default attributes for each of your [Eloquent models](/docs/eloquent) using model factories.
+When testing your application or seeding your database, you may need to insert a few records into your database. Instead of manually specifying the value of each column, Hypervel allows you to define a set of default attributes for each of your [Eloquent models](/docs/eloquent) using model factories.
 
-To see an example of how to write a factory, take a look at the `database/factories/UserFactory.php` file in your application. This factory is included with all new Laravel applications and contains the following factory definition:
+To see an example of how to write a factory, take a look at the `database/factories/UserFactory.php` file in your application. This factory is included with all new Hypervel applications and contains the following factory definition:
 
-## Generating Factories
+```php
+namespace Database\Factories;
 
-To create a factory, use the `make:factory` [Artisan command](/docs/artisan):
+use Hypervel\Database\Eloquent\Factories\Factory;
+use Hypervel\Support\Facades\Hash;
+use Hypervel\Support\Str;
 
-```shell:no-line-numbers
+/**
+ * @extends \Hypervel\Database\Eloquent\Factories\Factory<\App\Models\User>
+ */
+class UserFactory extends Factory
+{
+    /**
+     * The current password being used by the factory.
+     */
+    protected static ?string $password;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'remember_token' => Str::random(10),
+        ];
+    }
+
+    /**
+     * Indicate that the model's email address should be unverified.
+     */
+    public function unverified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => null,
+        ]);
+    }
+}
+```
+
+As you can see, in their most basic form, factories are classes that extend Hypervel's base factory class and define a `definition` method. The `definition` method returns the default set of attribute values that should be applied when creating a model using the factory.
+
+Via the `fake` helper, factories have access to the [Faker](https://github.com/FakerPHP/Faker) PHP library, which allows you to conveniently generate various kinds of random data for testing and seeding.
+
+::: note
+You can change your application's Faker locale by updating the `faker_locale` option in your `config/app.php` configuration file.
+:::
+
+## Defining Model Factories
+
+### Generating Factories
+
+To create a factory, execute the `make:factory` [Artisan command](/docs/artisan):
+
+```shell
 php artisan make:factory PostFactory
 ```
 
-The new factory will be placed in your `database/factories` directory.
+The new factory class will be placed in your `database/factories` directory.
 
-The `--model` option may be used to indicate the name of the model created by the factory. This option will pre-fill the generated factory file with the given model:
+#### Model and Factory Discovery Conventions
+
+Once you have defined your factories, you may use the static `factory` method provided to your models by the `Hypervel\Database\Eloquent\Factories\HasFactory` trait in order to instantiate a factory instance for that model.
+
+The `HasFactory` trait's `factory` method will use conventions to determine the proper factory for the model the trait is assigned to. Specifically, the method will look for a factory in the `Database\Factories` namespace that has a class name matching the model name and is suffixed with `Factory`. If these conventions do not apply to your particular application or factory, you may overwrite the `newFactory` method on your model to return an instance of the model's corresponding factory directly:
 
 ```php
-php artisan make:factory PostFactory --model=Post
+use Database\Factories\Administration\FlightFactory;
+
+/**
+ * Create a new factory instance for the model.
+ */
+protected static function newFactory()
+{
+    return FlightFactory::new();
+}
 ```
 
-## Writing Factories
-
-When testing, you may need to insert a few records into your database before executing your test. Instead of manually specifying the value of each column when you create this test data, Laravel allows you to define a default set of attributes for each of your [Eloquent models](/docs/eloquent) using model factories. To get started, take a look at the `database/factories/UserFactory.php` file in your application. Out of the box, this file contains one factory definition:
+Then, define a `model` property on the corresponding factory:
 
 ```php
-use Faker\Generator as Faker;
-use Hypervel\Support\Str;
+use App\Administration\Flight;
+use Hypervel\Database\Eloquent\Factories\Factory;
 
-$factory->define(App\User::class, function (Faker $faker) {
-    return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'email_verified_at' => now(),
-        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        'remember_token' => Str::random(10),
-    ];
-});
-```
-
-Within the Closure, which serves as the factory definition, you may return the default test values of all attributes on the model. The Closure will receive an instance of the [Faker](https://github.com/fzaninotto/Faker) PHP library, which allows you to conveniently generate various kinds of random data for testing.
-
-You may also create additional factory files for each model for better organization. For example, you could create `UserFactory.php` and `CommentFactory.php` files within your `database/factories` directory. All of the files within the `factories` directory will automatically be loaded by Laravel.
-
-::: tip
-You can set the Faker locale by adding a `faker_locale` option to your `config/app.php` configuration file.
-:::
-
-### Extending Factories
-
-If you have extended a model, you may wish to extend its factory as well in order to utilize the child model's factory attributes during testing and seeding. To accomplish this, you may call the factory builder's `raw` method to obtain the raw array of attributes from any given factory:
-
-```php
-$factory->define(App\Admin::class, function (Faker\Generator $faker) {
-    return factory(App\User::class)->raw([
-        // ...
-    ]);
-});
+class FlightFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var class-string<\Hypervel\Database\Eloquent\Model>
+     */
+    protected $model = Flight::class;
+}
 ```
 
 ### Factory States
 
-States allow you to define discrete modifications that can be applied to your model factories in any combination. For example, your `User` model might have a `delinquent` state that modifies one of its default attribute values. You may define your state transformations using the `state` method. For simple states, you may pass an array of attribute modifications:
+State manipulation methods allow you to define discrete modifications that can be applied to your model factories in any combination. For example, your `Database\Factories\UserFactory` factory might contain a `suspended` state method that modifies one of its default attribute values.
+
+State transformation methods typically call the `state` method provided by Hypervel's base factory class. The `state` method accepts a closure which will receive the array of raw attributes defined for the factory and should return an array of attributes to modify:
 
 ```php
-$factory->state(App\User::class, 'delinquent', [
-    'account_status' => 'delinquent',
-]);
+use Hypervel\Database\Eloquent\Factories\Factory;
+
+/**
+ * Indicate that the user is suspended.
+ */
+public function suspended(): Factory
+{
+    return $this->state(function (array $attributes) {
+        return [
+            'account_status' => 'suspended',
+        ];
+    });
+}
 ```
 
-If your state requires calculation or a `$faker` instance, you may use a Closure to calculate the state's attribute modifications:
+#### "Trashed" State
+
+If your Eloquent model can be [soft deleted](/docs/eloquent#soft-deleting), you may invoke the built-in `trashed` state method to indicate that the created model should already be "soft deleted". You do not need to manually define the `trashed` state as it is automatically available to all factories:
 
 ```php
-$factory->state(App\User::class, 'address', function ($faker) {
-    return [
-        'address' => $faker->address,
-    ];
-});
+use App\Models\User;
+
+$user = User::factory()->trashed()->create();
 ```
 
 ### Factory Callbacks
 
-Factory callbacks are registered using the `afterMaking` and `afterCreating` methods, and allow you to perform additional tasks after making or creating a model. For example, you may use callbacks to relate additional models to the created model:
+Factory callbacks are registered using the `afterMaking` and `afterCreating` methods and allow you to perform additional tasks after making or creating a model. You should register these callbacks by defining a `configure` method on your factory class. This method will be automatically called by Hypervel when the factory is instantiated:
 
 ```php
-$factory->afterMaking(App\User::class, function ($user, $faker) {
-    // ...
-});
+namespace Database\Factories;
 
-$factory->afterCreating(App\User::class, function ($user, $faker) {
-    $user->accounts()->save(factory(App\Account::class)->make());
-});
-```
+use App\Models\User;
+use Hypervel\Database\Eloquent\Factories\Factory;
 
-You may also define callbacks for [factory states](#factory-states):
-
-```php
-$factory->afterMakingState(App\User::class, 'delinquent', function ($user, $faker) {
-    // ...
-});
-
-$factory->afterCreatingState(App\User::class, 'delinquent', function ($user, $faker) {
-    // ...
-});
-```
-
-## Using Factories
-
-### Creating Models
-
-Once you have defined your factories, you may use the global `factory` function in your feature tests or seed files to generate model instances. So, let's take a look at a few examples of creating models. First, we'll use the `make` method to create models but not save them to the database:
-
-```php
-public function testDatabase()
+class UserFactory extends Factory
 {
-    $user = factory(App\User::class)->make();
+    /**
+     * Configure the model factory.
+     */
+    public function configure(): static
+    {
+        return $this->afterMaking(function (User $user) {
+            // ...
+        })->afterCreating(function (User $user) {
+            // ...
+        });
+    }
 
-    // Use model in tests...
+    // ...
 }
 ```
 
-You may also create a Collection of many models or create models of a given type:
+You may also register factory callbacks within state methods to perform additional tasks that are specific to a given state:
 
 ```php
-// Create three App\User instances...
-$users = factory(App\User::class, 3)->make();
+use App\Models\User;
+use Hypervel\Database\Eloquent\Factories\Factory;
+
+/**
+ * Indicate that the user is suspended.
+ */
+public function suspended(): Factory
+{
+    return $this->state(function (array $attributes) {
+        return [
+            'account_status' => 'suspended',
+        ];
+    })->afterMaking(function (User $user) {
+        // ...
+    })->afterCreating(function (User $user) {
+        // ...
+    });
+}
+```
+
+## Creating Models Using Factories
+
+### Instantiating Models
+
+Once you have defined your factories, you may use the static `factory` method provided to your models by the `Hypervel\Database\Eloquent\Factories\HasFactory` trait in order to instantiate a factory instance for that model. Let's take a look at a few examples of creating models. First, we'll use the `make` method to create models without persisting them to the database:
+
+```php
+use App\Models\User;
+
+$user = User::factory()->make();
+```
+
+You may create a collection of many models using the `count` method:
+
+```php
+$users = User::factory()->count(3)->make();
 ```
 
 #### Applying States
 
-You may also apply any of your [states](#factory-states) to the models. If you would like to apply multiple state transformations to the models, you should specify the name of each state you would like to apply:
+You may also apply any of your [states](#factory-states) to the models. If you would like to apply multiple state transformations to the models, you may simply call the state transformation methods directly:
 
 ```php
-$users = factory(App\User::class, 5)->states('delinquent')->make();
-
-$users = factory(App\User::class, 5)->states('premium', 'delinquent')->make();
+$users = User::factory()->count(5)->suspended()->make();
 ```
 
 #### Overriding Attributes
 
-If you would like to override some of the default values of your models, you may pass an array of values to the `make` method. Only the specified values will be replaced while the rest of the values remain set to their default values as specified by the factory:
+If you would like to override some of the default values of your models, you may pass an array of values to the `make` method. Only the specified attributes will be replaced while the rest of the attributes remain set to their default values as specified by the factory:
 
 ```php
-$user = factory(App\User::class)->make([
-    'name' => 'Abigail',
+$user = User::factory()->make([
+    'name' => 'Abigail Otwell',
 ]);
 ```
 
-::: tip
-[Mass assignment protection](/docs/eloquent#mass-assignment) is automatically disabled when creating models using factories.
-:::
+Alternatively, the `state` method may be called directly on the factory instance to perform an inline state transformation:
+
+```php
+$user = User::factory()->state([
+    'name' => 'Abigail Otwell',
+])->make();
+```
+
+> [!NOTE]
+> [Mass assignment protection](/docs/eloquent#mass-assignment) is automatically disabled when creating models using factories.
 
 ### Persisting Models
 
-The `create` method not only creates the model instances but also saves them to the database using Eloquent's `save` method:
+The `create` method instantiates model instances and persists them to the database using Eloquent's `save` method:
 
 ```php
-public function testDatabase()
-{
-    // Create a single App\User instance...
-    $user = factory(App\User::class)->create();
+use App\Models\User;
 
-    // Create three App\User instances...
-    $users = factory(App\User::class, 3)->create();
+// Create a single App\Models\User instance...
+$user = User::factory()->create();
 
-    // Use model in tests...
-}
+// Create three App\Models\User instances...
+$users = User::factory()->count(3)->create();
 ```
 
-You may override attributes on the model by passing an array to the `create` method:
+You may override the factory's default model attributes by passing an array of attributes to the `create` method:
 
 ```php
-$user = factory(App\User::class)->create([
+$user = User::factory()->create([
     'name' => 'Abigail',
 ]);
 ```
 
-### Relationships
+### Sequences
 
-In this example, we'll attach a relation to some created models. When using the `create` method to create multiple models, an Eloquent [collection instance](/docs/eloquent-collections) is returned, allowing you to use any of the convenient functions provided by the collection, such as `each`:
+Sometimes you may wish to alternate the value of a given model attribute for each created model. You may accomplish this by defining a state transformation as a sequence. For example, you may wish to alternate the value of an `admin` column between `Y` and `N` for each created user:
 
 ```php
-$users = factory(App\User::class, 3)
-    ->create()
-    ->each(function ($user) {
-    $user->posts()->save(factory(App\Post::class)->make());
-    });
+use App\Models\User;
+use Hypervel\Database\Eloquent\Factories\Sequence;
+
+$users = User::factory()
+    ->count(10)
+    ->state(new Sequence(
+        ['admin' => 'Y'],
+        ['admin' => 'N'],
+    ))
+    ->create();
 ```
 
-You may use the `createMany` method to create multiple related models:
+In this example, five users will be created with an `admin` value of `Y` and five users will be created with an `admin` value of `N`.
+
+If necessary, you may include a closure as a sequence value. The closure will be invoked each time the sequence needs a new value:
 
 ```php
-$user->posts()->createMany(
-    factory(App\Post::class, 3)->make()->toArray()
-);
+use Hypervel\Database\Eloquent\Factories\Sequence;
+
+$users = User::factory()
+    ->count(10)
+    ->state(new Sequence(
+        fn (Sequence $sequence) => ['role' => UserRoles::all()->random()],
+    ))
+    ->create();
 ```
 
-#### Relations & Attribute Closures
-
-You may also attach relationships to models in your factory definitions. For example, if you would like to create a new `User` instance when creating a `Post`, you may do the following:
+Within a sequence closure, you may access the `$index` or `$count` properties on the sequence instance that is injected into the closure. The `$index` property contains the number of iterations through the sequence that have occurred thus far, while the `$count` property contains the total number of times the sequence will be invoked:
 
 ```php
-$factory->define(App\Post::class, function ($faker) {
+$users = User::factory()
+    ->count(10)
+    ->sequence(fn (Sequence $sequence) => ['name' => 'Name '.$sequence->index])
+    ->create();
+```
+
+For convenience, sequences may also be applied using the `sequence` method, which simply invokes the `state` method internally. The `sequence` method accepts a closure or arrays of sequenced attributes:
+
+```php
+$users = User::factory()
+    ->count(2)
+    ->sequence(
+        ['name' => 'First User'],
+        ['name' => 'Second User'],
+    )
+    ->create();
+```
+
+## Factory Relationships
+
+### Has Many Relationships
+
+Next, let's explore building Eloquent model relationships using Hypervel's fluent factory methods. First, let's assume our application has an `App\Models\User` model and an `App\Models\Post` model. Also, let's assume that the `User` model defines a `hasMany` relationship with `Post`. We can create a user that has three posts using the `has` method provided by the Hypervel's factories. The `has` method accepts a factory instance:
+
+```php
+use App\Models\Post;
+use App\Models\User;
+
+$user = User::factory()
+    ->has(Post::factory()->count(3))
+    ->create();
+```
+
+By convention, when passing a `Post` model to the `has` method, Hypervel will assume that the `User` model must have a `posts` method that defines the relationship. If necessary, you may explicitly specify the name of the relationship that you would like to manipulate:
+
+```php
+$user = User::factory()
+    ->has(Post::factory()->count(3), 'posts')
+    ->create();
+```
+
+Of course, you may perform state manipulations on the related models. In addition, you may pass a closure-based state transformation if your state change requires access to the parent model:
+
+```php
+$user = User::factory()
+    ->has(
+        Post::factory()
+            ->count(3)
+            ->state(function (array $attributes, User $user) {
+                return ['user_type' => $user->type];
+            })
+        )
+    ->create();
+```
+
+#### Using Magic Methods
+
+For convenience, you may use Hypervel's magic factory relationship methods to build relationships. For example, the following example will use convention to determine that the related models should be created via a `posts` relationship method on the `User` model:
+
+```php
+$user = User::factory()
+    ->hasPosts(3)
+    ->create();
+```
+
+When using magic methods to create factory relationships, you may pass an array of attributes to override on the related models:
+
+```php
+$user = User::factory()
+    ->hasPosts(3, [
+        'published' => false,
+    ])
+    ->create();
+```
+
+You may provide a closure-based state transformation if your state change requires access to the parent model:
+
+```php
+$user = User::factory()
+    ->hasPosts(3, function (array $attributes, User $user) {
+        return ['user_type' => $user->type];
+    })
+    ->create();
+```
+
+### Belongs To Relationships
+
+Now that we have explored how to build "has many" relationships using factories, let's explore the inverse of the relationship. The `for` method may be used to define the parent model that factory created models belong to. For example, we can create three `App\Models\Post` model instances that belong to a single user:
+
+```php
+use App\Models\Post;
+use App\Models\User;
+
+$posts = Post::factory()
+    ->count(3)
+    ->for(User::factory()->state([
+        'name' => 'Jessica Archer',
+    ]))
+    ->create();
+```
+
+If you already have a parent model instance that should be associated with the models you are creating, you may pass the model instance to the `for` method:
+
+```php
+$user = User::factory()->create();
+
+$posts = Post::factory()
+    ->count(3)
+    ->for($user)
+    ->create();
+```
+
+#### Using Magic Methods
+
+For convenience, you may use Hypervel's magic factory relationship methods to define "belongs to" relationships. For example, the following example will use convention to determine that the three posts should belong to the `user` relationship on the `Post` model:
+
+```php
+$posts = Post::factory()
+    ->count(3)
+    ->forUser([
+        'name' => 'Jessica Archer',
+    ])
+    ->create();
+```
+
+### Many to Many Relationships
+
+Like [has many relationships](#has-many-relationships), "many to many" relationships may be created using the `has` method:
+
+```php
+use App\Models\Role;
+use App\Models\User;
+
+$user = User::factory()
+    ->has(Role::factory()->count(3))
+    ->create();
+```
+
+#### Pivot Table Attributes
+
+If you need to define attributes that should be set on the pivot / intermediate table linking the models, you may use the `hasAttached` method. This method accepts an array of pivot table attribute names and values as its second argument:
+
+```php
+use App\Models\Role;
+use App\Models\User;
+
+$user = User::factory()
+    ->hasAttached(
+        Role::factory()->count(3),
+        ['active' => true]
+    )
+    ->create();
+```
+
+You may provide a closure-based state transformation if your state change requires access to the related model:
+
+```php
+$user = User::factory()
+    ->hasAttached(
+        Role::factory()
+            ->count(3)
+            ->state(function (array $attributes, User $user) {
+                return ['name' => $user->name.' Role'];
+            }),
+        ['active' => true]
+    )
+    ->create();
+```
+
+If you already have model instances that you would like to be attached to the models you are creating, you may pass the model instances to the `hasAttached` method. In this example, the same three roles will be attached to all three users:
+
+```php
+$roles = Role::factory()->count(3)->create();
+
+$user = User::factory()
+    ->count(3)
+    ->hasAttached($roles, ['active' => true])
+    ->create();
+```
+
+#### Using Magic Methods
+
+For convenience, you may use Hypervel's magic factory relationship methods to define many to many relationships. For example, the following example will use convention to determine that the related models should be created via a `roles` relationship method on the `User` model:
+
+```php
+$user = User::factory()
+    ->hasRoles(1, [
+        'name' => 'Editor'
+    ])
+    ->create();
+```
+
+### Polymorphic Relationships
+
+[Polymorphic relationships](/docs/eloquent-relationships#polymorphic-relationships) may also be created using factories. Polymorphic "morph many" relationships are created in the same way as typical "has many" relationships. For example, if an `App\Models\Post` model has a `morphMany` relationship with an `App\Models\Comment` model:
+
+```php
+use App\Models\Post;
+
+$post = Post::factory()->hasComments(3)->create();
+```
+
+#### Morph To Relationships
+
+Magic methods may not be used to create `morphTo` relationships. Instead, the `for` method must be used directly and the name of the relationship must be explicitly provided. For example, imagine that the `Comment` model has a `commentable` method that defines a `morphTo` relationship. In this situation, we may create three comments that belong to a single post by using the `for` method directly:
+
+```php
+$comments = Comment::factory()->count(3)->for(
+    Post::factory(), 'commentable'
+)->create();
+```
+
+#### Polymorphic Many to Many Relationships
+
+Polymorphic "many to many" (`morphToMany` / `morphedByMany`) relationships may be created just like non-polymorphic "many to many" relationships:
+
+```php
+use App\Models\Tag;
+use App\Models\Video;
+
+$videos = Video::factory()
+    ->hasAttached(
+        Tag::factory()->count(3),
+        ['public' => true]
+    )
+    ->create();
+```
+
+Of course, the magic `has` method may also be used to create polymorphic "many to many" relationships:
+
+```php
+$videos = Video::factory()
+    ->hasTags(3, ['public' => true])
+    ->create();
+```
+
+### Defining Relationships Within Factories
+
+To define a relationship within your model factory, you will typically assign a new factory instance to the foreign key of the relationship. This is normally done for the "inverse" relationships such as `belongsTo` and `morphTo` relationships. For example, if you would like to create a new user when creating a post, you may do the following:
+
+```php
+use App\Models\User;
+
+/**
+ * Define the model's default state.
+ *
+ * @return array<string, mixed>
+ */
+public function definition(): array
+{
     return [
-        'title' => $faker->title,
-        'content' => $faker->paragraph,
-        'user_id' => factory(App\User::class),
+        'user_id' => User::factory(),
+        'title' => fake()->title(),
+        'content' => fake()->paragraph(),
     ];
-});
+}
 ```
 
-If the relationship depends on the factory that defines it you may provide a callback which accepts the evaluated attribute array:
+If the relationship's columns depend on the factory that defines it you may assign a closure to an attribute. The closure will receive the factory's evaluated attribute array:
 
 ```php
-$factory->define(App\Post::class, function ($faker) {
+/**
+ * Define the model's default state.
+ *
+ * @return array<string, mixed>
+ */
+public function definition(): array
+{
     return [
-        'title' => $faker->title,
-        'content' => $faker->paragraph,
-        'user_id' => factory(App\User::class),
-        'user_type' => function (array $post) {
-            return App\User::find($post['user_id'])->type;
+        'user_id' => User::factory(),
+        'user_type' => function (array $attributes) {
+            return User::find($attributes['user_id'])->type;
         },
+        'title' => fake()->title(),
+        'content' => fake()->paragraph(),
     ];
-});
+}
+```
+
+### Recycling an Existing Model for Relationships
+
+If you have models that share a common relationship with another model, you may use the `recycle` method to ensure a single instance of the related model is recycled for all of the relationships created by the factory.
+
+For example, imagine you have `Airline`, `Flight`, and `Ticket` models, where the ticket belongs to an airline and a flight, and the flight also belongs to an airline. When creating tickets, you will probably want the same airline for both the ticket and the flight, so you may pass an airline instance to the `recycle` method:
+
+```php
+Ticket::factory()
+    ->recycle(Airline::factory()->create())
+    ->create();
+```
+
+You may find the `recycle` method particularly useful if you have models belonging to a common user or team.
+
+The `recycle` method also accepts a collection of existing models. When a collection is provided to the `recycle` method, a random model from the collection will be chosen when the factory needs a model of that type:
+
+```php
+Ticket::factory()
+    ->recycle($airlines)
+    ->create();
 ```
