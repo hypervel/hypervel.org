@@ -369,12 +369,10 @@ use Courier\Console\Commands\NetworkCommand;
  */
 public function boot(): void
 {
-    if ($this->app->runningInConsole()) {
-        $this->commands([
-            InstallCommand::class,
-            NetworkCommand::class,
-        ]);
-    }
+    $this->commands([
+        InstallCommand::class,
+        NetworkCommand::class,
+    ]);
 }
 ```
 
