@@ -29,7 +29,7 @@ Before using session, you need to enable the `Hypervel\Session\Middleware\StartS
 
 ::: tip
 The array driver is primarily used during [testing](/docs/testing) and prevents the data stored in the session from being persisted.
-```
+:::
 
 ### Driver Prerequisites
 
