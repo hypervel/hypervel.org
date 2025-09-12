@@ -537,7 +537,7 @@ Thankfully, Hypervel makes it easy to define the routes to respond to channel au
 Broadcast::routes();
 ```
 
-The `Broadcast::routes method will automatically place its routes within the `web` middleware group; however, you may pass an array of route attributes to the method if you would like to customize the assigned attributes:
+The `Broadcast::routes` method will automatically place its routes within the `web` middleware group; however, you may pass an array of route attributes to the method if you would like to customize the assigned attributes:
 
 ```php
 Broadcast::routes($attributes);

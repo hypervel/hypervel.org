@@ -231,6 +231,20 @@ Route::group('/admin', function () {
 });
 ```
 
+You can also add `prefix` option to the routes:
+
+```php
+Route::get('users', function () {
+    // Matches The "/api/users" URL
+}, ['prefix' => 'api']);
+
+Route::group('/admin', function () {
+    Route::get('/users', function () {
+         // Matches The "/api/admin/users" URL
+    });
+}, ['prefix' => 'api']);
+```
+
 ## Route Model Binding
 
 When injecting a model ID to a route or controller action, you will often query the database to retrieve the model that corresponds to that ID. Hypervel route model binding provides a convenient way to automatically inject the model instances directly into your routes. For example, instead of injecting a user's ID, you can inject the entire `User` model instance that matches the given ID.

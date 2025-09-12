@@ -58,7 +58,7 @@ class RiakServiceProvider extends ServiceProvider
 
 This service provider only defines a `register` method, and uses that method to define an implementation of `App\Services\Riak\Connection` in the service container. If you're not yet familiar with Hypervel's service container, check out [its documentation](/docs/container).
 
-#### The `bindings` and `singletons` Properties
+#### The `bindings` Properties
 
 If your service provider registers many simple bindings, you may wish to use the `bindings` property instead of manually registering each container binding. When the service provider is loaded by the framework, it will automatically check for these properties and register their bindings:
 
@@ -124,6 +124,50 @@ use Hyperf\Database\ConnectionResolverInterface;
 public function boot(ConnectionResolverInterface $resolver): void
 {
     $resolver->setDefaultConnection('mysql');
+}
+```
+
+### Writing Provider Config
+
+Some behaviors must be achieved in config provider, such as class map replacement or aspect registration. Service providers can also provide the same functionality, you just need to implement `getProviderConfig` in the service provider:
+
+```php
+public static function getProviderConfig(): array
+{
+    return [
+        'dependencies' => [],
+        'annotations' => [
+            'scan' => [
+                'paths' => [
+                    __DIR__,
+                ],
+            ],
+        ],
+        'listeners' => [],
+        'publish' => [
+            [
+                'id' => 'config',
+                'description' => 'description of this config file.',
+                'source' => __DIR__ . '/../publish/file.php',
+                'destination' => BASE_PATH . '/config/autoload/file.php',
+            ],
+         ],
+    ];
+}
+```
+
+Then you need to configure your service provider in `composer.json` for auto discovery:
+
+```json
+"extra": {
+    "branch-alias": {
+        "dev-main": "0.3-dev"
+    },
+    "hypervel": {
+        "providers": [
+            "Hypervel\\Sanctum\\SanctumServiceProvider"
+        ]
+    }
 }
 ```
 
