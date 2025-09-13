@@ -2355,10 +2355,8 @@ $result = with(5, null);
 // 5
 ```
 
-<a name="other-utilities"></a>
 ## Other Utilities
 
-<a name="dates"></a>
 ### Dates
 
 Hypervel includes [Carbon](https://carbon.nesbot.com/docs/), a powerful date and time manipulation library. To create a new `Carbon` instance, you may invoke the `now` function. This function is globally available within your Hypervel application:
@@ -2377,7 +2375,6 @@ $now = Carbon::now();
 
 For a thorough discussion of Carbon and its features, please consult the [official Carbon documentation](https://carbon.nesbot.com/docs/).
 
-<a name="pipeline"></a>
 ### Pipeline
 
 Hypervel's `Pipeline` provides a convenient way to "pipe" a given input through a series of invokable classes, closures, or callables, giving each class the opportunity to inspect or modify the input and invoke the next callable in the pipeline:
@@ -2420,3 +2417,152 @@ $user = Pipeline::make()
     ])
     ->then(fn (User $user) => $user);
 ```
+
+### Sleep
+
+Hypervel's `Sleep` class is a light-weight wrapper around PHP's native `sleep` and `usleep` functions, offering greater testability while also exposing a developer friendly API for working with time:
+
+```php
+use Hypervel\Support\Sleep;
+
+$waiting = true;
+
+while ($waiting) {
+    Sleep::for(1)->second();
+
+    $waiting = /* ... */;
+}
+```
+
+The `Sleep` class offers a variety of methods that allow you to work with different units of time:
+
+```php
+// Return a value after sleeping...
+$result = Sleep::for(1)->second()->then(fn () => 1 + 1);
+
+// Sleep while a given value is true...
+Sleep::for(1)->second()->while(fn () => shouldKeepSleeping());
+
+// Pause execution for 90 seconds...
+Sleep::for(1.5)->minutes();
+
+// Pause execution for 2 seconds...
+Sleep::for(2)->seconds();
+
+// Pause execution for 500 milliseconds...
+Sleep::for(500)->milliseconds();
+
+// Pause execution for 5,000 microseconds...
+Sleep::for(5000)->microseconds();
+
+// Pause execution until a given time...
+Sleep::until(now()->addMinute());
+
+// Alias of PHP's native "sleep" function...
+Sleep::sleep(2);
+
+// Alias of PHP's native "usleep" function...
+Sleep::usleep(5000);
+```
+
+To easily combine units of time, you may use the `and` method:
+
+```php
+Sleep::for(1)->second()->and(10)->milliseconds();
+```
+
+#### Testing Sleep
+
+When testing code that utilizes the `Sleep` class or PHP's native sleep functions, your test will pause execution. As you might expect, this makes your test suite significantly slower. For example, imagine you are testing the following code:
+
+```php
+$waiting = /* ... */;
+
+$seconds = 1;
+
+while ($waiting) {
+    Sleep::for($seconds++)->seconds();
+
+    $waiting = /* ... */;
+}
+```
+
+Typically, testing this code would take at least one second. Luckily, the `Sleep` class allows us to "fake" sleeping so that our test suite stays fast:
+
+```php
+public function testItWaitsUntilReady()
+{
+    Sleep::fake();
+
+    // ...
+}
+```
+
+When faking the `Sleep` class, the actual execution pause is bypassed, leading to a substantially faster test.
+
+Once the `Sleep` class has been faked, it is possible to make assertions against the expected "sleeps" that should have occurred. To illustrate this, let's imagine we are testing code that pauses execution three times, with each pause increasing by a single second. Using the `assertSequence` method, we can assert that our code "slept" for the proper amount of time while keeping our test fast:
+
+```php
+public function testItChecksIfReadyThreeTimes()
+{
+    Sleep::fake();
+
+    // ...
+
+    Sleep::assertSequence([
+        Sleep::for(1)->second(),
+        Sleep::for(2)->seconds(),
+        Sleep::for(3)->seconds(),
+    ]);
+}
+```
+
+Of course, the `Sleep` class offers a variety of other assertions you may use when testing:
+
+```php
+use Carbon\CarbonInterval as Duration;
+use Hypervel\Support\Sleep;
+
+// Assert that sleep was called 3 times...
+Sleep::assertSleptTimes(3);
+
+// Assert against the duration of sleep...
+Sleep::assertSlept(function (Duration $duration): bool {
+    return /* ... */;
+}, times: 1);
+
+// Assert that the Sleep class was never invoked...
+Sleep::assertNeverSlept();
+
+// Assert that, even if Sleep was called, no execution paused occurred...
+Sleep::assertInsomniac();
+```
+
+Sometimes it may be useful to perform an action whenever a fake sleep occurs. To achieve this, you may provide a callback to the `whenFakingSleep` method. In the following example, we use Hypervel's [time manipulation helpers](/docs/mocking#interacting-with-time) to instantly progress time by the duration of each sleep:
+
+```php
+use Carbon\CarbonInterval as Duration;
+
+$this->freezeTime();
+
+Sleep::fake();
+
+Sleep::whenFakingSleep(function (Duration $duration) {
+    // Progress time when faking sleep...
+    $this->travel($duration->totalMilliseconds)->milliseconds();
+});
+```
+
+As progressing time is a common requirement, the fake method accepts a `syncWithCarbon` argument to keep Carbon in sync when sleeping within a test:
+
+```php
+Sleep::fake(syncWithCarbon: true);
+
+$start = now();
+
+Sleep::for(1)->second();
+
+$start->diffForHumans(); // 1 second ago
+```
+
+Hypervel uses the `Sleep` class internally whenever it is pausing execution. For example, the [retry](/docs/helpers#method-retry) helper uses the `Sleep` class when sleeping, allowing for improved testability when using that helper.

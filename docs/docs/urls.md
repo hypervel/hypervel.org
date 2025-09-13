@@ -180,3 +180,41 @@ public function register(): void
     });
 }
 ```
+
+## Fluent URI Objects
+
+Hypervel's `Uri` class provides a convenient and fluent interface for creating and manipulating URIs via objects. This class wraps the functionality provided by the underlying League URI package and integrates seamlessly with Hypervel's routing system.
+
+You can create a `Uri` instance easily using static methods:
+
+```php
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\InvokableController;
+use Illuminate\Support\Uri;
+
+// Generate a URI instance from the given string...
+$uri = Uri::of('https://example.com/path');
+
+// Generate URI instances to paths, named routes, or controller actions...
+$uri = Uri::to('/dashboard');
+$uri = Uri::route('users.show', ['user' => 1]);
+$uri = Uri::signedRoute('users.show', ['user' => 1]);
+$uri = Uri::temporarySignedRoute('user.index', now()->addMinutes(5));
+
+// Generate a URI instance from the current request URL...
+$uri = $request->uri();
+```
+
+Once you have a URI instance, you can fluently modify it:
+
+```php
+$uri = Uri::of('https://example.com')
+    ->withScheme('http')
+    ->withHost('test.com')
+    ->withPort(8000)
+    ->withPath('/users')
+    ->withQuery(['page' => 2])
+    ->withFragment('section-1');
+```
+
+For more information on working with fluent URI objects, consult the [URI documentation](/docs/helpers#uri).
