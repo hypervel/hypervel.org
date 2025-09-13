@@ -59,15 +59,15 @@ $user->phone; // null
 
 ### Property Name Conversion
 
-Data Objects automatically convert between snake_case data keys and camelCase properties:
+Data Objects automatically convert between `snake_case` data keys and `camelCase` properties:
 
 ```php
 class ProductDataObject extends DataObject
 {
     public function __construct(
-        public string $productName,      // Maps to 'product_name'
-        public float $unitPrice,         // Maps to 'unit_price'
-        public bool $isAvailable         // Maps to 'is_available'
+        public string $productName,      // Maps to 'product_name' in array
+        public float $unitPrice,         // Maps to 'unit_price' in array
+        public bool $isAvailable         // Maps to 'is_available' in array
     ) {}
 }
 
@@ -80,6 +80,10 @@ $product = ProductDataObject::make([
 $product->productName;  // 'Laptop'
 $product->unitPrice;    // 999.99 (float)
 $product->isAvailable;  // true (boolean)
+
+$product['product_name'];  // 'Laptop'
+$product['unit_price'];    // 999.99 (float)
+$product['is_available'];  // true (boolean)
 ```
 
 ## Type Conversion
