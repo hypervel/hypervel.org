@@ -51,10 +51,10 @@ $userData = [
 
 $user = UserDataObject::make($userData);
 
-echo $user->name;  // 'John Doe'
-echo $user->age;   // 30 (integer)
-echo $user->email; // 'john@example.com'
-echo $user->phone; // null
+$user->name;  // 'John Doe'
+$user->age;   // 30 (integer)
+$user->email; // 'john@example.com'
+$user->phone; // null
 ```
 
 ### Property Name Conversion
