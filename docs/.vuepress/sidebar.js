@@ -153,6 +153,10 @@ export const sidebarConfig = ({
                             link: 'contracts',
                         },
                         {
+                            text: 'Data Objects',
+                            link: 'data-objects',
+                        },
+                        {
                             text: 'Events',
                             link: 'events',
                         },
