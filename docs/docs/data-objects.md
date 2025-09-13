@@ -431,14 +431,19 @@ count($user->preferences); // 0
 
 ### Refreshing Data Objects
 
-Clear internal caches and reprocess data:
+Once you change the property values in data objects, you need to clear internal caches manually to prevent getting old results:
 
 ```php
-$user = UserDataObject::make($userData);
+$user = UserDataObject::make([
+    'name' => 'Original Name',
+    'age' => 30,
+]);
 
 // Modify properties
 $user->name = 'Updated Name';
 $user->age = 35;
+
+$user->toArray(); // This will return old result
 
 // Refresh internal caches
 $user->refresh();
