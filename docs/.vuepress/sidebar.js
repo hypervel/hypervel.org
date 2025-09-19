@@ -337,6 +337,18 @@ export const sidebarConfig = ({
                         {
                             text: 'Sanctum',
                             link: 'sanctum',
+                        },
+                        {
+                            text: 'Permission',
+                            link: 'permission',
+                        },
+                        {
+                            text: 'Nested Set',
+                            link: 'nested-set',
+                        },
+                        {
+                            text: 'Telescope',
+                            link: 'telescope',
                         }
                     ],
                 },
