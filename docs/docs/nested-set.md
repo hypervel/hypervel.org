@@ -95,22 +95,6 @@ class Category extends Model
         'name',
         'description',
     ];
-
-    // Optional: customize column names
-    // public function getLftName(): string
-    // {
-    //     return 'lft'; // default is '_lft'
-    // }
-
-    // public function getRgtName(): string
-    // {
-    //     return 'rgt'; // default is '_rgt'
-    // }
-
-    // public function getParentIdName(): string
-    // {
-    //     return 'parent_id'; // default
-    // }
 }
 ```
 

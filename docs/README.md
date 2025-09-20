@@ -547,7 +547,7 @@ For I/O-intensive scenarios, even with Octane's improvements, your application's
 
 <div class="custom-container tip">
 <p><strong>Should I migrate my current Laravel projects to Hypervel?</strong></p>
-<p>If you don't have performance issues in your current projects, I would suggest remaining in Laravel because of the mature community and rich ecosystem. There will be necessary refactorings for the migration process. You can consider migrating only the APIs and modules with performance issues to Hypervel, and adopt architecture like API Gateway to allow Laravel and Hypervel projects to work simultaneously.</p>
+<p>If you don't have performance issues in your current projects, I would suggest remaining in Laravel because of the mature community and rich ecosystem. There will be necessary refactorings for the migration process. You can also consider migrating only the APIs and modules with performance issues to Hypervel, and adopt architecture like API Gateway to allow Laravel and Hypervel projects to work simultaneously.</p>
 </div>
 
 <script>
