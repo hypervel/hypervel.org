@@ -343,6 +343,10 @@ export const sidebarConfig = ({
                             link: 'permission',
                         },
                         {
+                            text: 'Prompts',
+                            link: 'prompts',
+                        },
+                        {
                             text: 'Nested Set',
                             link: 'nested-set',
                         },
