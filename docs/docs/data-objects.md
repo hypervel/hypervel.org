@@ -482,6 +482,12 @@ The `getSerializers` method returns an array where:
 - **Keys** are property names (in camelCase format)
 - **Values** are callable functions that transform the property value during serialization
 
+Built-in serializers include:
+- `CarbonInterface::class`
+- `Carbon::class`
+
+> Carbon values will be serialized to ISO 8601 format
+
 ::: tip
 Custom serializers are applied during `toArray()` and `jsonSerialize()` operations, allowing you to control exactly how your Data Objects appear in API responses and database storage.
 :::
