@@ -435,38 +435,34 @@ Once your extension is registered, update your `config/cache.php` configuration 
 
 ## Events
 
-To execute code on every cache operation, you may listen for the [events](/docs/events) fired by the cache. Typically, you should place these event listeners within your application's `App\Providers\EventServiceProvider` class:
+To execute code on every cache operation, you may listen for various [events](/docs/events) dispatched by the cache:
+
+<div class="overflow-auto">
+
+| Event Name                                   |
+|----------------------------------------------|
+| `Hypervel\Cache\Events\CacheFlushed`       |
+| `Hypervel\Cache\Events\CacheFlushing`      |
+| `Hypervel\Cache\Events\CacheHit`           |
+| `Hypervel\Cache\Events\CacheMissed`        |
+| `Hypervel\Cache\Events\ForgettingKey`      |
+| `Hypervel\Cache\Events\KeyForgetFailed`    |
+| `Hypervel\Cache\Events\KeyForgotten`       |
+| `Hypervel\Cache\Events\KeyWriteFailed`     |
+| `Hypervel\Cache\Events\KeyWritten`         |
+| `Hypervel\Cache\Events\RetrievingKey`      |
+| `Hypervel\Cache\Events\RetrievingManyKeys` |
+| `Hypervel\Cache\Events\WritingKey`         |
+| `Hypervel\Cache\Events\WritingManyKeys`    |
+
+</div>
+
+To increase performance, cache events are disabled in Hypervel by default. You may enable cache events by setting the `events` configuration option to `true` for a given cache store in your application's `config/cache.php` configuration file:
 
 ```php
-use App\Listeners\LogCacheHit;
-use App\Listeners\LogCacheMissed;
-use App\Listeners\LogKeyForgotten;
-use App\Listeners\LogKeyWritten;
-use Hypervel\Cache\Events\CacheHit;
-use Hypervel\Cache\Events\CacheMissed;
-use Hypervel\Cache\Events\KeyForgotten;
-use Hypervel\Cache\Events\KeyWritten;
-
-/**
- * The event listener mappings for the application.
- *
- * @var array
- */
-protected $listen = [
-    CacheHit::class => [
-        LogCacheHit::class,
-    ],
-
-    CacheMissed::class => [
-        LogCacheMissed::class,
-    ],
-
-    KeyForgotten::class => [
-        LogKeyForgotten::class,
-    ],
-
-    KeyWritten::class => [
-        LogKeyWritten::class,
-    ],
-];
+'database' => [
+    'driver' => 'database',
+    // ...
+    'events' => true,
+],
 ```

@@ -406,6 +406,86 @@ Built-in dependencies include:
 Custom dependency resolvers are called recursively, so they work with deeply nested Data Objects. Always merge with `parent::getCustomizedDependencies()` to preserve built-in DateTime handling.
 :::
 
+### Custom Serializer
+
+You can customize how Data Objects are serialized by overriding the `getSerializers` method. This allows you to control the output format and transform specific properties during serialization:
+
+```php
+class ProductDataObject extends DataObject
+{
+    public function __construct(
+        public string $name,
+        public Money $price,
+        public DateTime $createdAt,
+        public array $tags = []
+    ) {}
+
+    /**
+     * Define custom serializers for specific properties.
+     */
+    protected function getSerializers(): array
+    {
+        return array_merge(parent::getSerializers(), [
+            // Serialize Money objects as formatted currency
+            'price' => function ($value) {
+                if ($value instanceof Money) {
+                    return [
+                        'amount' => $value->getAmount(),
+                        'currency' => $value->getCurrency()->getCode(),
+                        'formatted' => '$' . number_format($value->getAmount() / 100, 2)
+                    ];
+                }
+                return $value;
+            },
+
+            // Format DateTime consistently
+            'createdAt' => function ($value) {
+                if ($value instanceof DateTime) {
+                    return $value->format('c'); // ISO 8601 format
+                }
+                return $value;
+            },
+
+            // Transform tags array
+            'tags' => function ($value) {
+                if (is_array($value)) {
+                    return array_map('strtolower', $value);
+                }
+                return $value;
+            }
+        ]);
+    }
+}
+
+$product = ProductDataObject::make([
+    'name' => 'Laptop',
+    'price' => new Money(99999, new Currency('USD')), // $999.99
+    'created_at' => new DateTime('2023-12-25 10:00:00'),
+    'tags' => ['ELECTRONICS', 'COMPUTERS', 'WORK']
+], true);
+
+$serialized = $product->toArray();
+// [
+//     'name' => 'Laptop',
+//     'price' => [
+//         'amount' => 99999,
+//         'currency' => 'USD',
+//         'formatted' => '$999.99'
+//     ],
+//     'created_at' => '2023-12-25T10:00:00+00:00',
+//     'tags' => ['electronics', 'computers', 'work']
+// ]
+```
+
+The `getSerializers` method returns an array where:
+
+- **Keys** are property names (in camelCase format)
+- **Values** are callable functions that transform the property value during serialization
+
+::: tip
+Custom serializers are applied during `toArray()` and `jsonSerialize()` operations, allowing you to control exactly how your Data Objects appear in API responses and database storage.
+:::
+
 ### Default Values and Nullable Properties
 
 ```php
