@@ -473,6 +473,259 @@ protected function passedValidation(): void
 }
 ```
 
+### Casting Form Request Data
+
+Hypervel's form requests include built-in support for automatic data casting, allowing you to transform request input to appropriate PHP types before or after validation. This feature is particularly useful for converting string inputs to the correct data types your application expects.
+
+#### Defining Casts
+
+You can define how request data should be cast by adding a `casts` property to your form request class or by implementing a `casts()` method:
+
+```php
+<?php
+
+namespace App\Http\Requests;
+
+use Hypervel\Foundation\Http\FormRequest;
+
+class CreatePostRequest extends FormRequest
+{
+    /**
+     * The inputs that should be cast.
+     */
+    protected array $casts = [
+        'published_at' => 'datetime',
+        'views' => 'integer',
+        'is_featured' => 'boolean',
+        'tags' => 'array',
+        'metadata' => 'json',
+        'rating' => 'decimal:2',
+    ];
+
+    public function rules(): array
+    {
+        return [
+            'title' => 'required|string|max:255',
+            'published_at' => 'required|date',
+            'views' => 'required|integer|min:0',
+            'is_featured' => 'required|boolean',
+            'tags' => 'required|array',
+            'metadata' => 'required|json',
+            'rating' => 'required|numeric|between:0,5',
+        ];
+    }
+}
+```
+
+Alternatively, you can define casts using a method, which is useful for dynamic casting:
+
+```php
+/**
+ * Get the casts for the form request.
+ */
+protected function casts(): array
+{
+    return [
+        'price' => 'decimal:' . $this->input('currency_decimals', 2),
+        'settings' => 'json',
+    ];
+}
+```
+
+#### Available Cast Types
+
+Hypervel supports the following primitive cast types:
+
+<div class="content-list" markdown="1">
+
+- `array` - Casts to PHP array
+- `bool` / `boolean` - Casts to boolean
+- `collection` - Casts to Hypervel Collection
+- `date` - Casts to Carbon date (time set to 00:00:00)
+- `datetime` - Casts to Carbon datetime
+- `decimal:digits` - Casts to string with specified decimal places
+- `double` / `float` / `real` - Casts to float
+- `int` / `integer` - Casts to integer
+- `json` - Decodes JSON string to array
+- `object` - Decodes JSON string to object
+- `string` - Casts to string
+- `timestamp` - Casts to Unix timestamp
+
+</div>
+
+#### Retrieving Casted Data
+
+After defining your casts, you can retrieve the casted data using the `casted()` method:
+
+```php
+public function store(CreatePostRequest $request)
+{
+    // Get all casted data
+    $data = $request->casted();
+
+    // $data['published_at'] is now a Carbon instance
+    // $data['views'] is now an integer
+    // $data['is_featured'] is now a boolean
+    // $data['tags'] is now an array
+
+    Post::create($data);
+}
+```
+
+You can also retrieve specific casted values:
+
+```php
+// Get a single casted value
+$publishedAt = $request->casted('published_at');
+
+// Get multiple casted values
+$data = $request->casted(['published_at', 'views', 'is_featured']);
+```
+
+#### Casting Validation vs Raw Input
+
+By default, the `casted()` method works with validated data. You can also cast raw input data by passing `false` as the second parameter:
+
+```php
+// Cast validated data (default)
+$validatedData = $request->casted();
+
+// Cast raw input data
+$rawData = $request->casted(null, false);
+```
+
+#### Enum Casting
+
+You can cast request input to PHP enums:
+
+```php
+<?php
+
+namespace App\Enums;
+
+enum PostStatus: string
+{
+    case Draft = 'draft';
+    case Published = 'published';
+    case Archived = 'archived';
+}
+```
+
+```php
+protected array $casts = [
+    'status' => App\Enums\PostStatus::class,
+];
+
+public function store(CreatePostRequest $request)
+{
+    $data = $request->casted();
+    // $data['status'] is now a PostStatus enum instance
+}
+```
+
+#### DataObject Casting
+
+You can cast arrays to custom DataObject classes:
+
+```php
+<?php
+
+namespace App\DataObjects;
+
+use Hypervel\Support\DataObject;
+
+class PostMetadata extends DataObject
+{
+    public function __construct(
+        public string $author,
+        public array $keywords,
+        public ?string $description = null,
+    ) {}
+}
+```
+
+```php
+protected array $casts = [
+    'metadata' => App\DataObjects\PostMetadata::class,
+];
+
+public function store(CreatePostRequest $request)
+{
+    $data = $request->casted();
+    // $data['metadata'] is now a PostMetadata instance
+}
+```
+
+#### Custom Cast Classes
+
+For more complex casting logic, you can create custom cast classes that implement the `CastInputs` interface:
+
+```php
+<?php
+
+namespace App\Casts;
+
+use Hypervel\Foundation\Http\Contracts\CastInputs;
+
+class UppercaseCast implements CastInputs
+{
+    public function get(string $key, mixed $value, array $inputs): mixed
+    {
+        return strtoupper($value);
+    }
+}
+```
+
+```php
+protected array $casts = [
+    'title' => App\Casts\UppercaseCast::class,
+];
+```
+
+#### Castable Classes
+
+You can also create "castable" classes that define their own casting logic:
+
+```php
+<?php
+
+namespace App\DataObjects;
+
+use Hypervel\Foundation\Http\Contracts\Castable;
+use Hypervel\Foundation\Http\Contracts\CastInputs;
+
+class Money implements Castable
+{
+    public function __construct(
+        public int $amount,
+        public string $currency,
+    ) {}
+
+    public static function castUsing(array $arguments): CastInputs
+    {
+        return new class implements CastInputs {
+            public function get(string $key, mixed $value, array $inputs): Money
+            {
+                return new Money(
+                    amount: (int) ($value * 100), // Convert to cents
+                    currency: $inputs['currency'] ?? 'USD',
+                );
+            }
+        };
+    }
+}
+```
+
+```php
+protected array $casts = [
+    'price' => App\DataObjects\Money::class,
+];
+```
+
+::: note
+Form request casting provides a clean way to ensure your request data is in the correct format before it reaches your application logic, reducing the need for manual type conversion throughout your codebase.
+:::
+
 ## Manually Creating Validators
 
 If you do not want to use the `validate` method on the request, you may create a validator instance manually using the `Validator` [facade](/docs/facades). The `make` method on the facade generates a new validator instance:
