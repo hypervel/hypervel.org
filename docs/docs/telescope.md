@@ -18,7 +18,7 @@ composer require hypervel/telescope
 After installing Telescope, publish its assets and migrations using the `vendor:publish` Artisan command. After installing Telescope, you should also run the `migrate` command in order to create the tables needed to store Telescope's data:
 
 ```shell
-php artisan vendor:publish --provider=Hypervel\Telescope\TelescopeServiceProvider
+php artisan vendor:publish "Hypervel\Telescope\TelescopeServiceProvider"
 
 php artisan migrate
 ```
@@ -32,7 +32,7 @@ If you plan to only use Telescope to assist your local development, you may inst
 ```shell
 composer require hypervel/telescope --dev
 
-php artisan vendor:publish --provider=Hypervel\Telescope\TelescopeServiceProvider
+php artisan vendor:publish "Hypervel\Telescope\TelescopeServiceProvider"
 
 php artisan migrate
 ```

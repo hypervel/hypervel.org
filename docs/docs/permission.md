@@ -25,17 +25,17 @@ The package will automatically register its service provider.
 Publish the migration and configuration files:
 
 ```bash
-php artisan vendor:publish --provider="Hypervel\Permission\PermissionServiceProvider"
+php artisan vendor:publish "Hypervel\Permission\PermissionServiceProvider"
 ```
 
 Or publish them separately:
 
 ```bash
 # Publish config only
-php artisan vendor:publish --provider="Hypervel\Permission\PermissionServiceProvider" --tag="permission-config"
+php artisan vendor:publish "Hypervel\Permission\PermissionServiceProvider" --tag="permission-config"
 
 # Publish migrations only
-php artisan vendor:publish --provider="Hypervel\Permission\PermissionServiceProvider" --tag="permission-migrations"
+php artisan vendor:publish "Hypervel\Permission\PermissionServiceProvider" --tag="permission-migrations"
 ```
 
 ### Running Migrations

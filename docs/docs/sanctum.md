@@ -40,7 +40,7 @@ composer require hypervel/sanctum
 Next, you should publish the Sanctum configuration and migration files using the `vendor:publish` Artisan command. The sanctum configuration file will be placed in your application's `config` directory:
 
 ```shell
-php artisan vendor:publish --provider="Hypervel\Sanctum\SanctumServiceProvider"
+php artisan vendor:publish "Hypervel\Sanctum\SanctumServiceProvider"
 ```
 
 Finally, you should run your database migrations. Sanctum will create one database table in which to store API tokens:
