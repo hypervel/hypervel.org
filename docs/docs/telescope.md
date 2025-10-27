@@ -108,7 +108,7 @@ protected function gate(): void
 {
     Gate::define('viewTelescope', function (User $user) {
         return in_array($user->email, [
-            'taylor@Hypervel.com',
+            'albert@hypervel.org',
         ]);
     });
 }

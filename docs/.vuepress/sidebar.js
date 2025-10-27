@@ -339,6 +339,10 @@ export const sidebarConfig = ({
                             link: 'sanctum',
                         },
                         {
+                            text: 'Socialite',
+                            link: 'socialite',
+                        },
+                        {
                             text: 'Permission',
                             link: 'permission',
                         },

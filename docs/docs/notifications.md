@@ -1363,8 +1363,6 @@ Before sending notifications to external Slack workspaces, your Slack App must b
 
 Of course, you will often want to send notifications to the Slack workspaces owned by your application's users. To do so, you will first need to obtain a Slack OAuth token for the user.
 
-> socialite package is not supported yet.
-
 Once you have obtained the bot token and stored it within your application's database, you may utilize the `SlackRoute::make` method to route a notification to the user's workspace. In addition, your application will likely need to offer an opportunity for the user to specify which channel notifications should be sent to:
 
 ```php
