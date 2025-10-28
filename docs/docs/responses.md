@@ -67,24 +67,25 @@ return response($content)
 
 ### Attaching Cookies to Responses
 
-You may attach a cookie to an outgoing `Hypervel\Http\Response` instance using the `cookie` method. You should pass the name, value, and the number of minutes the cookie should be considered valid to this method:
+You may attach a cookie to an outgoing `Psr\Http\Message\ResponseInterface` instance using the `withCookie` method. You should pass the name, value, and the number of minutes the cookie should be considered valid to this method:
 
 ```php
 use Hypervel\Support\Facades\Cookie;
 
-return response('Hello World')->cookie(
+return response('Hello World')
     ->withCookie(Cookie::make('name', 'value', $minutes));
 );
 ```
 
-The `cookie` method also accepts a few more arguments which are used less frequently. Generally, these arguments have the same purpose and meaning as the arguments that would be given to PHP's native [setcookie](https://secure.php.net/manual/en/function.setcookie.php) method:
+The `withCookie` method also accepts a few more arguments which are used less frequently. Generally, these arguments have the same purpose and meaning as the arguments that would be given to PHP's native [setcookie](https://secure.php.net/manual/en/function.setcookie.php) method:
 
 ```php
 use Hypervel\Support\Facades\Cookie;
 
-return response('Hello World')->cookie(
-    Cookie::make('name', 'value', $minutes, $path, $domain, $secure, $httpOnly)
-);
+return response('Hello World')
+    ->withCookie(
+        Cookie::make('name', 'value', $minutes, $path, $domain, $secure, $httpOnly)
+    );
 ```
 
 If you would like to ensure that a cookie is sent with the outgoing response but you do not yet have an instance of that response, you can use the `Cookie` facade to "queue" cookies for attachment to the response when it is sent. The `queue` method accepts the arguments needed to create a cookie instance. These cookies will be attached to the outgoing response before it is sent to the browser:
@@ -105,7 +106,7 @@ If you would like to generate a `Hypervel\Cookie\Cookie` instance that can be at
 ```php
 $cookie = cookie('name', 'value', $minutes);
 
-return response('Hello World')->cookie($cookie);
+return response('Hello World')->withCookie($cookie);
 ```
 
 #### Expiring Cookies Early
