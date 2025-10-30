@@ -203,9 +203,8 @@ class User extends JsonResource
     /**
      * Transform the resource into an array.
      *
-
-        * @return array
-        */
+     * @return array
+     */
     public function toArray()
     {
         return [
@@ -284,9 +283,8 @@ class UserCollection extends ResourceCollection
     /**
      * Transform the resource collection into an array.
      *
-
-        * @return array
-        */
+     * @return array
+     */
     public function toArray()
     {
         return [
@@ -331,32 +329,27 @@ By default, your outermost resource is wrapped in a `data` key when the resource
 }
 ```
 
-If you would like to disable the wrapping of the outermost resource, you may use the `withoutWrapping` method on the base resource class. Typically, you should call this method from your `AppServiceProvider` or another [service provider](/docs/providers) that is loaded on every request to your application:
+If you would like to disable the wrapping of the outermost resource, you may use the `withoutWrapping` method on the base resource class:
 
 ```php
 <?php
 
-namespace App\Providers;
+namespace App\Http\Controllers;
 
-use Hypervel\Http\Resources\Json\Resource;
-use Hypervel\Support\ServiceProvider;
+use App\Http\Resources\UserCollection;
+use App\Models\User;
+use Psr\Http\Message\ResponseInterface;
 
-class AppServiceProvider extends ServiceProvider
+class UserController
 {
     /**
      * Register any application services.
      */
-    public function register(): void
+    public function listBooks(): ResponseInterface
     {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        Resource::withoutWrapping();
+        return (new UserCollection(User::all()))
+            ->withoutWrapping()
+            ->toResponse();
     }
 }
 ```

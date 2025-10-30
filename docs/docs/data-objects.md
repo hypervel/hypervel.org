@@ -525,11 +525,11 @@ $user = UserDataObject::make([
     'age' => 30,
 ]);
 
+$user->toArray(); // This will cache the result
+
 // Modify properties
 $user->name = 'Updated Name';
 $user->age = 35;
-
-$user->toArray(); // This will return old result
 
 // Refresh internal caches
 $user->refresh();
