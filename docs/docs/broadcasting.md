@@ -31,7 +31,7 @@ You will also need to configure and run a [queue worker](/docs/queues). All even
 
 ### Reverb
 
-You may install Reverb using the Composer package manager:
+While Hypervel doesn't have built-in Reverb support, you have the option to set up Reverb separately by installing it in an independent Laravel project and running it from there. You may install Reverb using the Composer package manager in your Laravel project:
 
 ```shell:no-line-numbers
 composer require laravel/reverb
