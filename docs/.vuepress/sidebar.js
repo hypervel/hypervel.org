@@ -335,6 +335,10 @@ export const sidebarConfig = ({
                     collapsible: true,
                     children: [
                         {
+                            text: 'Horizon',
+                            link: 'horizon',
+                        },
+                        {
                             text: 'Sanctum',
                             link: 'sanctum',
                         },
