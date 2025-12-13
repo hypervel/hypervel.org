@@ -313,14 +313,14 @@ You must schedule the prune command to prevent memory leaks. When cached items e
 Add the following to your scheduler:
 
 ```php
-$schedule->command('cache:prune-stale-tags')->hourly();
+$schedule->command('cache:prune-redis-stale-tags')->hourly();
 ```
 
 You may also run the command manually:
 
 ```bash
-php artisan cache:prune-stale-tags
-php artisan cache:prune-stale-tags my-store
+php artisan cache:prune-redis-stale-tags
+php artisan cache:prune-redis-stale-tags my-store
 ```
 
 ## Building Cache Stacks
