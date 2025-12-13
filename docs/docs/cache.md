@@ -216,8 +216,8 @@ Hypervel supports two tag modes that determine how tags behave. Configure the mo
 ```php
 'redis' => [
     'driver' => 'redis',
-    'connection' => env('CACHE_REDIS_CONNECTION', 'default'),
-    'tag_mode' => env('CACHE_REDIS_TAG_MODE', 'all'),
+    'connection' => 'default',
+    'tag_mode' => env('REDIS_CACHE_TAG_MODE', 'all'),
 ],
 ```
 
